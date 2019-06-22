@@ -12,11 +12,11 @@
     
     
     <item>
-      <title>K8s_install2</title>
-      <link>https://pj1987111.github.io/posts/k8s_install2/</link>
+      <title>Kubeadm离线安装单master节点k8s</title>
+      <link>https://pj1987111.github.io/posts/kubeadm%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85%E5%8D%95master%E8%8A%82%E7%82%B9k8s/</link>
       <pubDate>Sat, 22 Jun 2019 15:08:11 +0800</pubDate>
       
-      <guid>https://pj1987111.github.io/posts/k8s_install2/</guid>
+      <guid>https://pj1987111.github.io/posts/kubeadm%E7%A6%BB%E7%BA%BF%E5%AE%89%E8%A3%85%E5%8D%95master%E8%8A%82%E7%82%B9k8s/</guid>
       <description>#Kubeadm离线安装单master节点k8s #1 目标 1.在所有节点上安装docker和kubeadm 2.部署kubernetes master 3.部署容器网络插件 4.部署kubernetes worker 5.部署dashboard可视化插件 6.部署容器存储插件 #2 准备(所有安装机器均需执行) ##2.1:/etc/hosts中添加ip和host的映射 ##2.2:master和node做互信 ##2.3:关闭防火墙和selinux 1) 关闭selinux
 sed -i &#39;s/SELINUX=enforcing/SELINUX=disabled/&#39; /etc/selinux/config  2) 关闭防火墙
 systemctl disable firewalld.service systemctl stop firewalld.service  3) 关闭iptables
@@ -28,10 +28,10 @@ docker run -d -v /opt/registry:/var/lib/registry -p 4000:5000 --restart=always -
     
     <item>
       <title>K8s安装离线依赖库与镜像制作</title>
-      <link>https://pj1987111.github.io/posts/k8s_install1/</link>
+      <link>https://pj1987111.github.io/posts/k8s%E5%AE%89%E8%A3%85%E7%A6%BB%E7%BA%BF%E4%BE%9D%E8%B5%96%E5%BA%93%E4%B8%8E%E9%95%9C%E5%83%8F%E5%88%B6%E4%BD%9C/</link>
       <pubDate>Sat, 22 Jun 2019 15:08:06 +0800</pubDate>
       
-      <guid>https://pj1987111.github.io/posts/k8s_install1/</guid>
+      <guid>https://pj1987111.github.io/posts/k8s%E5%AE%89%E8%A3%85%E7%A6%BB%E7%BA%BF%E4%BE%9D%E8%B5%96%E5%BA%93%E4%B8%8E%E9%95%9C%E5%83%8F%E5%88%B6%E4%BD%9C/</guid>
       <description>离线依赖库与镜像制作 一：docker环境下载 1.yum仓库添加 vim /etc/yum.repos.d/docker-ce.repo 添加以下内容： [docker-ce-stable] name=Docker CE Stable - $basearch baseurl=https://mirrors.aliyun.com/docker-ce/linux/centos/7/$basearch/stable enabled=1 gpgcheck=1 gpgkey=https://mirrors.aliyun.com/docker-ce/linux/centos/gpg  推荐添加阿里云的源，速度非常快。
 2.docker环境本地下载 yum install --downloadonly --downloaddir=. docker-ce-18.09.4-3.el7  该命令会把docker以及依赖全下载到指定目录。 注：若发现目录下没有下载的rpm包，请到/var/cache/yum/{RepositoryName}/packages/目录中找
 二：kubeadm环境下载 1.yum仓库添加 vim /etc/yum.repos.d/kubernetes.repo [kubernetes] name=Kubernetes baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64 enabled=1 gpgcheck=0 repo_gpgcheck=0 gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg  2.kubeadm环境本地下载 yum install --downloadonly --downloaddir=. kubeadm  该命令会把kubeadm以及依赖全下载包括kubelet,kubectl到指定目录。 注：若发现目录下没有下载的rpm包，请到/var/cache/yum/{RepositoryName}/packages/目录中找
