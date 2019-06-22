@@ -1,55 +1,12 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<html lang="en">
 <head>
-  <link href="//gmpg.org/xfn/11" rel="profile">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="generator" content="Hugo 0.55.6" />
-
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>K8s_install1 &middot; ZHY笔记</title>
-
-  
-  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
-  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
-  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
-  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
-
-
-  
-  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
-  <link rel="shortcut icon" href="/favicon.png">
-
-  
-  
+  <meta charset="UTF-8">
+  <title>My Blog</title>
 </head>
-
-  <body class=" ">
-  <aside class="sidebar">
-  <div class="container sidebar-sticky">
-    <div class="sidebar-about">
-      <a href="https://pj1987111.github.io/"><h1>ZHY笔记</h1></a>
-      <p class="lead">
-       一个程序员的探索过程。 
-      </p>
-    </div>
-
-    <nav>
-      <ul class="sidebar-nav">
-        <li><a href="https://pj1987111.github.io/">Home</a> </li>
-        <li><a href="/index/"> 首页 </a></li><li><a href="/categorys/"> 分类 </a></li>
-      </ul>
-    </nav>
-
-    <p>Copyright (c) 2019, Zhou HongYi</p>
-  </div>
-</aside>
-
-    <main class="content container">
-    <div class="post">
-  <h1>K8s_install1</h1>
+<body>
+<div class="post">
+  <h1>K8s安装离线依赖库与镜像制作</h1>
   <time datetime=2019-06-22T15:08:06&#43;0800 class="post-date">Sat, Jun 22, 2019</time>
   
 
@@ -136,10 +93,12 @@ git push -u origin master. (上传)
 
 <p>3) 创建镜像仓库，并选择公开。下一步选择github帐号关联，并选择之前提交的项目，务必勾选上海外机器构建。
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/e0/7ad78ce8c5bcedbc4acf024f41bebb.jpg" alt="" />
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/09/47c4ad30250a5c154c20e2a3fdea85.jpg" alt="" />
-4) 创建完镜像仓库后，进去构建选项卡，将之前上传的几个依赖分别如下图配置，因为一个仓库只能创建5个镜像，所以需要再以相同方法建一个镜像并构建。
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/2c/83ea7312391e73887bd1579c054dfa.jpg" alt="" />
- 5) 创建完后后台登陆阿里云</p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/09/47c4ad30250a5c154c20e2a3fdea85.jpg" alt="" /></p>
+
+<p>4) 创建完镜像仓库后，进去构建选项卡，将之前上传的几个依赖分别如下图配置，因为一个仓库只能创建5个镜像，所以需要再以相同方法建一个镜像并构建。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/2c/83ea7312391e73887bd1579c054dfa.jpg" alt="" /></p>
+
+<p>5) 创建完后后台登陆阿里云</p>
 
 <pre><code>sudo docker login --username=&lt;username&gt; registry.cn-hangzhou.aliyuncs.com
 </code></pre>
@@ -147,8 +106,9 @@ git push -u origin master. (上传)
 <p>并输入密码，用户名和密码是对应阿里云帐号的。</p>
 
 <p>6) 进入构建，对每个镜像点击立即构建，下面的构建日志成功即表示拉到了国内仓库。若失败则可能登陆超时，重新执行第5步。
- <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/d3/88e655641d6fed7ee260789d5236da.jpg" alt="" />
- 7) docker拉取镜像</p>
+ <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/d3/88e655641d6fed7ee260789d5236da.jpg" alt="" /></p>
+
+<p>7) docker拉取镜像</p>
 
 <pre><code>sudo docker pull registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:[镜像版本号]
 </code></pre>
@@ -201,8 +161,5 @@ sudo docker rmi registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:pause-3.1
 </div>
 
 
-    </main>
-
-    
-  </body>
+</body>
 </html>
