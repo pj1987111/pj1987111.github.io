@@ -52,6 +52,22 @@
     <div class="posts">
 <article class="post">
   <h1 class="post-title">
+    <a href="https://pj1987111.github.io/posts/k8s_install1/">K8s_install1</a>
+  </h1>
+  <time datetime="2019-06-22T15:08:06&#43;0800" class="post-date">2019-06-22 15:08:06</time>
+  离线依赖库与镜像制作 一：docker环境下载 1.yum仓库添加 vim /etc/yum.repos.d/docker-ce.repo 添加以下内容： [docker-ce-stable] name=Docker CE Stable - $basearch baseurl=https://mirrors.aliyun.com/docker-ce/linux/centos/7/$basearch/stable enabled=1 gpgcheck=1 gpgkey=https://mirrors.aliyun.com/docker-ce/linux/centos/gpg  推荐添加阿里云的源，速度非常快。
+2.docker环境本地下载 yum install --downloadonly --downloaddir=. docker-ce-18.09.4-3.el7  该命令会把docker以及依赖全下载到指定目录。 注：若发现目录下没有下载的rpm包，请到/var/cache/yum/{RepositoryName}/packages/目录中找
+二：kubeadm环境下载 1.yum仓库添加 vim /etc/yum.repos.d/kubernetes.repo [kubernetes] name=Kubernetes baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64 enabled=1 gpgcheck=0 repo_gpgcheck=0 gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg  2.kubeadm环境本地下载 yum install --downloadonly --downloaddir=. kubeadm  该命令会把kubeadm以及依赖全下载包括kubelet,kubectl到指定目录。 注：若发现目录下没有下载的rpm包，请到/var/cache/yum/{RepositoryName}/packages/目录中找
+三：k8s依赖镜像下载 kubeadm安装时会访问特定的tag，若不存在就会走外网下载，所以kubeadm部署前必须将所需的k8s环境以镜像方式下载好，并导入docker中
+1.阿里云海外镜像下载配置 由于各种原因，k8s的依赖kube-proxy，kube-apiserver，kube-controller-manager，kube-scheduler，coredns，etcd和pause都难于下载，本人通过阿里云海外镜像下载方式，分享一下。 1) 将github上建立一个项目，github的配置不再赘述。 2) 将所有依赖建立目录，并在每个目录下建立Dockerfile，并输入FROM命令，每个组件的命令如下：
+FROM k8s.gcr.io/kube-apiserver:v1.14.2 FROM k8s.gcr.io/kube-proxy:v1.14.2 FROM k8s.gcr.io/kube-controller-manager:v1.14.2 FROM k8s.gcr.io/kube-scheduler:v1.14.2 FROM k8s.gcr.io/etcd:3.3.10 FROM k8s.gcr.io/coredns:1.3.1 FROM k8s.
+  
+  <div class="read-more-link">
+    <a href="/posts/k8s_install1/">Read More…</a>
+  </div>
+  
+</article><article class="post">
+  <h1 class="post-title">
     <a href="https://pj1987111.github.io/posts/first-post/">First Post</a>
   </h1>
   <time datetime="2019-06-21T16:52:58&#43;0800" class="post-date">2019-06-21 16:52:58</time>
