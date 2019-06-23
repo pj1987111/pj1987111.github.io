@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Hugo&#43;github搭建个人网站 &middot; ZHY笔记</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY笔记</h1></a>
+      <p class="lead">
+       一个程序员的探索过程。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/index/"> 首页 </a></li><li><a href="/categorys/"> 分类 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Hugo&#43;github搭建个人网站</h1>
+  <time datetime=2019-06-22T22:13:06&#43;0800 class="post-date">Sat, Jun 22, 2019</time>
+  
+
+<p>#Hugo+github搭建个人网站
+##安装Hugo
+在github上找到相应版本<a href="https://github.com/gohugoio/hugo/releases">github地址</a>，本人是mac，就下载了hugo_0.55.6_macOS-64bit.tar.gz。下载解压后，将hugo添加进环境变量中。
+##在Hugo中写文章
+在硬盘中选取合适的存储路径，然后命令行中使用如下指令生成网页本地文档：</p>
+
+<pre><code>hugo new site personal-site
+</code></pre>
+
+<p>由此可得到如下文件目录：</p>
+
+<p>personal-site
+├── archetypes
+├── config.toml
+├── content
+├── data
+├── layouts
+├── static
+└── themes
+常用目录用处如下</p>
+
+<table>
+<thead>
+<tr>
+<th>子目录名称</th>
+<th>功能</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>archetypes</td>
+<td>新文章默认模板</td>
+</tr>
+
+<tr>
+<td>config.toml</td>
+<td>Hugo配置文档</td>
+</tr>
+
+<tr>
+<td>content</td>
+<td>存放所有Markdown格式的文章</td>
+</tr>
+
+<tr>
+<td>layouts</td>
+<td>存放自定义的view，可为空</td>
+</tr>
+
+<tr>
+<td>static</td>
+<td>存放图像、CNAME、css、js等资源，发布后该目录下所有资源将处于网页根目录</td>
+</tr>
+
+<tr>
+<td>themes</td>
+<td>存放下载的主题</td>
+</tr>
+</tbody>
+</table>
+
+<p>使用下面的命令生成新的文章草稿：</p>
+
+<p>hugo new posts/first-post.md
+在content目录中会自动以archetypes/default.md为模板在content/posts目录下生成一篇名为first-post.md的文章草稿：</p>
+
+<pre><code class="language-c">---
+title: &quot;First Post&quot;
+date: 2017-12-27T23:15:53-05:00
+draft: true
+---
+</code></pre>
+
+<p>我们可以加一个标题在下面并去掉标记为草稿的这一行：draft: true</p>
+
+<pre><code class="language-c">---
+title: &quot;First Post&quot;
+date: 2017-12-27T23:15:53-05:00
+---
+
+## Hello world
+</code></pre>
+
+<p>然后随便下载一个主题并加载到config.toml文件中：</p>
+
+<pre><code class="language-c">git init
+git submodule add https://github.com/spf13/hyde.git themes/hyde
+# Edit your config.toml configuration file
+# and add the Ananke theme.
+echo 'theme = &quot;hyde&quot;' &gt;&gt; config.tom
+</code></pre>
+
+<p>现在使用如下命令建立本地服务器：</p>
+
+<pre><code>hugo server
+</code></pre>
+
+<p>并在浏览器中输入网址<code>http://localhost:1313/</code>就可以在浏览器中查看网页效果了。
+如果觉得没有问题了便可以使用如下命令：</p>
+
+<pre><code class="language-hugo```">如此一来网页便生成在默认的public子目录中了。
+##发布到github上
+将生成的public目录下的所有文件，上传至github.io上。
+```c
+git add .
+git commit -m &quot;edit&quot;
+git push -u origin master
+</code></pre>
+
+<p>##hyde配置
+刚下的hyde有一些不方便使用的地方，需要略作调整。
+1. 修改标题
+在Hugo的config.toml中，修改title。 比如，本站的修改如下。</p>
+
+<pre><code>title = &quot;ZHY笔记&quot;
+</code></pre>
+
+<p>这是最简单的修改。
+2. 修改描述
+描述的内容来源，可以在Hyde的layouts/partials/sidebar.html中发现端倪。</p>
+
+<pre><code class="language-c">    &lt;div class=&quot;sidebar-about&quot;&gt;
+      &lt;a href=&quot;{{ .Site.BaseURL }}&quot;&gt;&lt;h1&gt;{{ .Site.Title }}&lt;/h1&gt;&lt;/a&gt;
+      &lt;p class=&quot;lead&quot;&gt;
+      {{ with .Site.Params.description }} {{.}} {{ else }}An elegant open source and mobile first theme for &lt;a href=&quot;http://hugo.spf13.com&quot;&gt;hugo&lt;/a&gt; made by &lt;a href=&quot;http://twitter.com/mdo&quot;&gt;@mdo&lt;/a&gt;. Originally made for Jekyll.{{end}}
+      &lt;/p&gt;
+    &lt;/div&gt;
+</code></pre>
+
+<p>可见，只要设置.Site.Params.description参数，就可以直接展示了。 标题也是用类似的方式来完成模板填充的。</p>
+
+<pre><code class="language-c">[params]
+description = &quot;一个程序员的探索过程。&quot;
+copyright = &quot;Copyright (c) 2019, Zhou HongYi&quot;
+版权声明也顺便改了。
+</code></pre>
+
+<p>3.首页显示不完整内容
+查看Hyde的layouts/index.html，可以发现问题所在。</p>
+
+<pre><code class="language-c">&lt;div class=&quot;post&quot;&gt;
+  &lt;h1 class=&quot;post-title&quot;&gt;
+    &lt;a href=&quot;{{ .Permalink }}&quot;&gt;
+      {{ .Title }}
+    &lt;/a&gt;
+  &lt;/h1&gt;
+
+  &lt;span class=&quot;post-date&quot;&gt;{{ .Date.Format &quot;Mon, Jan 2, 2006&quot; }}&lt;/span&gt;
+
+  {{ .Content }}
+&lt;/div&gt;
+</code></pre>
+
+<p>把{{ .Content }}替换成{{ .Description }}，就可以避免显示完整内容了。 这个{{ .Description }}，是在页面头部的Front Matter中设置的。</p>
+
+<p>比如，本文就设置如下：</p>
+
+<pre><code class="language-c">title: &quot;Hugo+github搭建个人网站&quot;
+description: &quot;详细介绍Hugo+github搭建个人网站的方法，并使用Hyde作为Hugo的Theme，并对Hyde进行了必要的定制。还介绍了Markdown编辑器MWeb的图床设置。&quot;
+</code></pre>
+
+<p>还有另一种方法是使用{{ .Summary }}，自动截取前70个字的内容。 不过，这种自动截取的实际效果非常差。</p>
+
+<p>4.修改日期样式
+    像Mon, Jan 2, 2006这种样式，只适合西方人阅读。 孤更喜欢2017-06-22 23:36:54的这种样式。 这可以修改Hyde的layouts/index.html来实现。</p>
+
+<pre><code class="language-c">&lt;span class=&quot;post-date&quot;&gt;{{ .Date.Format &quot;2006-01-02 15:04:05&quot; }}&lt;/span&gt;
+</code></pre>
+
+<p>##MWeb图床配置
+在mac上写markdown有很多解决方案，我最终选择了MWeb。
+在使用过程中，提交图片的时候，需要提供图床。
+思路如下：
+1:mac上面应用对本地存储有严格访问权限，使用git上的路径。
+2:在git上的同repo上存储图片。
+3:本地搞一个 python3 的服务，将图片用规律存储到本地。
+4：MWeb 的相关想法。
+1）将图片全部存放在本地，和自己的博文存放在一起。
+2）用 MWeb 写博文的时候，图片用其自带的图床管理 api 将图片存放到本机目录。
+3）由于 github 的图片路径是有规律的，所以计算出来最终路径，直接保存到博文当中。
+5:用 git 将文章和图片全部推到仓库，然后就啥都可以了。</p>
+
+<h3 id="python-脚本撰写以及启动">python 脚本撰写以及启动</h3>
+
+<p>main_upimg.py 主程序代码</p>
+
+<pre><code class="language-c">#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+from sanic import Sanic
+from sanic.response import json, text, file
+import os, sys
+import hashlib
+
+app = Sanic()
+baseDir = '/Users/fungleo/Documents/Blog/articles/image/'
+
+# 成功以及失败的返回脚本
+def ok(data):
+    return json({&quot;data&quot;: data, &quot;status&quot;: 0})
+
+def fail(data):
+    return json({&quot;data&quot;: data, &quot;status&quot;: 1})
+
+# 字节码转16进制字符串
+def bytes2hex(bytes):
+    hexstr = u&quot;&quot;
+    for i in range(10):
+        t = u&quot;%x&quot; % bytes[i]
+        if len(t) % 2:
+            hexstr += u&quot;0&quot;
+        hexstr += t
+    return hexstr.lower()
+
+# 根据16进制字符串获取文件后缀
+def getSuffix(hexStr):
+    SUPPORT_TYPE = {
+            'ffd8ffe':'jpg',
+            '89504e470d0a1a0a0000':'png',
+            '474946383961':'gif',
+        }
+    for i in SUPPORT_TYPE:
+        if i in hexStr:
+            return SUPPORT_TYPE[i]
+    return 'error type'
+# 上传文件接口
+@app.route('/upimg', methods=['POST'])
+async def upimg(request):
+
+    # 判断参数是否正确
+    if not request.files and not request.files.get('file'):
+        return fail('error args')
+    image = request.files.get('file').body
+
+    # 判断文件是否支持
+    imageSuffix = getSuffix(bytes2hex(image))
+    if 'error' in imageSuffix:
+        return fail(imageSuffix)
+
+    # 组织图片存储路径
+    m1 = hashlib.md5()
+    m1.update(image)
+    md5Name = m1.hexdigest()
+
+    saveDir = baseDir + md5Name[0:2] + '/'
+    savePath = saveDir + md5Name[2:] + '.' + imageSuffix
+    resPath = '/' + md5Name[0:2] + '/' + md5Name[2:] + '.' + imageSuffix
+
+    # 如果文件夹不存在，就创建文件夹
+    if not os.path.exists(saveDir):
+        os.makedirs(saveDir)
+
+    # 将文件写入到硬盘
+    tempFile = open(savePath, 'wb')
+    tempFile.write(image)
+    tempFile.close()
+
+    # 给客户端返回结果
+    return ok({&quot;path&quot;: resPath})
+
+if __name__ == &quot;__main__&quot;:
+    app.run(host=&quot;127.0.0.1&quot;, port=7000)
+</code></pre>
+
+<h3 id="python-脚本开机启动">python 脚本开机启动</h3>
+
+<p>编写脚本
+查看main_upimg.py位置，在目录下输入pwd查看</p>
+
+<pre><code class="language-c">nohup python3 path/main_upimg.py &amp;
+</code></pre>
+
+<p>并赋予执行权限。</p>
+
+<pre><code>chmod +x run.sh
+</code></pre>
+
+<p>mac中进入系统偏好设置-&gt;用户与群组-&gt;登陆项，将run.sh添加到登陆项，并勾选前面的隐藏选项卡，重新启动即可。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/5d/c10310977a230c6876aae270b19ef0.jpg" alt="" />
+###配置 MWeb 编辑器
+通过上面的一系列折腾之后，我们的图床服务就算是搞好了，下面我们要来配置我们的编辑器，通过编辑器的配置，我们可以很方便的使用我们的图床。</p>
+
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>值</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>名称</td>
+<td>myblog</td>
+</tr>
+
+<tr>
+<td>API地址</td>
+<td><a href="http://127.0.0.1:7000/upimg">http://127.0.0.1:7000/upimg</a></td>
+</tr>
+
+<tr>
+<td>POST文件名</td>
+<td>file</td>
+</tr>
+
+<tr>
+<td>图片URL路径</td>
+<td>data/path</td>
+</tr>
+
+<tr>
+<td>图片URL前缀</td>
+<td><a href="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images">https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images</a></td>
+</tr>
+</tbody>
+</table>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/7f/e2b113a02e3bae0f5b51f46cd854e4.jpg" alt="" /></p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>
