@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Kubeadm离线安装单master节点k8s &middot; ZHY笔记</title>
+  <title>Kubeadm离线安装单master节点k8s &middot; ZHY ZONE</title>
 
   
   <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
@@ -30,9 +30,9 @@
   <aside class="sidebar">
   <div class="container sidebar-sticky">
     <div class="sidebar-about">
-      <a href="https://pj1987111.github.io/"><h1>ZHY笔记</h1></a>
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
       <p class="lead">
-       一个程序员的探索过程。 
+       我的兴趣是机器学习，虚拟化和网络安全。 
       </p>
     </div>
 
@@ -51,19 +51,31 @@
     <div class="post">
   <h1>Kubeadm离线安装单master节点k8s</h1>
   <time datetime=2019-06-22T15:08:11&#43;0800 class="post-date">Sat, Jun 22, 2019</time>
-  <p>#Kubeadm离线安装单master节点k8s
-#1 目标
-1.在所有节点上安装docker和kubeadm
-2.部署kubernetes master
-3.部署容器网络插件
-4.部署kubernetes worker
-5.部署dashboard可视化插件
-6.部署容器存储插件
-#2 准备(所有安装机器均需执行)
-##2.1:/etc/hosts中添加ip和host的映射
-##2.2:master和node做互信
-##2.3:关闭防火墙和selinux
-1) 关闭selinux</p>
+  
+
+<h1 id="1-目标">1 目标</h1>
+
+<p>1.在所有节点上安装docker和kubeadm</p>
+
+<p>2.部署kubernetes master</p>
+
+<p>3.部署容器网络插件</p>
+
+<p>4.部署kubernetes worker</p>
+
+<p>5.部署dashboard可视化插件</p>
+
+<p>6.部署容器存储插件</p>
+
+<h1 id="2-准备-所有安装机器均需执行">2 准备(所有安装机器均需执行)</h1>
+
+<h2 id="2-1-etc-hosts中添加ip和host的映射">2.1:/etc/hosts中添加ip和host的映射</h2>
+
+<h2 id="2-2-master和node做互信">2.2:master和node做互信</h2>
+
+<h2 id="2-3-关闭防火墙和selinux">2.3:关闭防火墙和selinux</h2>
+
+<p>1) 关闭selinux</p>
 
 <pre><code>sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
 </code></pre>
@@ -80,23 +92,27 @@ systemctl stop firewalld.service
 systemctl stop iptables.service
 </code></pre>
 
-<p>##2.4:安装docker
-将离线包解压，进docker目录，运行sudo yum install *
+<h2 id="2-4-安装docker">2.4:安装docker</h2>
+
+<p>将离线包解压，进docker目录，运行sudo yum install *
 安装好后再执行</p>
 
 <pre><code>systemctl start docker
 systemctl enable docker 
 </code></pre>
 
-<p>将docker服务启动
-##2.5:私仓搭建
-这里选择了docker的registry2来建立私有仓库。
-* 下载镜像仓库</p>
+<p>将docker服务启动</p>
+
+<h2 id="2-5-私仓搭建">2.5:私仓搭建</h2>
+
+<p>这里选择了docker的registry2来建立私有仓库。</p>
+
+<ol>
+<li><p>下载镜像仓库</p>
 
 <pre><code>docker pull registry:2
-</code></pre>
+</code></pre></li>
 
-<ul>
 <li><p>启动镜像仓库</p>
 
 <pre><code>docker run -d -v /opt/registry:/var/lib/registry -p 4000:5000 --restart=always --name registry registry:2
@@ -111,15 +127,13 @@ tee /etc/docker/daemon.json &lt;&lt; 'EOF'
 }
 EOF
 </code></pre></li>
-</ul>
 
-<p>重启docker：</p>
+<li><p>重启docker：</p>
 
 <pre><code>systemctl daemon-reload
 systemctl restart docker
-</code></pre>
+</code></pre></li>
 
-<ul>
 <li><p>测试本地仓库
 在本例中ip是10.0.0.5，端口是4000</p>
 
@@ -139,30 +153,25 @@ curl -XGET http://10.0.0.5:4000/v2/_catalog
 }
 EOF
 </code></pre></li>
-</ul>
 
-<p>重启docker</p>
+<li><p>重启docker</p>
 
 <pre><code>systemctl daemon-reload
 systemctl restart docker
-</code></pre>
+</code></pre></li>
 
-<ul>
-<li>仓库镜像导入
-有两种方式导入，如果之前有导出的话直接把镜像拷贝到/opt/registry就行，如果是初始化导入的话，需要以下两步：</li>
-</ul>
-
-<p>1) 更改tag</p>
+<li><p>仓库镜像导入
+有两种方式导入，如果之前有导出的话直接把镜像拷贝到/opt/registry就行，如果是初始化导入的话，需要以下两步：
+1)更改tag</p>
 
 <pre><code>for i in `docker images | grep -v REPOSITORY | awk 'BEGIN{OFS=&quot;:&quot;;ORS=&quot; &quot;}{print $1,$2}'`;do docker tag $i 10.0.0.5:4000/$i;done
 </code></pre>
 
-<p>2) 上传到私有仓库</p>
+<p>2)上传到私有仓库</p>
 
 <pre><code>for i in `docker images | grep -v REPOSITORY | awk 'BEGIN{OFS=&quot;:&quot;;ORS=&quot; &quot;}{print $1,$2}'`;do docker PUSH $i;done
-</code></pre>
+</code></pre></li>
 
-<ul>
 <li><p>查看镜像是否上传成功</p>
 
 <pre><code>curl -XGET http://10.0.0.5:4000/v2/_catalog
@@ -177,15 +186,16 @@ systemctl restart docker
 
 <pre><code>docker save -o registry.tar registry
 </code></pre></li>
-</ul>
+</ol>
 
-<p>##2.6:安装kubeadm
-进入 kubeadm目录，运行</p>
+<h2 id="2-6-安装kubeadm">2.6:安装kubeadm</h2>
+
+<p>进入 kubeadm目录，运行</p>
 
 <pre><code>yum install *
 </code></pre>
 
-<p>##2.7:网络环境配置</p>
+<h2 id="2-7-网络环境配置">2.7:网络环境配置</h2>
 
 <pre><code>vim /etc/sysctl.conf
 net.bridge.bridge-nf-call-iptables = 1
@@ -200,16 +210,18 @@ sysctl -p
 cat /proc/sys/net/bridge/bridge-nf-call-ip6tables 
 </code></pre>
 
-<p>##2.8:kubelet配置修改并启动</p>
+<h2 id="2-8-kubelet配置修改并启动">2.8:kubelet配置修改并启动</h2>
 
 <pre><code>vim /etc/sysconfig/kubelet 
 KUBELET_EXTRA_ARGS=&quot;--fail-swap-on=false” 
 systemctl enable kubelet 
 </code></pre>
 
-<p>#3 master部署
-##3.1:master部署
-用flannel的话除了版本号需要改，别的都可以不改。</p>
+<h1 id="3-master部署">3 master部署</h1>
+
+<h2 id="3-1-master部署">3.1:master部署</h2>
+
+<p>用flannel的话除了版本号需要改，别的都可以不改。</p>
 
 <pre><code>kubeadm init --kubernetes-version=v1.14.2 --pod-network-cidr=10.224.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap
 </code></pre>
@@ -219,8 +231,9 @@ systemctl enable kubelet
 <pre><code>kubeadm join 192.168.0.7:6443 --token 7d8i09.uz3hrjfftoxzk9y1 --discovery-token-ca-cert-hash sha256:621d62945f30ce15c31ac40b81a1267c8c02a2bfc8730c93e0f6dc152c7de1ec
 </code></pre>
 
-<p>##3.2:添加kubectl访问配置
-若给非root用户添加访问权限，需要</p>
+<h2 id="3-2-添加kubectl访问配置">3.2:添加kubectl访问配置</h2>
+
+<p>若给非root用户添加访问权限，需要</p>
 
 <pre><code>mkdir -p $HOME/.kube 
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config 
@@ -232,27 +245,31 @@ chown $(id -u):$(id -g) $HOME/.kube/config
 <pre><code>echo export KUBECONFIG=/etc/kubernetes/admin.conf &gt;&gt; /root/.bash_profile 
 </code></pre>
 
-<p>##3.3: 检查</p>
+<h2 id="3-3-检查">3.3: 检查</h2>
 
 <pre><code>kubectl get cs 
 </code></pre>
 
 <p>如果得到如下的显示，表示安装正确
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/86/e2971525a267238ff8efb05d19866e.jpg" alt="" />
-#4 worker部署
-将master部署产生的字符串输入即完成部署</p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/86/e2971525a267238ff8efb05d19866e.jpg" alt="" /></p>
+
+<h1 id="4-worker部署">4 worker部署</h1>
+
+<p>将master部署产生的字符串输入即完成部署</p>
 
 <pre><code>kubeadm join 192.168.0.7:6443 --token 7d8i09.uz3hrjfftoxzk9y1 --discovery-token-ca-cert-hash sha256:621d62945f30ce15c31ac40b81a1267c8c02a2bfc8730c93e0f6dc152c7de1ec
 </code></pre>
 
-<p>#5 网络模块flannel安装</p>
+<h1 id="5-网络模块flannel安装">5 网络模块flannel安装</h1>
 
 <pre><code>kubectl apply -f kube-flannel.yml
 </code></pre>
 
-<p>执行后，输入ifconfig，看到flannel网卡，即完成安装
-#6 集群检查
-执行以下命令</p>
+<p>执行后，输入ifconfig，看到flannel网卡，即完成安装</p>
+
+<h1 id="6-集群检查">6 集群检查</h1>
+
+<p>执行以下命令</p>
 
 <pre><code>kubectl get node
 </code></pre>
@@ -263,9 +280,11 @@ chown $(id -u):$(id -g) $HOME/.kube/config
 </code></pre>
 
 <p>如果etcd,coredns,kube-apiserver,kube-flannel,kube-proxy,kube-controller-manager,kube-scheduler 都是Running状态，表示安装正确。
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/0a/0227a3caebc50201e8a1c6c2125b4e.jpg" alt="" />
-#7 环境重装
-##7.1 环境清除</p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/0a/0227a3caebc50201e8a1c6c2125b4e.jpg" alt="" /></p>
+
+<h1 id="7-环境重装">7 环境重装</h1>
+
+<h2 id="7-1-环境清除">7.1 环境清除</h2>
 
 <p>当需要重装的话需要清除干净主机上的环境。</p>
 
@@ -295,7 +314,7 @@ ifconfig flannel.1 down
 ip link delete flannel.1
 </code></pre>
 
-<p>##7.2 安装</p>
+<h2 id="7-2-安装">7.2 安装</h2>
 
 <pre><code>systemctl start kubelet
 systemctl enable kubelet

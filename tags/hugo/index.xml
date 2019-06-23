@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>hugo on ZHY笔记</title>
+    <title>hugo on ZHY ZONE</title>
     <link>https://pj1987111.github.io/tags/hugo/</link>
-    <description>Recent content in hugo on ZHY笔记</description>
+    <description>Recent content in hugo on ZHY ZONE</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 22 Jun 2019 22:13:06 +0800</lastBuildDate>
@@ -17,7 +17,8 @@
       <pubDate>Sat, 22 Jun 2019 22:13:06 +0800</pubDate>
       
       <guid>https://pj1987111.github.io/posts/hugo&#43;github%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99/</guid>
-      <description>#Hugo+github搭建个人网站 ##安装Hugo 在github上找到相应版本github地址，本人是mac，就下载了hugo_0.55.6_macOS-64bit.tar.gz。下载解压后，将hugo添加进环境变量中。 ##在Hugo中写文章 在硬盘中选取合适的存储路径，然后命令行中使用如下指令生成网页本地文档：
+      <description>一 安装Hugo 在github上找到相应版本github地址，本人是mac，就下载了hugo_0.55.6_macOS-64bit.tar.gz。下载解压后，将hugo添加进环境变量中。
+二 在Hugo中写文章 在硬盘中选取合适的存储路径，然后命令行中使用如下指令生成网页本地文档：
 hugo new site personal-site  由此可得到如下文件目录：
 personal-site ├── archetypes ├── config.toml ├── content ├── data ├── layouts ├── static └── themes 常用目录用处如下
    子目录名称 功能     archetypes 新文章默认模板   config.toml Hugo配置文档   content 存放所有Markdown格式的文章   layouts 存放自定义的view，可为空   static 存放图像、CNAME、css、js等资源，发布后该目录下所有资源将处于网页根目录   themes 存放下载的主题    使用下面的命令生成新的文章草稿：

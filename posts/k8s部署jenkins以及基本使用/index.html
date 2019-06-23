@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>k8s部署jenkins以及基本使用 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>k8s部署jenkins以及基本使用</h1>
+  <time datetime=2019-06-21T16:52:58&#43;0800 class="post-date">Fri, Jun 21, 2019</time>
+  
+
+<h1 id="一-jenkins-kubernetes方案简介">一：Jenkins+Kubernetes方案简介</h1>
+
+<h2 id="1-1-传统jenkins部署的问题">1.1、传统Jenkins部署的问题</h2>
+
+<p>Jenkins 是开源的一套持续集成框架，可以进行大规模的编译、测试和发布的工作，给软件开发团队带来极大的便利性。
+Jenkins 的持续集成环境可以是集群化的，主要的运行模式为master-slave模式。
+Jenkins 的master为Jenkins系统的控制节点，slave节点负责具体的项目编译测试等工作。
+由于大公司里面需要进行编译的工程或者对象非常庞大，因此需要大量的物理节点作为slave,而且这些环节相对固定，可能很难适应其他项目的编译测试，一旦salve节点遭到破坏，需要人为的进行修复甚至重建，非常麻烦。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/86/82cfb4065a72455cf3cfb27bca9a32.jpg" alt="" /></p>
+
+<h2 id="2-2-与kubernetes-plugin的结合">2.2、与Kubernetes-plugin的结合</h2>
+
+<p>Docker的问世，为我们提供了解决方案，使用docker作为jenkins slave节点可以解决slave节点遭到破坏后遇到的问题， 而且大量的工程不是每时每刻同时运行的因此可以在需要时吧docker拉起来进行编译测试，这样就节约了大量的物理节点， 解决了上述问题。
+然而使用docker 同样需要集群，因此要用到集群管理工具， swarm 或者kubernetes。Swarm 一般用在小集群上，而且swarm和docker本身的借口完全一致， 因此这里就简单介绍单点docker节点作为slave。 Kubernetes作为大的docker 集群管理工具，当jenkins的工程数量非常大的时候可以用kubernetes, kubernetes的运维相对比docker 和swarm的门槛要高一点。
+Jenkins master也可以使用docker来运行或者使用kubernetes来提供高可用的jenkins master。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/8e/be8909958622d1d59d2eb094b148fc.jpg" alt="" />
+Kubernetes 主要是用来进行docker 调度运行的，同样因为这一点通过kubernetes插件的配置，不需要管slave节点是否在线，因为kubernetes帮你负责创建和连接。这样就可以做到没有任务的时候没有任务slave节点在线，做到完全的按需启动slave和调度slave。</p>
+
+<h1 id="二-在k8s上构建jenkins-server">二、在K8S上构建Jenkins Server</h1>
+
+<h2 id="2-1-创建pvc存储">2.1 创建PVC存储</h2>
+
+<p>首先需要对jenkins-server创建一个Kubernetes持久化存储卷。为了让Jenkins Server可以具有Fail Over的能力，建议将Jenkins的数据存储到远程存储或者分布式存储上。本文使用分布式存储ceph来模拟存储效果，分布式存储的部署请参考我的《rook+ceph部署分布式文件系统》，指定rook-ceph-block并分配200G空间。</p>
+
+<pre><code class="language-c">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cicdpvc
+  namespace: cicd
+  labels:
+    app: cicd
+spec:
+  storageClassName: rook-ceph-block
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi
+</code></pre>
+
+<h2 id="2-2-创建jenkins-server">2.2 创建jenkins-server</h2>
+
+<p>创建jenkins-server的yaml如下所示</p>
+
+<pre><code class="language-c">apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins2
+  namespace: cicd
+spec:
+  template:
+    metadata:
+      labels:
+        app: jenkins2
+    spec:
+      terminationGracePeriodSeconds: 10
+      serviceAccountName: jenkins2
+      containers:
+      - name: jenkins
+        image: 10.57.30.23:4000/jenkins/jenkins:lts
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: web
+          protocol: TCP
+        - containerPort: 50000
+          name: agent
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+          requests:
+            cpu: 1000m
+            memory: 2Gi
+        livenessProbe:
+          httpGet:
+            path: /login
+            port: 8080
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 12
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 8080
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 12
+        volumeMounts:
+        - name: jenkinshome
+          subPath: jenkins2
+          mountPath: /var/jenkins_home
+        env:
+        - name: LIMITS_MEMORY
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.memory
+              divisor: 1Mi
+        - name: JAVA_OPTS
+          value: -Xmx$(LIMITS_MEMORY)m -XshowSettings:vm -Dhudson.slaves.NodeProvisioner.initialDelay=0 -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85 -Duser.timezone=Asia/Shanghai
+      securityContext:
+        fsGroup: 1000
+      volumes:
+      - name: jenkinshome
+        persistentVolumeClaim:
+          claimName: cicdpvc
+ 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins2
+  namespace: cicd
+  labels:
+    app: jenkins2
+spec:
+  selector:
+    app: jenkins2
+  ports:
+  - name: web
+    port: 8080
+    targetPort: web
+  - name: agent
+    port: 50000
+    targetPort: agent
+ 
+---
+ 
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: jenkins2
+  namespace: cicd
+ 
+---
+ 
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: jenkins2
+  namespace: cicd
+rules:
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;pods&quot;]
+    verbs: [&quot;create&quot;,&quot;delete&quot;,&quot;get&quot;,&quot;list&quot;,&quot;patch&quot;,&quot;update&quot;,&quot;watch&quot;]
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;pods/exec&quot;]
+    verbs: [&quot;create&quot;,&quot;delete&quot;,&quot;get&quot;,&quot;list&quot;,&quot;patch&quot;,&quot;update&quot;,&quot;watch&quot;]
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;pods/log&quot;]
+    verbs: [&quot;get&quot;,&quot;list&quot;,&quot;watch&quot;]
+  - apiGroups: [&quot;&quot;]
+    resources: [&quot;secrets&quot;]
+    verbs: [&quot;get&quot;]
+ 
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: jenkins2
+  namespace: cicd
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: jenkins2
+subjects:
+  - kind: ServiceAccount
+    name: jenkins2
+    namespace: cicd
+</code></pre>
+
+<p>运行命令完成安装。</p>
+
+<pre><code class="language-c">kubectl apply -f jenkins-deployment.yaml
+</code></pre>
+
+<p>执行命令查看运行状态</p>
+
+<pre><code class="language-c">kubectl get pod,svc,deploy -n cicd
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/bd/a7fea9b03d076ca67347cf300e10c7.jpg" alt="" /></p>
+
+<h2 id="2-3-暴露jenkins服务">2.3:暴露jenkins服务</h2>
+
+<p>这个时候管理员在外网还不能访问，所以我们用ingress方式将jenkins-server暴露出来。本文使用我之前写的《Nginx+Ingress-controller解决L7外网Web服务暴露和负载均衡》来将ingress暴露服务。</p>
+
+<pre><code class="language-c">apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jenkins-ingress
+  namespace: cicd
+  annotations:
+    kubernetes.io/ingress.class: &quot;nginx&quot;
+spec:
+  rules:
+  - host: jenkins-k8s.zhytongdun.com
+    http:
+      paths:
+      - backend:
+          serviceName: jenkins2
+          servicePort: 8080
+</code></pre>
+
+<p>执行kubectl apply -f jenkins-ingress.yaml后，执行 kubectl get ingress -n cicd查看ingress运行情况。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/8a/e3cd5631a69e113dec236e9bced5cc.jpg" alt="" />
+此时，我将通过笔记本访问，遂将jenkins-k8s.zhytongdun.com和10.57.30.23绑定在/etc/hosts上。</p>
+
+<p>此时运行jenkins-k8s.zhytongdun.com，就可以看到如下欢迎界面。</p>
+
+<h2 id="2-4-初始化安装">2.4:初始化安装</h2>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/d8/254e6a189d0bfe7b47618a2fd74c41.jpg" alt="" />
+使用kubectl exec命令进入容器，cat欢迎界面显示的路径，得到初始密码。</p>
+
+<p>下一步后，有配置网络和代理，填上代理名称。</p>
+
+<p>然后下一步，选择安装推荐的插件。如下图所示。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/d2/12ea91465c1b94596d3012ed2aed48.jpg" alt="" />
+一些常用的插件已经开始安装，速度还是很快的。</p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/f8/0505812b5ab67891090fa3f7832055.jpg" alt="" />
+最后设置完密码后就可以看到成功的界面。</p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/d3/a389c37873c569488eaca80978ff1e.jpg" alt="" /></p>
+
+<h1 id="三-jenkins集成k8s">三：Jenkins集成k8s</h1>
+
+<h2 id="3-1-k8s插件安装">3.1 k8s插件安装</h2>
+
+<p>进入系统管理-插件管理-可选插件，输入kubernetes关键字，选择如下所示插件，点击直接安装。</p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/36/037610eee9c666aa7b22e91efe7741.jpg" alt="" /></p>
+
+<h2 id="3-2-k8s插件配置">3.2 k8s插件配置</h2>
+
+<p>选择系统配置-选择一个云-kubernetes</p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/92/b07a0e92ee4f75111a1117fd57d9ae.jpg" alt="" />
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/7c/6b8741a9853d7b68679cf6e8529a39.jpg" alt="" />
+先填写jenkins和kubernetes相关配置，
+注意 namespace，我们这里填 cicd，与jenkins在一个namespace下，然后点击Test Connection，如果出现 Connection test successful 的提示信息证明 Jenkins 已经可以和 Kubernetes 系统正常通信了，然后下方的 Jenkins URL 地址：<a href="http://jenkins2.cicd.svc.cluster.local:8080，这里的格式为：服务名.namespace.svc.cluster.local:8080，根据上面创建的jenkins">http://jenkins2.cicd.svc.cluster.local:8080，这里的格式为：服务名.namespace.svc.cluster.local:8080，根据上面创建的jenkins</a> 的服务名填写，我这里是之前创建的名为jenkins，如果是用上面我们创建的就应该是jenkins2。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/46/bfdf50688d4b0d39d8371679692012.jpg" alt="" />
+接着，需要配置模板，所谓模板，其实就是配置 Jenkins Slave 运行的 Pod 模板，命名空间我们同样是用 cicd，Labels 这里也非常重要，对于后面执行 Job 的时候需要用到该值，然后我们这里使用的是 jenkins:jnlp 这个镜像，这个镜像是在官方的 jnlp 镜像基础上拉到私有仓库的，加入了 kubectl 等一些实用的工具。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/06/f66422d7f4648ce5f60ba85f37b6f4.jpg" alt="" />
+另外需要注意我们这里需要在下面挂载一个主机目录，一个是 /var/run/docker.sock，该文件是用于 Pod 中的容器能够共享宿主机的 Docker，这就是大家说的 docker in docker 的方式，Docker 二进制文件我们已经打包到上面的镜像中了。如果在slave agent中想要访问kubernetes 集群中其他资源，我们还需要绑定之前创建的Service Account 账号:jenkins2。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/69/e79773c65d94b993bc6fca8a8d7728.jpg" alt="" />
+另外还有几个参数需要注意，如下图中的Time in minutes to retain slave when idle，这个参数表示的意思是当处于空闲状态的时候保留 Slave Pod 多长时间，这个参数最好我们保存默认就行了，如果你设置过大的话，Job 任务执行完成后，对应的 Slave Pod 就不会立即被销毁删除。</p>
+
+<p>到这里我们的 Kubernetes Plugin 插件就算配置完成了。</p>
+
+<h1 id="三-测试">三：测试</h1>
+
+<h2 id="3-1-自由风格项目">3.1 自由风格项目</h2>
+
+<p>在 Jenkins 首页点击create new jobs，创建一个测试的任务，输入任务名称，然后选择自由风格项目。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/8f/967d5f23dbed756bb391c78489c43b.jpg" alt="" />
+在下面的 Label Expression 这里要填入haimaxy-jnlp，就是前面我们配置的 Slave Pod 中的 Label，这两个地方必须保持一致。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/65/ef8f7a4e3073c16664d374fd439356.jpg" alt="" />
+然后往下拉，在 Build 区域选择执行 shell。输入测试命令，并点击保存。这个测试命令就是简单在命令行打印一些内容。</p>
+
+<pre><code class="language-c">echo &quot;测试 Kubernetes 动态生成 jenkins slave&quot;
+echo &quot;==============docker in docker===========&quot;
+docker info
+ 
+echo &quot;=============kubectl=============&quot;
+kubectl get pods -n cicd
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/a6/c4780756d2b7ca09f36865916a17f5.jpg" alt="" />
+点击保存后，执行构建。</p>
+
+<p>构建完成后，查看控制台输出。</p>
+
+<pre><code class="language-c">控制台输出
+Started by user zhy
+Running as SYSTEM
+Agent jnlp-qp97j is provisioned from template Kubernetes Pod Template
+Agent specification [Kubernetes Pod Template] (haimaxy-jnlp):
+* [jnlp] 10.57.30.23:4000/jenkins:jnlp
+ 
+Building remotely on jnlp-qp97j (haimaxy-jnlp) in workspace /home/jenkins/workspace/haimaxy-jnlp-slave-demo2
+[haimaxy-jnlp-slave-demo2] $ /bin/sh -xe /tmp/jenkins6427624934747148799.sh
++ echo 测试 Kubernetes 动态生成 jenkins slave
+测试 Kubernetes 动态生成 jenkins slave
++ echo ==============docker in docker===========
+==============docker in docker===========
++ docker info
+Containers: 52
+ Running: 38
+ Paused: 0
+ Stopped: 14
+Images: 42
+Server Version: 18.09.4
+Storage Driver: overlay2
+ Backing Filesystem: xfs
+ Supports d_type: true
+ Native Overlay Diff: true
+Logging Driver: json-file
+Cgroup Driver: cgroupfs
+Plugins:
+ Volume: local
+ Network: bridge host macvlan null overlay
+ Log: awslogs fluentd gcplogs gelf journald json-file local logentries splunk syslog
+Swarm: inactive
+Runtimes: runc
+Default Runtime: runc
+Init Binary: docker-init
+containerd version: bb71b10fd8f58240ca47fbb579b9d1028eea7c84
+runc version: 2b18fe1d885ee5083ef9f0838fee39b62d653e30
+init version: fec3683
+Security Options:
+ seccomp
+  Profile: default
+Kernel Version: 3.10.0-957.12.2.el7.x86_64
+Operating System: CentOS Linux 7 (Core)
+OSType: linux
+Architecture: x86_64
+CPUs: 24
+Total Memory: 94.21GiB
+Name: dataocean-d-030022.te.td
+ID: GHU3:XMJG:C6HK:ZPNE:O2VC:GWAN:WFAB:7CHV:B6KP:AQST:PQ3S:7AK7
+Docker Root Dir: /var/lib/docker
+Debug Mode (client): false
+Debug Mode (server): false
+Registry: https://index.docker.io/v1/
+Labels:
+Experimental: false
+Insecure Registries:
+ 10.57.30.23:4000
+ 127.0.0.0/8
+Live Restore Enabled: false
+ 
++ echo =============kubectl=============
+=============kubectl=============
++ kubectl get pods -n cicd
+NAME                        READY     STATUS    RESTARTS   AGE
+jenkins2-564659b655-7z9vx   1/1       Running   0          2h
+jnlp-qp97j                  1/1       Running   0          12s
+Finished: SUCCESS
+</code></pre>
+
+<p>在运行过程中，执行kubectl查看命令，可以看到在构建生命周期过程中，pod的变化。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/60/1fcc9513d90eb6194033c8e149fa71.jpg" alt="" /></p>
+
+<h2 id="3-2-工作流项目">3.2 工作流项目</h2>
+
+<p>在 Jenkins 首页点击create new jobs，创建一个测试的任务，输入任务名称，然后选择流水线。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/c7/0118823a8dba612a53487d2df62a07.jpg" alt="" /></p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

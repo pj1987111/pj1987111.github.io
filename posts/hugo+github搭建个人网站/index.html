@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Hugo&#43;github搭建个人网站 &middot; ZHY笔记</title>
+  <title>Hugo&#43;github搭建个人网站 &middot; ZHY ZONE</title>
 
   
   <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
@@ -30,9 +30,9 @@
   <aside class="sidebar">
   <div class="container sidebar-sticky">
     <div class="sidebar-about">
-      <a href="https://pj1987111.github.io/"><h1>ZHY笔记</h1></a>
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
       <p class="lead">
-       一个程序员的探索过程。 
+       我的兴趣是机器学习，虚拟化和网络安全。 
       </p>
     </div>
 
@@ -53,11 +53,13 @@
   <time datetime=2019-06-22T22:13:06&#43;0800 class="post-date">Sat, Jun 22, 2019</time>
   
 
-<p>#Hugo+github搭建个人网站
-##安装Hugo
-在github上找到相应版本<a href="https://github.com/gohugoio/hugo/releases">github地址</a>，本人是mac，就下载了hugo_0.55.6_macOS-64bit.tar.gz。下载解压后，将hugo添加进环境变量中。
-##在Hugo中写文章
-在硬盘中选取合适的存储路径，然后命令行中使用如下指令生成网页本地文档：</p>
+<h1 id="一-安装hugo">一 安装Hugo</h1>
+
+<p>在github上找到相应版本<a href="https://github.com/gohugoio/hugo/releases">github地址</a>，本人是mac，就下载了hugo_0.55.6_macOS-64bit.tar.gz。下载解压后，将hugo添加进环境变量中。</p>
+
+<h1 id="二-在hugo中写文章">二 在Hugo中写文章</h1>
+
+<p>在硬盘中选取合适的存储路径，然后命令行中使用如下指令生成网页本地文档：</p>
 
 <pre><code>hugo new site personal-site
 </code></pre>
@@ -155,7 +157,7 @@ echo 'theme = &quot;hyde&quot;' &gt;&gt; config.tom
 如果觉得没有问题了便可以使用如下命令：</p>
 
 <pre><code class="language-hugo```">如此一来网页便生成在默认的public子目录中了。
-##发布到github上
+# 三 发布到github上
 将生成的public目录下的所有文件，上传至github.io上。
 ```c
 git add .
@@ -163,8 +165,9 @@ git commit -m &quot;edit&quot;
 git push -u origin master
 </code></pre>
 
-<p>##hyde配置
-刚下的hyde有一些不方便使用的地方，需要略作调整。
+<h1 id="四-hyde配置">四 hyde配置</h1>
+
+<p>刚下的hyde有一些不方便使用的地方，需要略作调整。
 1. 修改标题
 在Hugo的config.toml中，修改title。 比如，本站的修改如下。</p>
 
@@ -250,8 +253,11 @@ description: &quot;详细介绍Hugo+github搭建个人网站的方法，并使�
 <p>这样就可以得到美观的分类标签，如下所示：
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/e3/3f10f7c151a263376e921b007a0205.jpg" alt="" /></p>
 
-<p>##MWeb图床配置
-在mac上写markdown有很多解决方案，我最终选择了MWeb。
+<h1 id="五-mweb图床配置">五 MWeb图床配置</h1>
+
+<h2 id="5-1-思路">5.1 思路</h2>
+
+<p>在mac上写markdown有很多解决方案，我最终选择了MWeb。
 在使用过程中，提交图片的时候，需要提供图床。
 思路如下：
 1:mac上面应用对本地存储有严格访问权限，使用git上的路径。
@@ -263,7 +269,7 @@ description: &quot;详细介绍Hugo+github搭建个人网站的方法，并使�
 3）由于 github 的图片路径是有规律的，所以计算出来最终路径，直接保存到博文当中。
 5:用 git 将文章和图片全部推到仓库，然后就啥都可以了。</p>
 
-<h3 id="python-脚本撰写以及启动">python 脚本撰写以及启动</h3>
+<h2 id="5-2-python-脚本撰写以及启动">5.2 python 脚本撰写以及启动</h2>
 
 <p>main_upimg.py 主程序代码</p>
 
@@ -344,7 +350,7 @@ if __name__ == &quot;__main__&quot;:
     app.run(host=&quot;127.0.0.1&quot;, port=7000)
 </code></pre>
 
-<h3 id="python-脚本开机启动">python 脚本开机启动</h3>
+<h2 id="5-3-python-脚本开机启动">5.3 python 脚本开机启动</h2>
 
 <p>编写脚本
 查看main_upimg.py位置，在目录下输入pwd查看</p>
@@ -358,9 +364,11 @@ if __name__ == &quot;__main__&quot;:
 </code></pre>
 
 <p>mac中进入系统偏好设置-&gt;用户与群组-&gt;登陆项，将run.sh添加到登陆项，并勾选前面的隐藏选项卡，重新启动即可。
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/5d/c10310977a230c6876aae270b19ef0.jpg" alt="" />
-###配置 MWeb 编辑器
-通过上面的一系列折腾之后，我们的图床服务就算是搞好了，下面我们要来配置我们的编辑器，通过编辑器的配置，我们可以很方便的使用我们的图床。</p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/5d/c10310977a230c6876aae270b19ef0.jpg" alt="" /></p>
+
+<h2 id="5-4-配置-mweb-编辑器">5.4 配置 MWeb 编辑器</h2>
+
+<p>通过上面的一系列折腾之后，我们的图床服务就算是搞好了，下面我们要来配置我们的编辑器，通过编辑器的配置，我们可以很方便的使用我们的图床。</p>
 
 <table>
 <thead>

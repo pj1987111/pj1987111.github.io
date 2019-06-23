@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>K8s安装离线依赖库与镜像制作 &middot; ZHY笔记</title>
+  <title>K8s安装离线依赖库与镜像制作 &middot; ZHY ZONE</title>
 
   
   <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
@@ -30,9 +30,9 @@
   <aside class="sidebar">
   <div class="container sidebar-sticky">
     <div class="sidebar-about">
-      <a href="https://pj1987111.github.io/"><h1>ZHY笔记</h1></a>
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
       <p class="lead">
-       一个程序员的探索过程。 
+       我的兴趣是机器学习，虚拟化和网络安全。 
       </p>
     </div>
 
@@ -53,11 +53,9 @@
   <time datetime=2019-06-22T15:08:06&#43;0800 class="post-date">Sat, Jun 22, 2019</time>
   
 
-<h1 id="离线依赖库与镜像制作">离线依赖库与镜像制作</h1>
+<h1 id="一-docker环境下载">一：docker环境下载</h1>
 
-<h2 id="一-docker环境下载">一：docker环境下载</h2>
-
-<h3 id="1-yum仓库添加">1.yum仓库添加</h3>
+<h2 id="1-1-yum仓库添加">1.1 yum仓库添加</h2>
 
 <pre><code>vim /etc/yum.repos.d/docker-ce.repo 
 添加以下内容：
@@ -71,7 +69,7 @@ gpgkey=https://mirrors.aliyun.com/docker-ce/linux/centos/gpg
 
 <p>推荐添加阿里云的源，速度非常快。</p>
 
-<h3 id="2-docker环境本地下载">2.docker环境本地下载</h3>
+<h2 id="1-2-docker环境本地下载">1.2 docker环境本地下载</h2>
 
 <pre><code>yum install --downloadonly  --downloaddir=. docker-ce-18.09.4-3.el7
 </code></pre>
@@ -79,9 +77,9 @@ gpgkey=https://mirrors.aliyun.com/docker-ce/linux/centos/gpg
 <p>该命令会把docker以及依赖全下载到指定目录。
 注：若发现目录下没有下载的rpm包，请到/var/cache/yum/{RepositoryName}/packages/目录中找</p>
 
-<h2 id="二-kubeadm环境下载">二：kubeadm环境下载</h2>
+<h1 id="二-kubeadm环境下载">二：kubeadm环境下载</h1>
 
-<h3 id="1-yum仓库添加-1">1.yum仓库添加</h3>
+<h2 id="2-1-yum仓库添加">2.1 yum仓库添加</h2>
 
 <pre><code>vim /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
@@ -93,7 +91,7 @@ repo_gpgcheck=0
 gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
 </code></pre>
 
-<h3 id="2-kubeadm环境本地下载">2.kubeadm环境本地下载</h3>
+<h2 id="2-2-kubeadm环境本地下载">2.2 kubeadm环境本地下载</h2>
 
 <pre><code>yum install --downloadonly  --downloaddir=. kubeadm
 </code></pre>
@@ -101,11 +99,11 @@ gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors
 <p>该命令会把kubeadm以及依赖全下载包括kubelet,kubectl到指定目录。
 注：若发现目录下没有下载的rpm包，请到/var/cache/yum/{RepositoryName}/packages/目录中找</p>
 
-<h2 id="三-k8s依赖镜像下载">三：k8s依赖镜像下载</h2>
+<h1 id="三-k8s依赖镜像下载">三：k8s依赖镜像下载</h1>
 
 <p>kubeadm安装时会访问特定的tag，若不存在就会走外网下载，所以kubeadm部署前必须将所需的k8s环境以镜像方式下载好，并导入docker中</p>
 
-<h3 id="1-阿里云海外镜像下载配置">1.阿里云海外镜像下载配置</h3>
+<h2 id="3-1-阿里云海外镜像下载配置">3.1 阿里云海外镜像下载配置</h2>
 
 <p>由于各种原因，k8s的依赖kube-proxy，kube-apiserver，kube-controller-manager，kube-scheduler，coredns，etcd和pause都难于下载，本人通过阿里云海外镜像下载方式，分享一下。
 1) 将github上建立一个项目，github的配置不再赘述。
@@ -158,7 +156,7 @@ git push -u origin master. (上传)
 
 <p>这些信息在基本信息中可以查看。</p>
 
-<h3 id="2-依赖镜像重打tag">2.依赖镜像重打tag</h3>
+<h2 id="3-2-依赖镜像重打tag">3.2 依赖镜像重打tag</h2>
 
 <p>拉取镜像后，需要修改成kubeadm拉取的tag，并删除老的tag
 执行命令</p>
@@ -180,7 +178,7 @@ sudo docker rmi registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:pause-3.1
 
 </code></pre>
 
-<h3 id="3-网络模块flannel下载">3.网络模块flannel下载</h3>
+<h2 id="3-3-网络模块flannel下载">3.3 网络模块flannel下载</h2>
 
 <p>执行命令</p>
 
@@ -192,7 +190,7 @@ sudo docker rmi registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:pause-3.1
 <pre><code>sudo sed -i 's#quay.io/coreos/flannel:v0.11.0-amd64#jmgao1983/flannel:v0.11.0-amd64#g' kube-flannel.yml
 </code></pre>
 
-<h3 id="4-所有k8s依赖包导出">4.所有k8s依赖包导出</h3>
+<h2 id="3-4-所有k8s依赖包导出">3.4 所有k8s依赖包导出</h2>
 
 <p>执行导出命令至k8s-images-1.14.2.tar</p>
 
