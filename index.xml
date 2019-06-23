@@ -64,6 +64,19 @@ FROM k8s.gcr.io/kube-apiserver:v1.14.2 FROM k8s.gcr.io/kube-proxy:v1.14.2 FROM k
     </item>
     
     <item>
+      <title>harbor镜像搭建</title>
+      <link>https://pj1987111.github.io/posts/harbor%E9%95%9C%E5%83%8F%E6%90%AD%E5%BB%BA/</link>
+      <pubDate>Fri, 21 Jun 2019 23:21:05 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/harbor%E9%95%9C%E5%83%8F%E6%90%AD%E5%BB%BA/</guid>
+      <description>一 harbor介绍 二 环境准备 centos 7.6.1810 docker 18.09.4 docker-compose 1.21.2
+2.1 安装docker 2.2 安装docker-compose 下载并解压后，将docker-compose赋权限并放置环境变量下。
+三 搭建harbor 3.1 下载离线包 wget https://storage.googleapis.com/harbor-releases/release-1.8.0/harbor-offline-installer-v1.8.0.tgz  下载并解压
+3.2 修改harbor配置(http) harbor ui端口默认是80端口，会和大多数应用冲突，所以需要更改，要改两个地方。第一个地方是docker-compose.yml文件，将ports 80:80改成 xxx:80即可，如下图所示： 第二个地方是harbor.yml文件，将http:port: 80更改成需要的，并将hostname改成ip或域名，这个hostname需要与pull和push的前缀一致。如图所示 3.3 生成相关配置并安装 运行 ./prepare以及./install.sh
+3.4 启动 docker-compose up -d  3.5 启动后相关容器 正常启动后会有9个容器，如下图所示，其中nginx-photon:v1.8.0容器可以看到端口映射4001-&amp;gt;80 四、客户端docker配置 vi /etc/docker/daemon.json 将&amp;quot;10.57.30.22:4001&amp;quot;添加insecure-registries中 systemctl daemon-reload systemctl restart docker  五、访问 Web UI 并测试 5.1、主页 访问主页http://10.57.30.22:4001 即可看到登陆页面，输入密码后进入，默认账户是admin，密码在harbor.yml中的harbor_admin_password字段。 进入后如下显示： 5.2 创建项目 Harbor 有一个项目的概念，项目名可以理解为 Docker Hub 的用户名，其下可以后很多 images，Harbor 的项目必须登录后方可 push，公有项目和私有项目的区别是对其他用户是否可见 创建项目后，才可以push和pull。</description>
+    </item>
+    
+    <item>
       <title>k8s部署jenkins以及基本使用</title>
       <link>https://pj1987111.github.io/posts/k8s%E9%83%A8%E7%BD%B2jenkins%E4%BB%A5%E5%8F%8A%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</link>
       <pubDate>Fri, 21 Jun 2019 16:52:58 +0800</pubDate>
