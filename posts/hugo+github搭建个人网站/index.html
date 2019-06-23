@@ -223,7 +223,32 @@ description: &quot;详细介绍Hugo+github搭建个人网站的方法，并使�
 <pre><code class="language-c">&lt;span class=&quot;post-date&quot;&gt;{{ .Date.Format &quot;2006-01-02 15:04:05&quot; }}&lt;/span&gt;
 </code></pre>
 
-<p>5.自定义页面添加默认样式</p>
+<p>5.自定义页面添加默认样式
+自定义页面，比如/tags页面并不在hyde的样式中，需要手工添加样式的支持，创建layouts/_default/terms.html文件，在里面填上如下内容：</p>
+
+<pre><code class="language-c">{{ define &quot;main&quot; -}}
+&lt;h1&gt;分类标签有{{ len .Data.Terms }}个&lt;/h1&gt;
+{{ $data := .Data }}
+{{ range .Data.Terms.ByCount }}
+{{ $termLink := printf &quot;/%s/%s/&quot; $data.Plural .Term | urlize }}
+&lt;h2&gt;
+    &lt;a href=&quot;{{ $termLink }}&quot;&gt;{{ .Term }}&lt;/a&gt;
+    有{{ .Count }}篇
+&lt;/h2&gt;
+&lt;ul&gt;
+    {{ range .Pages | first 5 }}
+    &lt;li&gt;&lt;a href=&quot;{{ .Permalink }}&quot;&gt;{{ .Title }}&lt;/a&gt;&lt;/li&gt;
+    {{ end }}
+    {{ if gt (len .Pages) 5 }}
+    &lt;li&gt;&lt;a href=&quot;{{ $termLink }}&quot;&gt;……&lt;/a&gt;&lt;/li&gt;
+    {{ end }}
+&lt;/ul&gt;
+{{- end}}
+{{- end}}
+</code></pre>
+
+<p>这样就可以得到美观的分类标签，如下所示：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/e3/3f10f7c151a263376e921b007a0205.jpg" alt="" /></p>
 
 <p>##MWeb图床配置
 在mac上写markdown有很多解决方案，我最终选择了MWeb。
