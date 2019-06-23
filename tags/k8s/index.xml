@@ -50,10 +50,10 @@ FROM k8s.gcr.io/kube-apiserver:v1.14.2 FROM k8s.gcr.io/kube-proxy:v1.14.2 FROM k
     
     <item>
       <title>harbor镜像搭建</title>
-      <link>https://pj1987111.github.io/posts/harbor%E9%95%9C%E5%83%8F%E6%90%AD%E5%BB%BA/</link>
+      <link>https://pj1987111.github.io/posts/harbor%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA%E6%89%8B%E5%86%8C/</link>
       <pubDate>Fri, 21 Jun 2019 23:21:05 +0800</pubDate>
       
-      <guid>https://pj1987111.github.io/posts/harbor%E9%95%9C%E5%83%8F%E6%90%AD%E5%BB%BA/</guid>
+      <guid>https://pj1987111.github.io/posts/harbor%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA%E6%89%8B%E5%86%8C/</guid>
       <description>一 harbor介绍 二 环境准备 centos 7.6.1810 docker 18.09.4 docker-compose 1.21.2
 2.1 安装docker 2.2 安装docker-compose 下载并解压后，将docker-compose赋权限并放置环境变量下。
 三 搭建harbor 3.1 下载离线包 wget https://storage.googleapis.com/harbor-releases/release-1.8.0/harbor-offline-installer-v1.8.0.tgz  下载并解压

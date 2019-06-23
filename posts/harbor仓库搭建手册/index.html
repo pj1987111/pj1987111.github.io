@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>harbor镜像搭建 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>harbor镜像搭建</h1>
+  <time datetime=2019-06-21T23:21:05&#43;0800 class="post-date">Fri, Jun 21, 2019</time>
+  
+
+<h1 id="一-harbor介绍">一 harbor介绍</h1>
+
+<h1 id="二-环境准备">二 环境准备</h1>
+
+<p>centos 7.6.1810
+docker 18.09.4
+docker-compose 1.21.2</p>
+
+<h2 id="2-1-安装docker">2.1 安装docker</h2>
+
+<h2 id="2-2-安装docker-compose">2.2 安装docker-compose</h2>
+
+<p>下载并解压后，将docker-compose赋权限并放置环境变量下。</p>
+
+<h1 id="三-搭建harbor">三 搭建harbor</h1>
+
+<h2 id="3-1-下载离线包">3.1 下载离线包</h2>
+
+<pre><code class="language-c">wget https://storage.googleapis.com/harbor-releases/release-1.8.0/harbor-offline-installer-v1.8.0.tgz
+</code></pre>
+
+<p>下载并解压</p>
+
+<h2 id="3-2-修改harbor配置-http">3.2 修改harbor配置(http)</h2>
+
+<p>harbor ui端口默认是80端口，会和大多数应用冲突，所以需要更改，要改两个地方。第一个地方是docker-compose.yml文件，将ports 80:80改成 xxx:80即可，如下图所示：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/bf/c7f1bdf02e8f02cf6f257b2d82dd97.jpg" alt="" />
+第二个地方是harbor.yml文件，将http:port: 80更改成需要的，并将hostname改成ip或域名，这个hostname需要与pull和push的前缀一致。如图所示
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/68/9f19915189c892d03f43596a9c8b9c.jpg" alt="" /></p>
+
+<h2 id="3-3-生成相关配置并安装">3.3 生成相关配置并安装</h2>
+
+<p>运行 ./prepare以及./install.sh</p>
+
+<h2 id="3-4-启动">3.4 启动</h2>
+
+<pre><code class="language-c">docker-compose up -d
+</code></pre>
+
+<h2 id="3-5-启动后相关容器">3.5 启动后相关容器</h2>
+
+<p>正常启动后会有9个容器，如下图所示，其中nginx-photon:v1.8.0容器可以看到端口映射4001-&gt;80
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/9b/83a5a764832ee3b4af9b4b00ee44c4.jpg" alt="" /></p>
+
+<h1 id="四-客户端docker配置">四、客户端docker配置</h1>
+
+<pre><code>vi  /etc/docker/daemon.json
+将&quot;10.57.30.22:4001&quot;添加insecure-registries中
+systemctl daemon-reload
+systemctl restart docker
+</code></pre>
+
+<h1 id="五-访问-web-ui-并测试">五、访问 Web UI 并测试</h1>
+
+<h2 id="5-1-主页">5.1、主页</h2>
+
+<p>访问主页<a href="http://10.57.30.22:4001">http://10.57.30.22:4001</a> 即可看到登陆页面，输入密码后进入，默认账户是admin，密码在harbor.yml中的harbor_admin_password字段。
+进入后如下显示：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/73/ed644a45449c65cbdb7e68ce1d1ee1.jpg" alt="" /></p>
+
+<h2 id="5-2-创建项目">5.2 创建项目</h2>
+
+<p>Harbor 有一个项目的概念，项目名可以理解为 Docker Hub 的用户名，其下可以后很多 images，Harbor 的项目必须登录后方可 push，公有项目和私有项目的区别是对其他用户是否可见
+创建项目后，才可以push和pull。</p>
+
+<h2 id="5-3-创建角色">5.3 创建角色</h2>
+
+<p>创建角色给docker客户端登陆，填入即可。生成用户后，可以选择是否是管理员。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/ec/1579181c71b0b91aad6f1e2dcf2fc7.jpg" alt="" /></p>
+
+<h2 id="5-4-push镜像">5.4 push镜像</h2>
+
+<p>先登陆 docker login 地址:端口，如果已经保存了用户名，有需要切换别的用户登陆的话，加上-u
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/83/2ea983e39a26790aa1d133d000b648.jpg" alt="" />
+然后执行tag命令，将镜像命名成
+hostname:port/项目名/镜像名:版本 的形式。</p>
+
+<pre><code class="language-c">docker tag k8s.gcr.io/pause:3.1 10.57.30.22:4001/pause:3.1
+</code></pre>
+
+<p>然后就可以执行push命令了</p>
+
+<pre><code class="language-c">docker push 10.57.30.22:4001/zhy_public/pause:3.1
+</code></pre>
+
+<p>如图所示
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/8b/868442a347695f063bcee1e0ab425d.jpg" alt="" /></p>
+
+<h2 id="5-5-pull镜像">5.5 pull镜像</h2>
+
+<p>pull和push大体相同，除了命令变成pull即可，就不再赘述。
+#六 harbor的HTTPS方式</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>
