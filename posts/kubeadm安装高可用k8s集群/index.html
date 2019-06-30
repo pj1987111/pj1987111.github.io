@@ -262,19 +262,23 @@ networking:
 </code></pre>
 
 <p>1）运行
-<code>kubeadm init --config kubeadm-config.yaml --upload-certs</code>
-2) 记录下join命令。
-3）安装网络插件，这里使用flannel。</p>
+<code>kubeadm init --config kubeadm-config.yaml --upload-certs</code></p>
+
+<p>2) 记录下join命令。</p>
+
+<p>3）安装网络插件，这里使用flannel。</p>
 
 <h2 id="2-2-其他控制平面安装">2.2 其他控制平面安装</h2>
 
-<p>1）保证第一个控制平面安装成功。
-2）加入第一个控制平面安装成功输出的加入控制平面的命令，需要立即输入，key过2小时就将过期。</p>
+<p>1）保证第一个控制平面安装成功。</p>
+
+<p>2）加入第一个控制平面安装成功输出的加入控制平面的命令，需要立即输入，key过2小时就将过期。</p>
 
 <h2 id="2-3-worker节点安装">2.3 worker节点安装</h2>
 
-<p>1）保证控制节点安装成功。
-2）加入第一个控制平面安装成功输出的加入工作节点的命令。</p>
+<p>1）保证控制节点安装成功。</p>
+
+<p>2）加入第一个控制平面安装成功输出的加入工作节点的命令。</p>
 
 <h1 id="3-分离模式安装">3 分离模式安装</h1>
 
@@ -385,38 +389,10 @@ mv pki /etc/kubernetes/
 <h2 id="3-1-6-拷贝后的文件结构">3.1.6 拷贝后的文件结构</h2>
 
 <p>含有ca的etcd节点文件结构：
-/tmp/${HOST0}</p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/0b/d46606f6b850345b1d5a1ce5c3924c.jpg" alt="" /></p>
 
-<h2 id="kubeadmcfg-yaml">└── kubeadmcfg.yaml</h2>
-
-<p>/etc/kubernetes/pki
-├── apiserver-etcd-client.crt
-├── apiserver-etcd-client.key
-└── etcd
-    ├── ca.crt
-    ├── ca.key
-    ├── healthcheck-client.crt
-    ├── healthcheck-client.key
-    ├── peer.crt
-    ├── peer.key
-    ├── server.crt
-    └── server.key
-其他member的节点文件结构：
-$HOME</p>
-
-<h2 id="kubeadmcfg-yaml-1">└── kubeadmcfg.yaml</h2>
-
-<p>/etc/kubernetes/pki
-├── apiserver-etcd-client.crt
-├── apiserver-etcd-client.key
-└── etcd
-    ├── ca.crt
-    ├── healthcheck-client.crt
-    ├── healthcheck-client.key
-    ├── peer.crt
-    ├── peer.key
-    ├── server.crt
-    └── server.key</p>
+<p>其他member的节点文件结构：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/bd/bf6b3b2d1f40130decf5b023b7afd0.jpg" alt="" /></p>
 
 <h2 id="3-1-7-创建静态pod-manifest-并启动">3.1.7 创建静态pod manifest,并启动</h2>
 
@@ -486,13 +462,15 @@ networking:
 
 <h2 id="3-3-其他控制平面安装">3.3 其他控制平面安装</h2>
 
-<p>1）保证第一个控制平面安装成功。
-2）加入第一个控制平面安装成功输出的加入控制平面的命令，需要立即输入，key过2小时就将过期。</p>
+<p>1）保证第一个控制平面安装成功。</p>
+
+<p>2）加入第一个控制平面安装成功输出的加入控制平面的命令，需要立即输入，key过2小时就将过期。</p>
 
 <h2 id="3-4-worker节点安装">3.4 worker节点安装</h2>
 
-<p>1）保证控制节点安装成功。
-2）加入第一个控制平面安装成功输出的加入工作节点的命令。</p>
+<p>1）保证控制节点安装成功。</p>
+
+<p>2）加入第一个控制平面安装成功输出的加入工作节点的命令。</p>
 
 <h1 id="4-一些坑">4 一些坑</h1>
 

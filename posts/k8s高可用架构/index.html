@@ -78,7 +78,7 @@
 <p>在高可用集群下需要运行至少3个堆叠控制平面节点。</p>
 
 <p>这是kubeadm高可用的默认实现方案，运行kubeadm init和kubeadm join &ndash;control-plane后本地etcd将被自动创建。
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/f1/4fa8a7323e6817773a63bb28a49ccb.jpg" alt="" /></p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/10/efb44d50e5b645b3bb790b43d3cd10.jpg" alt="" /></p>
 
 <h2 id="2-2-分离式etcd拓扑">2.2 分离式etcd拓扑</h2>
 
@@ -89,7 +89,7 @@
 <p>这种拓扑结构将etcd与控制平面进行了分离。这种方式与堆叠式架构相比可以在etcd的节点丢失以及控制平面的节点丢失上有更高的容错性。</p>
 
 <p>然而，这种拓扑结构在机器数量上对比堆叠式架构需要两倍的数量。需要至少3个etcd节点以及3个控制平面节点。
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/14/116c608a30f2b658ee4fd7b439a885.jpg" alt="" /></p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/85/c22bcb4cf1c2dcdf66cb6e1575c174.jpg" alt="" /></p>
 
 <h1 id="3-安装与部署">3 安装与部署</h1>
 
