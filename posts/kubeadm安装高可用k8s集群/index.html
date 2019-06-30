@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>kubeadm安装高可用k8s集群 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>kubeadm安装高可用k8s集群</h1>
+  <time datetime=2019-06-24T14:05:00&#43;0800 class="post-date">Mon, Jun 24, 2019</time>
+  
+
+<h1 id="1-前置安装">1 前置安装</h1>
+
+<h2 id="1-1-环境相关">1.1 环境相关</h2>
+
+<p>安装docker和kubeadm，在每一台机器上都需要安装。</p>
+
+<pre><code>1:ssh可信
+2:hosts
+cat&gt;&gt;/etc/hosts&lt;&lt;EOF
+10.57.26.15 k8s-01
+10.57.26.7 k8s-02
+10.57.26.8 k8s-03
+10.57.26.26 k8s-04
+10.57.26.11 k8s-05
+10.57.26.17 k8s-06
+10.57.26.33 k8s-07
+EOF
+host名需要和 hostname /etc/hostname 一致
+3:安全相关
+setenforce 0
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
+systemctl disable firewalld.service
+systemctl stop firewalld.service
+systemctl disable iptables.service
+systemctl stop iptables.service
+4:源和代理
+echo proxy=http://10.57.22.8:3128/ &gt;&gt; /etc/yum.conf
+cat&gt;/etc/yum.repos.d/docker-ce.repo&lt;&lt;EOF
+[docker-ce-stable]
+name=Docker CE Stable - $basearch
+baseurl=https://mirrors.aliyun.com/docker-ce/linux/centos/7/$basearch/stable
+enabled=1
+gpgcheck=1
+gpgkey=https://mirrors.aliyun.com/docker-ce/linux/centos/gpg
+EOF
+
+cat&gt;/etc/yum.repos.d/kubernetes.repo&lt;&lt;EOF
+[kubernetes]
+name=Kubernetes
+baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+EOF
+
+5:安装docker和kubeadm
+yum install -y docker
+yum install -y kubeadm
+systemctl start docker
+systemctl enable docker 
+systemctl enable kubelet
+echo KUBELET_EXTRA_ARGS=&quot;\&quot;--fail-swap-on=false\&quot;&quot; &gt; /etc/sysconfig/kubelet
+systemctl daemon-reload&amp;&amp;systemctl restart kubelet
+
+6:私有仓库以及网络
+cat&gt;/etc/sysctl.conf&lt;&lt;EOF
+net.bridge.bridge-nf-call-iptables = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward = 1
+EOF
+sudo sysctl -p
+
+cat&gt;/etc/docker/daemon.json&lt;&lt;EOF
+{
+&quot;registry-mirrors&quot;: [&quot;https://a5aghnme.mirror.aliyuncs.com&quot;],
+&quot;insecure-registries&quot;:[&quot;10.57.26.15:4000&quot;]
+}
+EOF
+systemctl daemon-reload
+systemctl restart docker
+</code></pre>
+
+<h2 id="1-2-私有仓库搭建">1.2 私有仓库搭建</h2>
+
+<p>需要选取一台服务器来安装私仓，因为只是私用，所以只安装最简单的registry，在这里不安装harbor。</p>
+
+<h3 id="1-2-1-设置代理">1.2.1 设置代理</h3>
+
+<pre><code class="language-c">#create older
+mkdir -p /etc/systemd/system/docker.service.d
+#add http-proxy.conf
+cat&gt;/etc/systemd/system/docker.service.d/http-proxy.conf&lt;&lt;EOF
+[Service]
+Environment=&quot;HTTP_PROXY=http://10.57.22.8:3128/&quot;
+EOF
+systemctl daemon-reload
+systemctl restart docker
+</code></pre>
+
+<p>设置成功后，执行docker search 镜像。就可以看到可以下载的镜像。</p>
+
+<h3 id="1-2-2-私仓安装">1.2.2 私仓安装</h3>
+
+<p>执行</p>
+
+<pre><code class="language-c"># 下载镜像
+docker pull registry:2 
+# 运行私仓镜像，暴露4000端口
+docker run -d -v /opt/registry:/var/lib/registry -p 4000:5000 --restart=always --name registry registry:2
+# 在确定selinux关闭后，将已备份的镜像拷贝至/opt/registry目录下。
+# 查看私仓镜像
+curl -XGET http://10.57.26.15:4000/v2/_catalog
+</code></pre>
+
+<h2 id="1-3-创建kube-apiserver的负载均衡">1.3 创建Kube-apiserver的负载均衡</h2>
+
+<ol>
+<li>通过创建DNS名来创建kube-apiserver的负载均衡器。
+1） 需要将控制平面节点放置于负责TCP转发的负载均衡器后面。这个负载均衡器会将流量分布到所有配置的控制平面上。kube-apiserver的健康检测的端口是kube-apiserver的启动端口，默认是6443
+2） 建议控制平面使用域名。
+3） 负载均衡需要能访问所有配置的控制平面域名，ip和端口。
+4） 可以使用nginx和haproxy等作为负载均衡器实现。
+5） kubeadm中的ControlPlaneEndpoint需要设置成负载均衡器的地址。</li>
+<li>添加第所有控制平面节点到负载均衡中。
+使用Nginx-Poxy来作为负载均衡器，配置nginxProxy,kube-servers处写上需要代理的多个kube-apiserver的地址</li>
+</ol>
+
+<pre><code class="language-c">mkdir -p /etc/nginx
+cat &gt; /etc/nginx/nginx.conf &lt;&lt; EOF
+worker_processes auto;
+user root;
+events {
+    worker_connections  20240;
+    use epoll;
+}
+error_log /var/log/nginx_error.log info;
+
+stream {
+    upstream kube-servers {
+        hash $remote_addr consistent;
+        server server1.k8s.local:6443 weight=5 max_fails=1 fail_timeout=10s;
+        server server2.k8s.local:6443 weight=5 max_fails=1 fail_timeout=10s;
+        server server3.k8s.local:6443 weight=5 max_fails=1 fail_timeout=10s;
+    }
+
+    server {
+        listen 8443;
+        proxy_connect_timeout 1s;
+        proxy_timeout 3s;
+        proxy_pass kube-servers;
+    }
+}
+EOF
+</code></pre>
+
+<p>配置文件写好后，加载ipvs模块，并运行nginxproxy</p>
+
+<pre><code class="language-c"># 加载模块 &lt;module_name&gt;
+modprobe -- ip_vs
+modprobe -- ip_vs_rr
+modprobe -- ip_vs_wrr
+modprobe -- ip_vs_sh
+modprobe -- nf_conntrack_ipv4
+
+# 检查加载的模块
+lsmod | grep -e ipvs -e nf_conntrack_ipv4
+
+docker run --restart=always \
+-v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf \
+--name kube_server_proxy \
+--net host \
+-it \
+-d \
+nginx
+</code></pre>
+
+<h2 id="1-4-镜像拉取">1.4 镜像拉取</h2>
+
+<pre><code class="language-c">export REGISTRY_HOST=10.57.26.7:4000
+curl -XGET http://${REGISTRY_HOST}/v2/_catalog
+
+docker pull ${REGISTRY_HOST}/kube-proxy:v1.15.0
+docker pull ${REGISTRY_HOST}/kube-apiserver:v1.15.0
+docker pull ${REGISTRY_HOST}/kube-controller-manager:v1.15.0
+docker pull ${REGISTRY_HOST}/kube-scheduler:v1.15.0
+docker pull ${REGISTRY_HOST}/coredns:1.3.1
+docker pull ${REGISTRY_HOST}/etcd:3.3.10
+docker pull ${REGISTRY_HOST}/pause:3.1
+
+docker tag ${REGISTRY_HOST}/kube-proxy:v1.15.0 k8s.gcr.io/kube-proxy:v1.15.0
+docker tag ${REGISTRY_HOST}/kube-apiserver:v1.15.0 k8s.gcr.io/kube-apiserver:v1.15.0
+docker tag ${REGISTRY_HOST}/kube-controller-manager:v1.15.0 k8s.gcr.io/kube-controller-manager:v1.15.0
+docker tag ${REGISTRY_HOST}/kube-scheduler:v1.15.0 k8s.gcr.io/kube-scheduler:v1.15.0
+docker tag ${REGISTRY_HOST}/coredns:1.3.1 k8s.gcr.io/coredns:1.3.1
+docker tag ${REGISTRY_HOST}/etcd:3.3.10 k8s.gcr.io/etcd:3.3.10
+docker tag ${REGISTRY_HOST}/pause:3.1 k8s.gcr.io/pause:3.1
+</code></pre>
+
+<h1 id="2-堆叠模式安装">2 堆叠模式安装</h1>
+
+<p>堆叠模式安装比较简单，至少需要3台机器，安装etcd和控制平面。</p>
+
+<h2 id="2-1-第一个控制平面安装">2.1 第一个控制平面安装</h2>
+
+<p>编写配置文件如下</p>
+
+<pre><code class="language-c">apiVersion: kubeadm.k8s.io/v1beta1
+kind: ClusterConfiguration
+apiServer:
+  certSANs:
+  - &quot;10.57.26.15&quot;
+controlPlaneEndpoint: &quot;k8s-01:8443&quot;
+networking:
+    podSubnet: 10.244.0.0/16
+    serviceSubnet: 10.96.0.0/12
+</code></pre>
+
+<p>1）运行
+<code>kubeadm init --config kubeadm-config.yaml --upload-certs</code>
+2) 记录下join命令。
+3）安装网络插件，这里使用flannel。</p>
+
+<h2 id="2-2-其他控制平面安装">2.2 其他控制平面安装</h2>
+
+<p>1）保证第一个控制平面安装成功。
+2）加入第一个控制平面安装成功输出的加入控制平面的命令，需要立即输入，key过2小时就将过期。</p>
+
+<h2 id="2-3-worker节点安装">2.3 worker节点安装</h2>
+
+<p>1）保证控制节点安装成功。
+2）加入第一个控制平面安装成功输出的加入工作节点的命令。</p>
+
+<h1 id="3-分离模式安装">3 分离模式安装</h1>
+
+<p>分离模式至少需要6台机器，3台安装etcd，3台安装控制平面。</p>
+
+<h2 id="3-1-etcd集群安装">3.1 etcd集群安装</h2>
+
+<h3 id="3-1-1-配置kubelet成为etcd的服务管理">3.1.1 配置kubelet成为etcd的服务管理</h3>
+
+<p>设置后可以覆盖老的kubeadm的启动方式</p>
+
+<pre><code class="language-c">mkdir -p /etc/systemd/system/kubelet.service.d/
+cat &lt;&lt; EOF &gt; /etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf
+[Service]
+ExecStart=
+ExecStart=/usr/bin/kubelet --address=127.0.0.1 --pod-manifest-path=/etc/kubernetes/manifests
+Restart=always
+EOF
+
+systemctl daemon-reload
+systemctl restart kubelet
+</code></pre>
+
+<h3 id="3-1-2-创建etcd集群配置文件">3.1.2 创建etcd集群配置文件</h3>
+
+<pre><code class="language-c">#清理，如果不清理会识别老的member信息导致后续通讯失败 
+rm -rf /var/lib/etcd/*
+
+# Update HOST0, HOST1, and HOST2 with the IPs or resolvable names of your hosts
+export HOST0=10.57.26.7
+export HOST1=10.57.26.8
+export HOST2=10.57.26.26
+
+# Create temp directories to store files that will end up on other hosts.
+mkdir -p /tmp/${HOST0}/ /tmp/${HOST1}/ /tmp/${HOST2}/
+
+ETCDHOSTS=(${HOST0} ${HOST1} ${HOST2})
+NAMES=(&quot;k8s-02&quot; &quot;k8s-03&quot; &quot;k8s-04&quot;)
+
+for i in &quot;${!ETCDHOSTS[@]}&quot;; do
+HOST=${ETCDHOSTS[$i]}
+NAME=${NAMES[$i]}
+cat &lt;&lt; EOF &gt; /tmp/${HOST}/kubeadmcfg.yaml
+apiVersion: &quot;kubeadm.k8s.io/v1beta2&quot;
+kind: ClusterConfiguration
+etcd:
+    local:
+        serverCertSANs:
+        - &quot;${HOST}&quot;
+        peerCertSANs:
+        - &quot;${HOST}&quot;
+        extraArgs:
+            initial-cluster: ${NAMES[0]}=https://${ETCDHOSTS[0]}:2380,${NAMES[1]}=https://${ETCDHOSTS[1]}:2380,${NAMES[2]}=https://${ETCDHOSTS[2]}:2380
+            initial-cluster-state: new
+            name: ${NAME}
+            listen-peer-urls: https://${HOST}:2380
+            listen-client-urls: https://${HOST}:2379
+            advertise-client-urls: https://${HOST}:2379
+            initial-advertise-peer-urls: https://${HOST}:2380
+EOF
+done
+</code></pre>
+
+<h2 id="3-1-3-生成ca">3.1.3 生成ca</h2>
+
+<p>etcd节点中有一台存储ca。如果不存在ca的话生成方法：
+kubeadm init phase certs etcd-ca
+如果/etc/kubernetes/pki/etcd/ca.crt 和 /etc/kubernetes/pki/etcd/ca.key存在可进入下一步</p>
+
+<h2 id="3-1-4-为每个etcd-member创建配置">3.1.4 为每个etcd member创建配置</h2>
+
+<pre><code class="language-c">kubeadm init phase certs etcd-server --config=/tmp/${HOST2}/kubeadmcfg.yaml
+kubeadm init phase certs etcd-peer --config=/tmp/${HOST2}/kubeadmcfg.yaml
+kubeadm init phase certs etcd-healthcheck-client --config=/tmp/${HOST2}/kubeadmcfg.yaml
+kubeadm init phase certs apiserver-etcd-client --config=/tmp/${HOST2}/kubeadmcfg.yaml
+cp -R /etc/kubernetes/pki /tmp/${HOST2}/
+# cleanup non-reusable certificates
+find /etc/kubernetes/pki -not -name ca.crt -not -name ca.key -type f -delete
+
+kubeadm init phase certs etcd-server --config=/tmp/${HOST1}/kubeadmcfg.yaml
+kubeadm init phase certs etcd-peer --config=/tmp/${HOST1}/kubeadmcfg.yaml
+kubeadm init phase certs etcd-healthcheck-client --config=/tmp/${HOST1}/kubeadmcfg.yaml
+kubeadm init phase certs apiserver-etcd-client --config=/tmp/${HOST1}/kubeadmcfg.yaml
+cp -R /etc/kubernetes/pki /tmp/${HOST1}/
+find /etc/kubernetes/pki -not -name ca.crt -not -name ca.key -type f -delete
+
+kubeadm init phase certs etcd-server --config=/tmp/${HOST0}/kubeadmcfg.yaml
+kubeadm init phase certs etcd-peer --config=/tmp/${HOST0}/kubeadmcfg.yaml
+kubeadm init phase certs etcd-healthcheck-client --config=/tmp/${HOST0}/kubeadmcfg.yaml
+kubeadm init phase certs apiserver-etcd-client --config=/tmp/${HOST0}/kubeadmcfg.yaml
+# No need to move the certs because they are for HOST0
+
+# clean up certs that should not be copied off this host
+find /tmp/${HOST2} -name ca.key -type f -delete
+find /tmp/${HOST1} -name ca.key -type f -delete
+</code></pre>
+
+<h2 id="3-1-5-拷贝到目录">3.1.5 拷贝到目录</h2>
+
+<pre><code class="language-c">ca上运行拷贝
+scp -r /tmp/${HOST1}/* root@${HOST1}:
+scp -r /tmp/${HOST2}/* root@${HOST2}:
+ 
+然后进入每个member中，执行
+mv pki /etc/kubernetes/
+</code></pre>
+
+<h2 id="3-1-6-拷贝后的文件结构">3.1.6 拷贝后的文件结构</h2>
+
+<p>含有ca的etcd节点文件结构：
+/tmp/${HOST0}</p>
+
+<h2 id="kubeadmcfg-yaml">└── kubeadmcfg.yaml</h2>
+
+<p>/etc/kubernetes/pki
+├── apiserver-etcd-client.crt
+├── apiserver-etcd-client.key
+└── etcd
+    ├── ca.crt
+    ├── ca.key
+    ├── healthcheck-client.crt
+    ├── healthcheck-client.key
+    ├── peer.crt
+    ├── peer.key
+    ├── server.crt
+    └── server.key
+其他member的节点文件结构：
+$HOME</p>
+
+<h2 id="kubeadmcfg-yaml-1">└── kubeadmcfg.yaml</h2>
+
+<p>/etc/kubernetes/pki
+├── apiserver-etcd-client.crt
+├── apiserver-etcd-client.key
+└── etcd
+    ├── ca.crt
+    ├── healthcheck-client.crt
+    ├── healthcheck-client.key
+    ├── peer.crt
+    ├── peer.key
+    ├── server.crt
+    └── server.key</p>
+
+<h2 id="3-1-7-创建静态pod-manifest-并启动">3.1.7 创建静态pod manifest,并启动</h2>
+
+<p>执行后可以看到docker ps中有etcd进程。可见etcd已经被容器化了。</p>
+
+<pre><code class="language-c">root@HOST0 $ kubeadm init phase etcd local --config=/tmp/${HOST0}/kubeadmcfg.yaml
+root@HOST1 $ kubeadm init phase etcd local --config=kubeadmcfg.yaml
+root@HOST2 $ kubeadm init phase etcd local --config=kubeadmcfg.yaml
+</code></pre>
+
+<h2 id="3-1-8-检测etcd状态">3.1.8 检测etcd状态</h2>
+
+<pre><code class="language-c">docker run --rm -it \
+--net host \
+-v /etc/kubernetes:/etc/kubernetes quay.io/coreos/etcd:${ETCD_TAG} etcdctl \
+--cert-file /etc/kubernetes/pki/etcd/peer.crt \
+--key-file /etc/kubernetes/pki/etcd/peer.key \
+--ca-file /etc/kubernetes/pki/etcd/ca.crt \
+--endpoints https://${HOST0}:2379 cluster-health
+...
+cluster is healthy
+</code></pre>
+
+<p>设置${ETCD_TAG}为ETCD的版本</p>
+
+<h2 id="3-2-第一个控制平面安装">3.2 第一个控制平面安装</h2>
+
+<h3 id="3-2-1-添加外部etcd访问证书">3.2.1 添加外部etcd访问证书</h3>
+
+<p>在控制平面上执行以下命令将证书拷贝过来,这些证书只需要在第一个控制平面中存在。因为在部署时候指定了&ndash;upload-certs，这个参数可以将证书在控制平面中共享。</p>
+
+<pre><code class="language-c">export ETCD_CA=10.57.26.7
+mkdir -p /etc/kubernetes/pki/etcd/
+scp root@${ETCD_CA}:/etc/kubernetes/pki/etcd/ca.crt /etc/kubernetes/pki/etcd/
+scp root@${ETCD_CA}:/etc/kubernetes/pki/apiserver-etcd-client.crt /etc/kubernetes/pki/
+scp root@${ETCD_CA}:/etc/kubernetes/pki/apiserver-etcd-client.key /etc/kubernetes/pki/  
+</code></pre>
+
+<h3 id="3-2-2-安装控制平面">3.2.2 安装控制平面</h3>
+
+<p>创建kubeadm-config.yaml文件，可见与堆叠模式相比最大的不同是etcd使用external方式。</p>
+
+<pre><code class="language-C">apiVersion: kubeadm.k8s.io/v1beta1
+kind: ClusterConfiguration
+apiServer:
+  certSANs:
+  - &quot;10.57.26.15&quot;
+controlPlaneEndpoint: &quot;k8s-01:8443&quot;
+etcd:
+  external:
+    endpoints:
+    - https://10.57.26.7:2379
+    - https://10.57.26.8:2379
+    - https://10.57.26.26:2379
+    caFile: /etc/kubernetes/pki/etcd/ca.crt
+    certFile: /etc/kubernetes/pki/apiserver-etcd-client.crt
+    keyFile: /etc/kubernetes/pki/apiserver-etcd-client.key
+networking:
+    podSubnet: 10.244.0.0/16
+    serviceSubnet: 10.96.0.0/12
+</code></pre>
+
+<p>1）运行
+<code>kubeadm init --config kubeadm-config.yaml --upload-certs</code>
+2) 记录下join命令。
+3）安装网络插件，这里使用flannel。</p>
+
+<h2 id="3-3-其他控制平面安装">3.3 其他控制平面安装</h2>
+
+<p>1）保证第一个控制平面安装成功。
+2）加入第一个控制平面安装成功输出的加入控制平面的命令，需要立即输入，key过2小时就将过期。</p>
+
+<h2 id="3-4-worker节点安装">3.4 worker节点安装</h2>
+
+<p>1）保证控制节点安装成功。
+2）加入第一个控制平面安装成功输出的加入工作节点的命令。</p>
+
+<h1 id="4-一些坑">4 一些坑</h1>
+
+<h2 id="4-1-本地镜像拷贝后不能pull和push">4.1 本地镜像拷贝后不能pull和push</h2>
+
+<p>出现permission问题，需要更改selinux权限。
+setenforce 0
+以及selinux改权限</p>
+
+<h2 id="4-2-kubelet和docker的cgroup冲突问题">4.2 kubelet和docker的cgroup冲突问题</h2>
+
+<p>报错：failed to create kubelet: misconfiguration: kubelet cgroup driver: &ldquo;cgroupfs&rdquo; is different from docker cgroup driver: &ldquo;systemd&rdquo;</p>
+
+<p>查看docker的cgroup
+docker info | grep Cgroup
+修改kubelet的cgroup：
+在/etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf配置文件中添加&ndash;cgroup-driver=systemd</p>
+
+<h2 id="4-3-环境清空">4.3 环境清空</h2>
+
+<p>除了kubeadm reset以及iptables -F &amp;&amp; iptables -t nat -F &amp;&amp; iptables -t mangle -F &amp;&amp; iptables -X 还需要注意以下几点：
+1） kubelet状态
+查看systemctl status kubelet查看dropdown，删除不使用的配置，然后重启
+systemctl daemon-reload&amp;&amp;systemctl restart kubelet
+2） etcd删除
+rm -rf /var/lib/etcd</p>
+
+<h1 id="5-一些收获">5 一些收获</h1>
+
+<h2 id="5-1-日志查看">5.1 日志查看：</h2>
+
+<p>1:kubeadm的日志
+kubeadm init &ndash;config kubeadm-config.yaml -v 256 后面加上-v
+2:kubelet日志查看
+journalctl -xefu kubelet
+3:kubelet的配置信息可以通过
+systemctl status kubelet查看</p>
+
+<h1 id="6-参考">6 参考</h1>
+
+<p><a href="https://qingmu.io/2018/12/20/Deploy-a-highly-available-cluster-with-kubeadm/">https://qingmu.io/2018/12/20/Deploy-a-highly-available-cluster-with-kubeadm/</a>
+<a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/">https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/</a></p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>
