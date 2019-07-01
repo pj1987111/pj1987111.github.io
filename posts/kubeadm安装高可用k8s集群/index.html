@@ -509,6 +509,13 @@ journalctl -xefu kubelet
 3:kubelet的配置信息可以通过
 systemctl status kubelet查看</p>
 
+<h2 id="5-2-kubectl自动补全">5.2 kubectl自动补全</h2>
+
+<pre><code class="language-c">yum install -y bash-completion
+source /usr/share/bash-completion/bash_completion
+source &lt;(kubectl completion bash)
+</code></pre>
+
 <h1 id="6-参考">6 参考</h1>
 
 <p><a href="https://qingmu.io/2018/12/20/Deploy-a-highly-available-cluster-with-kubeadm/">https://qingmu.io/2018/12/20/Deploy-a-highly-available-cluster-with-kubeadm/</a>
