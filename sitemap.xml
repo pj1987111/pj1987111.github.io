@@ -3,20 +3,31 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://pj1987111.github.io/posts/tools/sed/</loc>
+    <lastmod>2019-07-02T19:26:07+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://pj1987111.github.io/posts/</loc>
-    <lastmod>2019-06-24T14:05:04+08:00</lastmod>
+    <lastmod>2019-07-02T19:26:07+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://pj1987111.github.io/tags/</loc>
-    <lastmod>2019-06-24T14:05:04+08:00</lastmod>
+    <lastmod>2019-07-02T19:26:07+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://pj1987111.github.io/</loc>
-    <lastmod>2019-06-24T14:05:04+08:00</lastmod>
+    <lastmod>2019-07-02T19:26:07+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pj1987111.github.io/tags/tools/</loc>
+    <lastmod>2019-07-02T19:26:07+08:00</lastmod>
     <priority>0</priority>
   </url>
   

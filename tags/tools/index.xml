@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tools on ZHY ZONE</title>
+    <link>https://pj1987111.github.io/tags/tools/</link>
+    <description>Recent content in tools on ZHY ZONE</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 02 Jul 2019 19:26:07 +0800</lastBuildDate>
+    
+	<atom:link href="https://pj1987111.github.io/tags/tools/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>1</title>
+      <link>https://pj1987111.github.io/posts/tools/sed/</link>
+      <pubDate>Tue, 02 Jul 2019 19:26:07 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/tools/sed/</guid>
+      <description>1 sed字符串替换  sed替换的基本语法为:
+sed &#39;s/原字符串/替换字符串/&#39;  单引号里面,s表示替换,三根斜线中间是替换的样式,特殊字符需要使用反斜线”\”进行转义。
+ 单引号” ‘ ’”是没有办法用反斜线”\”转义的,这时候只要把命令中的单引号改为双引号就行了,格式如下：
+# 要处理的字符包含单引号 sed &amp;quot;s/原字符串包含&#39;/替换字符串包含&#39;/&amp;quot;   命令中的三根斜线分隔符可以换成别的符号,有时候替换目录字符串的时候有较多斜线，这个时候换成其它的分割符是较为方便,只需要紧跟s定义即可。
+# 将分隔符换成问号”?”: sed &#39;s?原字符串?替换字符串?&#39;   可以在末尾加g替换每一个匹配的关键字,否则只替换每行的第一个,例如:
+# 替换所有匹配关键字 sed &#39;s/原字符串/替换字符串/g&#39;   一些特殊字符的使用
+  　^ 表示行首 $符号如果在引号中表示行尾，但是在引号外却表示末行(最后一行)
+# 注意这里的 &amp;quot; &amp;amp; &amp;quot; 符号，如果没有 “&amp;amp;”，就会直接将匹配到的字符串替换掉 sed &#39;s/^/添加的头部&amp;amp;/g&#39; #在所有行首添加 sed &#39;s/$/&amp;amp;添加的尾部/g&#39; #在所有行末添加 sed &#39;2s/原字符串/替换字符串/g&#39;　#替换第2行 sed &#39;$s/原字符串/替换字符串/g&#39; #替换最后一行 sed &#39;2,5s/原字符串/替换字符串/g&#39; #替换2到5行 sed &#39;2,$s/原字符串/替换字符串/g&#39; #替换2到最后一行   批量替换字符串
+sed -i &amp;quot;s/查找字段/替换字段/g&amp;quot; `grep 查找字段 -rl 路径` sed -i &amp;quot;s/oldstring/newstring/g&amp;quot; `grep oldstring -rl yourdir   sed处理过的输出是直接输出到屏幕上的,使用参数”i”直接在文件中替换。</description>
+    </item>
+    
+  </channel>
+</rss>
