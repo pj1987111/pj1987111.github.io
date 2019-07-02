@@ -13,10 +13,10 @@
     
     <item>
       <title>kubeedge安装与部署</title>
-      <link>https://pj1987111.github.io/posts/kubeedge%E5%AE%89%E8%A3%85%E4%B8%8E%E9%83%A8%E7%BD%B2/</link>
+      <link>https://pj1987111.github.io/posts/kubeedge/kubeedge%E5%AE%89%E8%A3%85%E4%B8%8E%E9%83%A8%E7%BD%B2/</link>
       <pubDate>Mon, 24 Jun 2019 14:05:04 +0800</pubDate>
       
-      <guid>https://pj1987111.github.io/posts/kubeedge%E5%AE%89%E8%A3%85%E4%B8%8E%E9%83%A8%E7%BD%B2/</guid>
+      <guid>https://pj1987111.github.io/posts/kubeedge/kubeedge%E5%AE%89%E8%A3%85%E4%B8%8E%E9%83%A8%E7%BD%B2/</guid>
       <description>1 设备定义 cloud node 10.57.26.15 edge node 10.57.26.26
 2 环境依赖配置 1:安装k8s 这一步不再赘述，需要注意的是，官方文档里推荐打开apiserver 8080端口，但是6443安全端口也是可以的。 2:配置Go和kubeedge环境(云端和边缘端都需要安装)
 #创建kubeedge源码存放跟路径 mkdir -p kubeedge/src #设置GOPATH export GOPATH=/root/kubeedge #下载go lang包 wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz #解压 tar -xvf go1.10.3.linux-amd64.tar.gz #移动到/usr/local目录下 mv go /usr/local #配置GOROOT环境变量 export GOROOT=/usr/local/go #更新PATH环境变量 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH #下载kubeedge源码于GOPATH路径 git clone https://github.com/kubeedge/kubeedge.git $GOPATH/src/github.com/kubeedge/kubeedge  3 生成证书 该步骤将生成kubeedge需要的证书，包含rootCA证书和cert/key对。 同样的cert/key对可以同时被cloud和edge端使用。 运行以下命令生成证书。

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>k8s高可用架构 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>k8s高可用架构</h1>
+  <time datetime=2019-06-24T14:05:02&#43;0800 class="post-date">Mon, Jun 24, 2019</time>
+  
+
+<h1 id="1-与keepalive-vip对比">1 与keepalive+VIP对比</h1>
+
+<p>网上大量的人使用KeepAlive+VIP的形式完成高可用，这个方式有两个不好的地方：</p>
+
+<p>其一，受限于使用者的网络，无法适用于SDN网络，比如Aliyun的VPC。</p>
+
+<p>其二，虽然是高可用的，但是流量还是单点的，所有node的的网络I/O都会高度集中于一台机器上（VIP)，一旦集群节点增多，pod增多，单机的网络I/O迟早是网络隐患。</p>
+
+<h1 id="2-两种模式">2 两种模式</h1>
+
+<h2 id="2-1-堆叠式etcd拓扑">2.1 堆叠式etcd拓扑</h2>
+
+<p>堆叠式拓扑的意思是存储元数据的etcd与控制屏幕节点安装在同一台服务器上，共同被kubeadm所管理。</p>
+
+<p>每个控制平面节点都运行一组kube-apiserver,kube-scheduler和kube-controller-manager，其中kube-apiserver通过负载均衡暴露给所有worker节点。</p>
+
+<p>每个控制平面节点都创建一个本地etcd，这个本地etcd只与该控制平面节点的kube-apiserver通讯，kube-scheduler和kube-controller-manager也是节点独立的。</p>
+
+<p>介绍一下这种方案的优缺点：
+优点：这种控制平面和etcd部署在同一个节点的模式比控制平面和etcd分离部署安装容易并且易于管理副本。
+缺点：这种模式存在错误耦合的缺点，当一个节点宕机，etcd和控制平面实例都丢失，只能添加更多的控制平面节点来缓和这个问题。</p>
+
+<p>在高可用集群下需要运行至少3个堆叠控制平面节点。</p>
+
+<p>这是kubeadm高可用的默认实现方案，运行kubeadm init和kubeadm join &ndash;control-plane后本地etcd将被自动创建。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/10/efb44d50e5b645b3bb790b43d3cd10.jpg" alt="" /></p>
+
+<h2 id="2-2-分离式etcd拓扑">2.2 分离式etcd拓扑</h2>
+
+<p>分离式拓扑的意思是存储元数据的etcd与控制屏幕节点安装在不同服务器上。</p>
+
+<p>类似于堆叠式架构，每个控制平面节点都运行一组kube-apiserver,kube-scheduler和kube-controller-manager，其中kube-apiserver通过负载均衡暴露给所有worker节点。不同的地方在于，etcd在不同的host上运行，每个etcd都会和每个控制平面上的kube-apiserver交互。</p>
+
+<p>这种拓扑结构将etcd与控制平面进行了分离。这种方式与堆叠式架构相比可以在etcd的节点丢失以及控制平面的节点丢失上有更高的容错性。</p>
+
+<p>然而，这种拓扑结构在机器数量上对比堆叠式架构需要两倍的数量。需要至少3个etcd节点以及3个控制平面节点。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/85/c22bcb4cf1c2dcdf66cb6e1575c174.jpg" alt="" /></p>
+
+<h1 id="3-安装与部署">3 安装与部署</h1>
+
+<p>在接下来的介绍文章中会对这两种模式的安装部署方式做详细介绍，请看</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

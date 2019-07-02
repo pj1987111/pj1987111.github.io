@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>kubeedge安装与部署 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>kubeedge安装与部署</h1>
+  <time datetime=2019-06-24T14:05:04&#43;0800 class="post-date">Mon, Jun 24, 2019</time>
+  
+
+<h1 id="1-设备定义">1 设备定义</h1>
+
+<p>cloud node 10.57.26.15
+edge node  10.57.26.26</p>
+
+<h1 id="2-环境依赖配置">2 环境依赖配置</h1>
+
+<p>1:安装k8s
+这一步不再赘述，需要注意的是，官方文档里推荐打开apiserver 8080端口，但是6443安全端口也是可以的。
+2:配置Go和kubeedge环境(云端和边缘端都需要安装)</p>
+
+<pre><code class="language-c">#创建kubeedge源码存放跟路径
+mkdir -p kubeedge/src
+#设置GOPATH
+export GOPATH=/root/kubeedge
+#下载go lang包
+wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
+#解压
+tar -xvf go1.10.3.linux-amd64.tar.gz
+#移动到/usr/local目录下
+mv go /usr/local
+#配置GOROOT环境变量
+export GOROOT=/usr/local/go
+#更新PATH环境变量
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+#下载kubeedge源码于GOPATH路径
+git clone https://github.com/kubeedge/kubeedge.git $GOPATH/src/github.com/kubeedge/kubeedge
+</code></pre>
+
+<h1 id="3-生成证书">3 生成证书</h1>
+
+<p>该步骤将生成kubeedge需要的证书，包含rootCA证书和cert/key对。
+同样的cert/key对可以同时被cloud和edge端使用。
+运行以下命令生成证书。</p>
+
+<pre><code class="language-c">$GOPATH/src/github.com/kubeedge/kubeedge/build/tools/certgen.sh genCertAndKey edge
+</code></pre>
+
+<p>cerrt和 key将被生成在/etc/kubeedge/ca 和/etc/kubeedge/certs 下</p>
+
+<h1 id="4-拷贝证书到边缘节点">4 拷贝证书到边缘节点</h1>
+
+<p>在边缘节点上，执行以下命令</p>
+
+<pre><code class="language-c">mkdir -p /etc/kubeedge/ca
+mkdir -p /etc/kubeedge/certs
+scp -r root@node01:/etc/kubeedge/ca /etc/kubeedge
+scp -r root@node01:/etc/kubeedge/certs /etc/kubeedge
+</code></pre>
+
+<h1 id="5-编译和运行云端">5 编译和运行云端</h1>
+
+<p>1 修改modules.yaml文件
+<code>vi $GOPATH/src/github.com/kubeedge/kubeedge/cloud/conf/modules.yaml</code>
+将devicecontroller删除。
+2 修改配置文件controller.yaml
+<code>vi $GOPATH/src/github.com/kubeedge/kubeedge/cloud/conf/controller.yaml</code>
+默认云端和k8s的apiserver采用8080端口通讯，为了安全考虑，我没开启8080端口，只开放了https协议的6443端口，所以需要更改配置。在配置文件中，修改以下两个配置：
+kube.master为<a href="https://k8s-01:6443">https://k8s-01:6443</a>
+kubeconfig为/root/.kube/config
+3 cd .. 到上一层目录，并执行make编译cloud模块。
+4 执行 ./edgecontroller 运行云端。然后开启一个新的ssh终端。</p>
+
+<h1 id="6-部署边缘端">6 部署边缘端</h1>
+
+<h2 id="6-1-修改node-js配置文件">6.1 修改node.js配置文件</h2>
+
+<p><code>vi $GOPATH/src/github.com/kubeedge/kubeedge/build/node.json</code>
+将metadata.name改成需要的边缘node名称。</p>
+
+<h2 id="6-2-部署">6.2 部署</h2>
+
+<p>文档上是在边缘端部署，执行
+<code>kubectl apply -f $GOPATH/src/github.com/kubeedge/kubeedge/build/node.json -s k8s-01:8080</code>但是https的没成功，所以换成在cloud端执行，这样就不用指定-s参数，不需要认证。
+在cloud端执行
+<code>kubectl apply -f $GOPATH/src/github.com/kubeedge/kubeedge/build/node.json</code>
+这步骤可以重复多次，创建多个edge node。
+执行<code>kubectl get nodes查看节点</code>可以看到如图所示，edge节点并没有ready。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/2f/c9786ba364fdb411a6a8c7bd17ce24.jpg" alt="" /></p>
+
+<h2 id="6-3-运行edge-node">6.3 运行edge node</h2>
+
+<p>1.下拉镜像并改tag</p>
+
+<pre><code class="language-c">docker pull kubeedge/edgecore:v0.3.0-beta.0
+docker tag kubeedge/edgecore:v0.3.0-beta.0 kubeedge/edgecore:latest
+</code></pre>
+
+<p>2.运行
+进入目录
+cd $GOPATH/src/github.com/kubeedge/kubeedge/build/edge
+执行
+<code>./run_daemon.sh only_run_edge mqtt=0.0.0.0:1883 cloudhub=10.57.26.15:10000 edgename=zhyedge01 image=&quot;kubeedge/edgecore:latest&quot; containername=edge01
+</code>
+其中
+cloudhub换成cloud的ip
+edgename换成之前创建的边缘节点名
+containername起一个容器名
+再执行<code>kubectl get nodes</code>查看状态，可以看到节点上READY状态了
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/2c/69c6929bb27c557b49ec76ef89c665.jpg" alt="" /></p>
+
+<h1 id="7-部署应用">7 部署应用</h1>
+
+<p>进入目录
+cd $GOPATH/src/github.com/kubeedge/kubeedge/build
+执行<code>kubectl apply -f deployment.yaml</code>
+然后查看pod
+<code>kubectl get pods</code>可以看到pod状态是RUNNING，并且运行在edge端上。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/d4/5dcc0dc14e881d3360e29993b2e69a.jpg" alt="" /></p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

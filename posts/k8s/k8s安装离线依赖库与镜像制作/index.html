@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>K8s安装离线依赖库与镜像制作 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>K8s安装离线依赖库与镜像制作</h1>
+  <time datetime=2019-06-22T15:08:06&#43;0800 class="post-date">Sat, Jun 22, 2019</time>
+  
+
+<h1 id="一-docker环境下载">一：docker环境下载</h1>
+
+<h2 id="1-1-yum仓库添加">1.1 yum仓库添加</h2>
+
+<pre><code>vim /etc/yum.repos.d/docker-ce.repo 
+添加以下内容：
+[docker-ce-stable]
+name=Docker CE Stable - $basearch
+baseurl=https://mirrors.aliyun.com/docker-ce/linux/centos/7/$basearch/stable
+enabled=1
+gpgcheck=1
+gpgkey=https://mirrors.aliyun.com/docker-ce/linux/centos/gpg
+</code></pre>
+
+<p>推荐添加阿里云的源，速度非常快。</p>
+
+<h2 id="1-2-docker环境本地下载">1.2 docker环境本地下载</h2>
+
+<pre><code>yum install --downloadonly  --downloaddir=. docker-ce-18.09.4-3.el7
+</code></pre>
+
+<p>该命令会把docker以及依赖全下载到指定目录。
+注：若发现目录下没有下载的rpm包，请到/var/cache/yum/{RepositoryName}/packages/目录中找</p>
+
+<h1 id="二-kubeadm环境下载">二：kubeadm环境下载</h1>
+
+<h2 id="2-1-yum仓库添加">2.1 yum仓库添加</h2>
+
+<pre><code>vim /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+</code></pre>
+
+<h2 id="2-2-kubeadm环境本地下载">2.2 kubeadm环境本地下载</h2>
+
+<pre><code>yum install --downloadonly  --downloaddir=. kubeadm
+</code></pre>
+
+<p>该命令会把kubeadm以及依赖全下载包括kubelet,kubectl到指定目录。
+注：若发现目录下没有下载的rpm包，请到/var/cache/yum/{RepositoryName}/packages/目录中找</p>
+
+<h1 id="三-k8s依赖镜像下载">三：k8s依赖镜像下载</h1>
+
+<p>kubeadm安装时会访问特定的tag，若不存在就会走外网下载，所以kubeadm部署前必须将所需的k8s环境以镜像方式下载好，并导入docker中</p>
+
+<h2 id="3-1-阿里云海外镜像下载配置">3.1 阿里云海外镜像下载配置</h2>
+
+<p>由于各种原因，k8s的依赖kube-proxy，kube-apiserver，kube-controller-manager，kube-scheduler，coredns，etcd和pause都难于下载，本人通过阿里云海外镜像下载方式，分享一下。
+1) 将github上建立一个项目，github的配置不再赘述。
+2) 将所有依赖建立目录，并在每个目录下建立Dockerfile，并输入FROM命令，每个组件的命令如下：</p>
+
+<pre><code>FROM k8s.gcr.io/kube-apiserver:v1.14.2
+FROM k8s.gcr.io/kube-proxy:v1.14.2
+FROM k8s.gcr.io/kube-controller-manager:v1.14.2
+FROM k8s.gcr.io/kube-scheduler:v1.14.2
+FROM k8s.gcr.io/etcd:3.3.10
+FROM k8s.gcr.io/coredns:1.3.1
+FROM k8s.gcr.io/pause:3.1
+</code></pre>
+
+<p>其中，每个需要的组件以及版本的信息通过命令得到。</p>
+
+<pre><code>kubeadm --kubernetes-version=v1.14.2 config images list
+</code></pre>
+
+<p>将这些信息提交到git上。</p>
+
+<pre><code>git init  (本地目录初始化)
+git remote add origin https://xxx.git  (本地目录与远程库链接)
+git add .  (添加目录下所有文件)
+git commit -m &quot;edit&quot;。 (提交)
+git push -u origin master. (上传)
+</code></pre>
+
+<p>3) 创建镜像仓库，并选择公开。下一步选择github帐号关联，并选择之前提交的项目，务必勾选上海外机器构建。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/e0/7ad78ce8c5bcedbc4acf024f41bebb.jpg" alt="" />
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/09/47c4ad30250a5c154c20e2a3fdea85.jpg" alt="" /></p>
+
+<p>4) 创建完镜像仓库后，进去构建选项卡，将之前上传的几个依赖分别如下图配置，因为一个仓库只能创建5个镜像，所以需要再以相同方法建一个镜像并构建。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/2c/83ea7312391e73887bd1579c054dfa.jpg" alt="" /></p>
+
+<p>5) 创建完后后台登陆阿里云</p>
+
+<pre><code>sudo docker login --username=&lt;username&gt; registry.cn-hangzhou.aliyuncs.com
+</code></pre>
+
+<p>并输入密码，用户名和密码是对应阿里云帐号的。</p>
+
+<p>6) 进入构建，对每个镜像点击立即构建，下面的构建日志成功即表示拉到了国内仓库。若失败则可能登陆超时，重新执行第5步。
+ <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/d3/88e655641d6fed7ee260789d5236da.jpg" alt="" /></p>
+
+<p>7) docker拉取镜像</p>
+
+<pre><code>sudo docker pull registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:[镜像版本号]
+</code></pre>
+
+<p>这些信息在基本信息中可以查看。</p>
+
+<h2 id="3-2-依赖镜像重打tag">3.2 依赖镜像重打tag</h2>
+
+<p>拉取镜像后，需要修改成kubeadm拉取的tag，并删除老的tag
+执行命令</p>
+
+<pre><code>sudo docker tag registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:kube-apiserver-1.14.2 k8s.gcr.io/kube-apiserver:v1.14.2
+sudo docker tag registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:kube-controller-manager-1.14.2 k8s.gcr.io/kube-controller-manager:v1.14.2
+sudo docker tag registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:kube-scheduler-1.14.2 k8s.gcr.io/kube-scheduler:v1.14.2
+sudo docker tag registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:kube-proxy-1.14.2 k8s.gcr.io/kube-proxy:v1.14.2
+sudo docker tag registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep2:coredns-1.3.1 k8s.gcr.io/coredns:1.3.1
+sudo docker tag registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep2:etcd-3.3.10 k8s.gcr.io/etcd:3.3.10
+sudo docker tag registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:pause-3.1 k8s.gcr.io/pause:3.1
+sudo docker rmi registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:kube-apiserver-1.14.2
+sudo docker rmi registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:kube-controller-manager-1.14.2
+sudo docker rmi registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:kube-scheduler-1.14.2
+sudo docker rmi registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:kube-proxy-1.14.2
+sudo docker rmi registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep2:coredns-1.3.1
+sudo docker rmi registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep2:etcd-3.3.10
+sudo docker rmi registry.cn-hangzhou.aliyuncs.com/zhy111/dockerdep:pause-3.1
+
+</code></pre>
+
+<h2 id="3-3-网络模块flannel下载">3.3 网络模块flannel下载</h2>
+
+<p>执行命令</p>
+
+<pre><code>sudo docker pull jmgao1983/flannel:v0.11.0-amd64
+</code></pre>
+
+<p>修改kube-flannel.yml配置文件，将镜像地址改成本地(tag也可)</p>
+
+<pre><code>sudo sed -i 's#quay.io/coreos/flannel:v0.11.0-amd64#jmgao1983/flannel:v0.11.0-amd64#g' kube-flannel.yml
+</code></pre>
+
+<h2 id="3-4-所有k8s依赖包导出">3.4 所有k8s依赖包导出</h2>
+
+<p>执行导出命令至k8s-images-1.14.2.tar</p>
+
+<pre><code>sudo docker save $(docker images | grep -v REPOSITORY | awk 'BEGIN{OFS=&quot;:&quot;;ORS=&quot; &quot;}{print $1,$2}') -o k8s-images-1.14.2.tar
+</code></pre>
+
+<p>最后，将docker以及依赖的rpm包，kubeadm以及依赖的rpm包，kubeadm安装需要的docker镜像包，kubeadm.yaml，kube-flannel.yml一起打包分发到各台待安装的服务器上。</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>
