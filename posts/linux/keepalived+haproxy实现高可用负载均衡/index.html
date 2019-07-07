@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Keepalived&#43;HAproxy实现高可用负载均衡 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Keepalived&#43;HAproxy实现高可用负载均衡</h1>
+  <time datetime=2019-07-05T22:12:05&#43;0800 class="post-date">Fri, Jul 5, 2019</time>
+  
+
+<h1 id="1-介绍">1 介绍</h1>
+
+<p><strong>Keepalived</strong>是一个类似于layer3, 4 &amp; 5交换机制的软件，也就是我们平时说的第3层、第4层和第5层交换。Keepalived的作用是检测web服务器的状态，如果有一台web服务器死机，或工作出现故障，Keepalived将检测到，并将有故障的web服务器从系统中剔除，当web服务器工作正常后Keepalived自动将web服务器加入到服务器群中，这些工作全部自动完成，不需要人工干涉，需要人工做的只是修复故障的web服务器</p>
+
+<p><strong>HAProxy</strong>提供高可用性、负载均衡以及基于TCP和HTTP应用的代理，支持虚拟主机，它是免费、快速并且可靠的一种解决方案。HAProxy特别适用于那些负载特大的web站点，这些站点通常又需要会话保持或七层处理。HAProxy运行在当前的硬件上，完全可以支持数以万计的并发连接。并且它的运行模式使得它可以很简单安全的整合进您当前的架构中， 同时可以保护你的web服务器不被暴露到网络上。</p>
+
+<p>这里我利用HAproxy对nginx服务器进行负载，然后用Keepalived对HAproxy进行监控：</p>
+
+<p>（主）服务器A：dataocean-04
+（从）服务器B：dataocean-03
+（VIP)：10.10.51.230</p>
+
+<p>Keepalived监控A、B上的HAproxy，利用Keepalived的VIP漂移技术，若A、B上的HAprox都工作正常，则VIP与优先级别高的服务器（主服务器）绑定，当主服务器当掉时，则与从服务器绑定，而VIP则是暴露给外部访问的ip；HAproxy利用Keepalived生产的VIP对应用所在的nginx进行高可用保障。</p>
+
+<p>部署图如下图所示。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/98/f571345b1974ff7a1025aa37140f43.jpg" alt="" /></p>
+
+<h1 id="2-haproxy安装">2 HAProxy安装</h1>
+
+<h2 id="2-1-编译安装">2.1 编译安装</h2>
+
+<pre><code class="language-c">tar zxvf haproxy-1.7.8.tar.gz
+cd haproxy-1.7.8
+make TARGET=linux2628 PREFIX=/usr/local/haproxy
+make install PREFIX=/usr/local/haproxy
+</code></pre>
+
+<h2 id="2-2-配置">2.2 配置</h2>
+
+<h3 id="2-2-1-编写配置文件">2.2.1 编写配置文件</h3>
+
+<p>默认安装目录下没有配置文件，只有”doc”，“sbin”，“share”三个目录，可手工创建目录及配置文件；
+配置文件中使用的应用程序ip是10.57.26.5，实际使用时需要修改。</p>
+
+<pre><code class="language-c">mkdir -p /usr/local/haproxy/etc
+cat&gt;&gt;/usr/local/haproxy/etc/haproxy.cfg&lt;&lt;EOF
+#全局配置, 用于设定义全局参数, 属于进程级的配置, 通常与操作系统配置有关.
+global
+    #定义全局日志, 配置在本地, 通过local0 输出, 默认是info级别，可配置两条
+    log         127.0.0.1 local0 warning
+    #定义日志级别【error warning info debug】
+    #log         127.0.0.1 local1 info
+
+    #运行路径
+    chroot      /usr/local/haproxy
+    #PID 文件存放路径
+    pidfile     /var/run/haproxy.pid
+
+    #设置每haproxy进程的最大并发连接数, 其等同于命令行选项“-n”; “ulimit -n”自动计算的结果参照此参数设定.
+    maxconn     4096
+
+    #后台运行haproxy
+    daemon
+
+    #设置启动的haproxy进程数量, 只能用于守护进程模式的haproxy;
+    #默认只启动一个进程, 鉴于调试困难等多方面的原因, 一般只在单进程仅能打开少数文件描述符的场景中才使用多进程模式.
+    nbproc      1
+    #设置每进程所能够打开的最大文件描述符数目, 默认情况其会自动进行计算, 因此不推荐修改此选项.
+    #ulimit-n 819200
+
+    #调试级别, 一般只在开启单进程时调试, 且生产环境禁用.
+    #debug
+    #haproxy启动后不会显示任何相关信息, 这与在命令行启动haproxy时加上参数“-q”相同
+    #quiet
+
+    #定义统计信息保存位置
+    stats socket /usr/local/haproxy/stats
+
+#默认配置
+defaults
+    #默认的模式【tcp:4层； http:7层； health:只返回OK】
+    mode        http
+
+    #继承全局的日志定义输出
+    log         global
+
+    #日志类别, httplog
+    #option      httplog
+
+    #如果后端服务器需要记录客户端真实ip, 需要在HTTP请求中添加”X-Forwarded-For”字段;
+    #但haproxy自身的健康检测机制访问后端服务器时, 不应将记录访问日志，可用except来排除127.0.0.0，即haproxy本身.
+    #option      forwardfor except 127.0.0.0/8
+    option      forwardfor
+
+    #开启http协议中服务器端关闭功能, 每个请求完毕后主动关闭http通道, 使得支持长连接，使得会话可以被重用，使得每一个日志记录都会被记录.
+    option      httpclose
+
+    #如果产生了一个空连接，那这个空连接的日志将不会记录.
+    option      dontlognull
+
+    #当与后端服务器的会话失败(服务器故障或其他原因)时, 把会话重新分发到其他健康的服务器上; 当故障服务器恢复时, 会话又被定向到已恢复的服务器上;
+    #还可以用”retries”关键字来设定在判定会话失败时的尝试连接的次数
+    option      redispatch
+    retries     3
+
+    #当haproxy负载很高时, 自动结束掉当前队列处理比较久的链接.
+    option      abortonclose
+
+    #默认http请求超时时间
+    timeout http-request    10s
+    #默认队列超时时间, 后端服务器在高负载时, 会将haproxy发来的请求放进一个队列中.
+    timeout queue           1m
+    #haproxy与后端服务器连接超时时间.
+    timeout connect         5s
+    #客户端与haproxy连接后, 数据传输完毕, 不再有数据传输, 即非活动连接的超时时间.
+    timeout client          1m
+    #haproxy与后端服务器非活动连接的超时时间.
+    timeout server          1m
+    #默认新的http请求连接建立的超时时间，时间较短时可以尽快释放出资源，节约资源.
+    timeout http-keep-alive 10s
+    #心跳检测超时时间
+    timeout check           10s
+
+    #最大并发连接数
+    maxconn                 2000
+
+    #设置默认的负载均衡方式
+    #balance source
+    #balnace leastconn
+
+#统计页面配置, frontend和backend的组合体, 监控组的名称可按需自定义
+listen admin_status
+    #配置监控运行模式
+    mode http
+
+    #配置统计页面访问端口
+    bind 0.0.0.0:1080
+
+    #统计页面默认最大连接数
+    maxconn 10
+
+    #http日志格式
+    option httplog
+
+    #开启统计
+    stats enable
+
+    #隐藏统计页面上的haproxy版本信息
+    stats hide-version
+
+    #监控页面自动刷新时间
+    stats refresh 30s
+
+    #统计页面访问url
+    stats uri /stats
+
+    #统计页面密码框提示文本
+    stats realm mCloud\ Haproxy
+
+    #监控页面的用户和密码:admin, 可设置多个用户名
+    stats auth admin:admin
+
+    #手工启动/禁用后端服务器, 可通过web管理节点
+    stats admin if TRUE
+
+    #设置haproxy错误页面
+    errorfile 400 /usr/local/haproxy/errorfiles/400.http
+    errorfile 403 /usr/local/haproxy/errorfiles/403.http
+    errorfile 408 /usr/local/haproxy/errorfiles/408.http
+    errorfile 500 /usr/local/haproxy/errorfiles/500.http
+    errorfile 502 /usr/local/haproxy/errorfiles/502.http
+    errorfile 503 /usr/local/haproxy/errorfiles/503.http
+    errorfile 504 /usr/local/haproxy/errorfiles/504.http
+
+#监控haproxy后端服务器的监控状态
+listen site_status
+       bind 0.0.0.0:1081                       #监听端口
+       mode http                               #http的7层模式
+       log 127.0.0.1 local2 err                #[err warning info debug]
+       monitor-uri /site_status                #网站健康检测URL，用来检测HAProxy管理的网站是否可以用，正常返回200，不正常返回503
+       acl site_dead nbsrv(backend_default)  lt 1
+       monitor fail if site_dead               #当满足策略的时候返回503，网上文档说的是500，实际测试为503
+       monitor-net 10.57.26.5/32
+
+frontend HAproxy_Cluster
+    #定义前端监听端口, 建议采用bind *:80的形式，否则做集群高可用的时候有问题，vip切换到其余机器就不能访问.
+    bind 0.0.0.0:80
+
+    #如果以上规则都不匹配时，将请求转交到default_backend组处理.
+    default_backend backend_default
+
+backend backend_default
+    balance source
+    mode http
+    server default1 10.57.26.5:80 maxconn 1024 cookie 1 weight 3 check inter 1500 rise 2 fall 3
+EOF
+</code></pre>
+
+<h3 id="2-2-2-error文件">2.2.2 error文件</h3>
+
+<p>配置文件中统计监控页面部分定义了error文件，将安装包中的文件复制到安装目录使用。</p>
+
+<pre><code class="language-c">cp -r /root/haproxy-1.7.8/examples/errorfiles/ /usr/local/haproxy/
+</code></pre>
+
+<h3 id="2-2-3-haproxy日志文件">2.2.3 haproxy日志文件</h3>
+
+<p>haproxy在默认情况不会记录日志，除了在haproxy.conf中的global段指定日志的输出外，还需要配置系统日志的配置文件。
+* 创建文件</p>
+
+<pre><code class="language-c">mkdir -p /usr/local/haproxy/log
+touch /usr/local/haproxy/log/haproxy.log
+ln -s /usr/local/haproxy/log/haproxy.log /var/log/
+</code></pre>
+
+<ul>
+<li>rsyslog主配置文件
+修改”SYSLOGD_OPTIONS”参数，-c 2 使用兼容模式，默认是 -c 5；-r 开启远程日志；-m 0 标记时间戳，单位是分钟，0表示禁用该功能。</li>
+</ul>
+
+<pre><code class="language-c">vi /etc/sysconfig/rsyslog
+# SYSLOGD_OPTIONS=&quot;-c 2 -r -m 0&quot;
+SYSLOGD_OPTIONS=&quot;-c 2 -r&quot;
+</code></pre>
+
+<ul>
+<li>rsyslog文件
+haproxy默认没有日志，依靠rsyslog收集日志。
+配置文件中local0.* 和local2.*分别对应haproxy.conf文件中warning和err。如果需要记录更多内容需要再行配置。</li>
+</ul>
+
+<pre><code class="language-c">echo &gt; /etc/rsyslog.d/haproxy.conf&lt;&lt;EOF
+# Provides UDP syslog reception
+$ModLoad imudp
+$UDPServerRun 514
+
+# haproxy.log
+#  
+local0.*   /usr/local/haproxy/log/haproxy.log
+local2.*   /usr/local/haproxy/log/haproxy.log
+&amp;~
+EOF
+</code></pre>
+
+<ul>
+<li>重启生效并关闭selinux
+<code>systemctl restart rsyslog.service &amp;&amp; setenforce 0</code></li>
+</ul>
+
+<h3 id="2-2-4-配置软链接">2.2.4 配置软链接</h3>
+
+<pre><code class="language-c">mkdir -p /etc/haproxy
+ln -s /usr/local/haproxy/etc/haproxy.cfg /etc/haproxy/
+</code></pre>
+
+<h2 id="2-3-配置开机启动">2.3 配置开机启动</h2>
+
+<pre><code class="language-c">cp /root/haproxy-1.7.8/examples/haproxy.init /etc/rc.d/init.d/haproxy
+chmod +x /etc/rc.d/init.d/haproxy
+chkconfig --add haproxy
+chkconfig --level 35 haproxy on
+</code></pre>
+
+<h2 id="2-4-配置全局启动">2.4 配置全局启动</h2>
+
+<pre><code class="language-c">ln -s /usr/local/haproxy/sbin/haproxy /usr/sbin/
+</code></pre>
+
+<h2 id="2-5-启动并验证">2.5 启动并验证</h2>
+
+<p>输入命令启动
+<code>service haproxy start
+</code>
+* 端口验证
+<code>netstat -pant|grep haproxy</code>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/a0/14c437577c42482f3c0d53f09a619f.jpg" alt="" /></p>
+
+<ul>
+<li>监控页面
+监控页面展示信息与账号密码在配置文件中定义，位于/etc/haproxy/haproxy.cfg 中stats auth属性。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/bc/cf2be2c2631547f7a30bf8c8c18142.jpg" alt="" /></li>
+</ul>
+
+<h1 id="3-keepalived安装">3 KeepAlived安装</h1>
+
+<h2 id="3-1-编译安装">3.1 编译安装</h2>
+
+<p>KeepAlived依赖于openssl，和perl，安装前需要提前装着两个部件。</p>
+
+<h3 id="3-1-1-perl安装">3.1.1 perl安装</h3>
+
+<pre><code class="language-c">tar zxvf perl-5.26.1.tar.gz
+cd perl-5.26.1
+./Configure -de
+make &amp;&amp; make install
+</code></pre>
+
+<h3 id="3-1-2-openssl安装">3.1.2 openssl安装</h3>
+
+<p>openssl依赖于perl，故在perl安装后再安装</p>
+
+<pre><code class="language-c">tar zxvf openssl-1.1.0c.tar.gz
+cd openssl-1.1.0c
+./config
+make&amp;&amp;make install
+</code></pre>
+
+<p>安装后执行openssl验证功能。若出现报错/usr/local/keepalived/sbin/keepalived:error while loading shared libraries: libssl.so.1.1: cannot open shared object file: No such file or directory
+需要建立软连接。</p>
+
+<pre><code class="language-c">ln -s /usr/local/lib64/libssl.so.1.1 /usr/lib64/libssl.so.1.1
+ln -s /usr/local/lib64/libcrypto.so.1.1 /usr/lib64/libcrypto.so.1.1
+</code></pre>
+
+<h3 id="3-1-3-keepalived安装">3.1.3 KeepAlived安装</h3>
+
+<pre><code class="language-c">tar zxvf keepalived-2.0.17.tar.gz
+cd keepalived-2.0.17
+./configure --prefix=/usr/local/keepalived
+make &amp;&amp; make install
+</code></pre>
+
+<h2 id="3-2-配置">3.2 配置</h2>
+
+<h3 id="3-2-1-编写配置文件-主">3.2.1 编写配置文件(主)</h3>
+
+<pre><code class="language-c">echo &gt; /usr/local/keepalived/etc/keepalived/keepalived.conf&lt;&lt;EOF
+! Configuration File for keepalived
+global_defs {
+   router_id LVS_DEVEL
+}
+
+vrrp_script chk_haproxy {                        #Haproxy服务启动
+   script &quot;/etc/keepalived/check_haproxy.sh&quot;     #监控haproxy进程的脚本, 根据自己的实际路径放置
+   interval 2
+   weight -4
+}
+vrrp_instance VI_1 {
+   state MASTER                  #主机为MASTER，备机为BACKUP
+   interface eth0                #监测网络端口，用ipconfig查看
+   virtual_router_id 51          #主备机必须相同
+   priority 150                  #主备机取不同的优先级，主机要大。从服务器上改为120
+   advert_int 1                  #VRRP Multicast广播周期秒数
+
+   authentication {
+       auth_type PASS            #VRRP认证方式
+       auth_pass 1111            #VRRP口令 主备机密码必须相同
+   }
+
+   track_script {                #调用haproxy进程检测脚本
+       chk_haproxy
+   }
+
+   virtual_ipaddress {
+      10.10.51.230               #VIP 漂移地址 即集群IP地址
+   }
+}
+EOF
+</code></pre>
+
+<h3 id="3-2-2-编写配置文件-备">3.2.2 编写配置文件(备)</h3>
+
+<pre><code class="language-c">! Configuration File for keepalived
+global_defs {
+   router_id LVS_DEVEL
+}
+
+vrrp_script chk_haproxy {                        #Haproxy服务启动
+   script &quot;/etc/keepalived/check_haproxy.sh&quot;     #监控haproxy进程的脚本, 根据自己的实际路径放置
+   interval 2
+   weight -4
+}
+
+vrrp_instance VI_1 {
+   state BACKUP                  #主机为MASTER，备机为BACKUP
+   interface eth0                #监测网络端口，用ipconfig查看
+   virtual_router_id 51          #主备机必须相同
+   priority 120                  #主备机取不同的优先级，主机要大。从服务器上改为120
+   advert_int 1                  #VRRP Multicast广播周期秒数
+
+   authentication {
+       auth_type PASS            #VRRP认证方式
+       auth_pass 1111            #VRRP口令 主备机密码必须相同
+   }
+
+   track_script {                #调用haproxy进程检测脚本
+       chk_haproxy
+   }
+
+   virtual_ipaddress {
+      10.10.51.230               #VIP 漂移地址 即集群IP地址
+   }
+}
+EOF
+</code></pre>
+
+<h3 id="3-2-3-修改软链接">3.2.3 修改软链接</h3>
+
+<pre><code class="language-c">mkdir -p /etc/keepalived
+ln -s /usr/local/keepalived/etc/keepalived/keepalived.conf /etc/keepalived/ 
+</code></pre>
+
+<h3 id="3-2-4-haproxy检测脚本">3.2.4 haproxy检测脚本</h3>
+
+<pre><code class="language-c">echo &gt; /etc/keepalived/check_haproxy.sh &lt;&lt;EOF
+#!/bin/bash
+if [ $(ps -C haproxy --no-header | wc -l) -eq 0 ]; then
+   /usr/local/haproxy/sbin/haproxy -f /etc/haproxy/haproxy.cfg
+   sleep 3
+
+   if [ $(ps -C haproxy --no-header | wc -l) -eq 0 ]; then
+          /etc/init.d/keepalived stop
+   fi
+fi
+EOF
+
+chmod 777 /etc/keepalived/check_haproxy.sh
+</code></pre>
+
+<h2 id="3-3-启动相关">3.3 启动相关</h2>
+
+<ul>
+<li>启动相关</li>
+</ul>
+
+<pre><code class="language-c">ln -s /usr/local/keepalived/etc/sysconfig/keepalived /etc/sysconfig/
+ln -s /usr/local/keepalived/sbin/keepalived /usr/sbin/
+</code></pre>
+
+<ul>
+<li>开机启动</li>
+</ul>
+
+<pre><code class="language-c">cp /root/keepalived-2.0.17/keepalived/etc/init.d/keepalived /etc/rc.d/init.d/keepalived 
+chmod +x /etc/rc.d/init.d/keepalived
+chkconfig --add keepalived
+chkconfig --level 35 keepalived on
+vi /usr/lib/systemd/system/keepalived.service
+#修改PIDFile，如下：
+PIDFile=/var/run/keepalived.pid 
+</code></pre>
+
+<h2 id="3-4-测试">3.4 测试</h2>
+
+<p>测试中dataocean-04是KeepAlived主节点，dataocean-03是备节点。</p>
+
+<h3 id="3-4-1-vip漂移测试">3.4.1 VIP漂移测试</h3>
+
+<p>在主备节点都启动的情况下，输入<code>ip a</code>可以看到VIP 10.10.51.230/32在主节点dataocean-04上。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/96/5b3cbe872992712aca9dc42e6911f0.jpg" alt="" /></p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/27/8be03ddcc86ae09132fa5a15c037e6.jpg" alt="" />
+当在主节点上执行
+<code>kill -15 &lt;keepalived进程&gt;</code>或者<code>systemctl stop keepalived</code> 或者 <code>service keepalived stop</code>后，可以看到，VIP漂移到了备节点上，如下图所示。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/5d/ac802e79501b99f06653a3838bc5d9.jpg" alt="" /></p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/5d/33ace79ba9a8903d5f6442554e4e75.jpg" alt="" /></p>
+
+<p>然后再在主节点执行<code>service keepalived start</code>可以看到，VIP又重新漂移回主节点了，备节点上VIP消失。如下图所示。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/70/914f402419c9d2a2bb95d6091e72d8.jpg" alt="" /></p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/59/233b8945222ba3d864da5854d093db.jpg" alt="" /></p>
+
+<h3 id="3-4-2-haproxy进程检测测试">3.4.2 haproxy进程检测测试</h3>
+
+<p>keepalived可以通过编写check脚本来监控各种应用程序的状态，若被kill可以重新启动。
+如下图所示，当kill了haproxy进程，keepalived会调用配置文件中定义的监控脚本 /etc/keepalived/check_haproxy.sh 来重新启动haproxy，同时haproxy进程号也从18240变成了15737。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/b9/847aff63fb35d1a03756150152ffcf.jpg" alt="" /></p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

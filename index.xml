@@ -6,13 +6,28 @@
     <description>Recent content on ZHY ZONE</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 02 Jul 2019 19:26:07 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 05 Jul 2019 22:12:05 +0800</lastBuildDate>
     
 	<atom:link href="https://pj1987111.github.io/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>1</title>
+      <title>Keepalived&#43;HAproxy实现高可用负载均衡</title>
+      <link>https://pj1987111.github.io/posts/linux/keepalived&#43;haproxy%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</link>
+      <pubDate>Fri, 05 Jul 2019 22:12:05 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/linux/keepalived&#43;haproxy%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</guid>
+      <description>1 介绍 Keepalived是一个类似于layer3, 4 &amp;amp; 5交换机制的软件，也就是我们平时说的第3层、第4层和第5层交换。Keepalived的作用是检测web服务器的状态，如果有一台web服务器死机，或工作出现故障，Keepalived将检测到，并将有故障的web服务器从系统中剔除，当web服务器工作正常后Keepalived自动将web服务器加入到服务器群中，这些工作全部自动完成，不需要人工干涉，需要人工做的只是修复故障的web服务器
+HAProxy提供高可用性、负载均衡以及基于TCP和HTTP应用的代理，支持虚拟主机，它是免费、快速并且可靠的一种解决方案。HAProxy特别适用于那些负载特大的web站点，这些站点通常又需要会话保持或七层处理。HAProxy运行在当前的硬件上，完全可以支持数以万计的并发连接。并且它的运行模式使得它可以很简单安全的整合进您当前的架构中， 同时可以保护你的web服务器不被暴露到网络上。
+这里我利用HAproxy对nginx服务器进行负载，然后用Keepalived对HAproxy进行监控：
+（主）服务器A：dataocean-04 （从）服务器B：dataocean-03 （VIP)：10.10.51.230
+Keepalived监控A、B上的HAproxy，利用Keepalived的VIP漂移技术，若A、B上的HAprox都工作正常，则VIP与优先级别高的服务器（主服务器）绑定，当主服务器当掉时，则与从服务器绑定，而VIP则是暴露给外部访问的ip；HAproxy利用Keepalived生产的VIP对应用所在的nginx进行高可用保障。
+部署图如下图所示。 2 HAProxy安装 2.1 编译安装 tar zxvf haproxy-1.7.8.tar.gz cd haproxy-1.7.8 make TARGET=linux2628 PREFIX=/usr/local/haproxy make install PREFIX=/usr/local/haproxy  2.2 配置 2.2.1 编写配置文件 默认安装目录下没有配置文件，只有”doc”，“sbin”，“share”三个目录，可手工创建目录及配置文件； 配置文件中使用的应用程序ip是10.57.26.5，实际使用时需要修改。
+mkdir -p /usr/local/haproxy/etc cat&amp;gt;&amp;gt;/usr/local/haproxy/etc/haproxy.cfg&amp;lt;&amp;lt;EOF #全局配置, 用于设定义全局参数, 属于进程级的配置, 通常与操作系统配置有关. global #定义全局日志, 配置在本地, 通过local0 输出, 默认是info级别，可配置两条 log 127.0.0.1 local0 warning #定义日志级别【error warning info debug】 #log 127.0.0.1 local1 info #运行路径 chroot /usr/local/haproxy #PID 文件存放路径 pidfile /var/run/haproxy.pid #设置每haproxy进程的最大并发连接数, 其等同于命令行选项“-n”; “ulimit -n”自动计算的结果参照此参数设定.</description>
+    </item>
+    
+    <item>
+      <title>sed命令</title>
       <link>https://pj1987111.github.io/posts/tools/sed/</link>
       <pubDate>Tue, 02 Jul 2019 19:26:07 +0800</pubDate>
       
@@ -22,10 +37,8 @@ sed &#39;s/原字符串/替换字符串/&#39;  单引号里面,s表示替换,三
  单引号” ‘ ’”是没有办法用反斜线”\”转义的,这时候只要把命令中的单引号改为双引号就行了,格式如下：
 # 要处理的字符包含单引号 sed &amp;quot;s/原字符串包含&#39;/替换字符串包含&#39;/&amp;quot;   命令中的三根斜线分隔符可以换成别的符号,有时候替换目录字符串的时候有较多斜线，这个时候换成其它的分割符是较为方便,只需要紧跟s定义即可。
 # 将分隔符换成问号”?”: sed &#39;s?原字符串?替换字符串?&#39;   可以在末尾加g替换每一个匹配的关键字,否则只替换每行的第一个,例如:
-# 替换所有匹配关键字 sed &#39;s/原字符串/替换字符串/g&#39;   一些特殊字符的使用
-  　^ 表示行首 $符号如果在引号中表示行尾，但是在引号外却表示末行(最后一行)
-# 注意这里的 &amp;quot; &amp;amp; &amp;quot; 符号，如果没有 “&amp;amp;”，就会直接将匹配到的字符串替换掉 sed &#39;s/^/添加的头部&amp;amp;/g&#39; #在所有行首添加 sed &#39;s/$/&amp;amp;添加的尾部/g&#39; #在所有行末添加 sed &#39;2s/原字符串/替换字符串/g&#39;　#替换第2行 sed &#39;$s/原字符串/替换字符串/g&#39; #替换最后一行 sed &#39;2,5s/原字符串/替换字符串/g&#39; #替换2到5行 sed &#39;2,$s/原字符串/替换字符串/g&#39; #替换2到最后一行   批量替换字符串
-sed -i &amp;quot;s/查找字段/替换字段/g&amp;quot; `grep 查找字段 -rl 路径` sed -i &amp;quot;s/oldstring/newstring/g&amp;quot; `grep oldstring -rl yourdir   sed处理过的输出是直接输出到屏幕上的,使用参数”i”直接在文件中替换。</description>
+# 替换所有匹配关键字 sed &#39;s/原字符串/替换字符串/g&#39;   一些特殊字符的使用 ^ 表示行首 $符号如果在引号中表示行尾，但是在引号外却表示末行(最后一行)
+# 注意这里的 &amp;quot; &amp;amp; &amp;quot; 符号，如果没有 “&amp;amp;”，就会直接将匹配到的字符串替换掉 sed &#39;s/^/添加的头部&amp;amp;/g&#39; #在所有行首添加 sed &#39;s/$/&amp;amp;添加的尾部/g&#39; #在所有行末添加 sed &#39;2s/原字符串/替换字符串/g&#39;　#替换第2行 sed &#39;$s/原字符串/替换字符串/g&#39; #替换最后一行 sed &#39;2,5s/原字符串/替换字符串/g&#39; #替换2到5行 sed &#39;2,$s/原字符串/替换字符串/g&#39; #替换2到最后一行   批量替换字符串 c sed -i &amp;quot;s/查找字段/替换字段/g&amp;quot; `grep 查找字段 -rl 路径` sed -i &amp;quot;s/oldstring/newstring/g&amp;quot; `grep oldstring -rl yourdir   sed处理过的输出是直接输出到屏幕上的,使用参数”i”直接在文件中替换。</description>
     </item>
     
     <item>

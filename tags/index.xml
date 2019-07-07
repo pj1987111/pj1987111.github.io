@@ -6,10 +6,19 @@
     <description>Recent content in Tags on ZHY ZONE</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 02 Jul 2019 19:26:07 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 05 Jul 2019 22:12:05 +0800</lastBuildDate>
     
 	<atom:link href="https://pj1987111.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>linux</title>
+      <link>https://pj1987111.github.io/tags/linux/</link>
+      <pubDate>Fri, 05 Jul 2019 22:12:05 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/tags/linux/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>tools</title>

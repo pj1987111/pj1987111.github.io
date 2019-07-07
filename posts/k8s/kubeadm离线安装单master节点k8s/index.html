@@ -223,7 +223,7 @@ systemctl enable kubelet
 
 <p>用flannel的话除了版本号需要改，别的都可以不改。</p>
 
-<pre><code>kubeadm init --kubernetes-version=v1.14.2 --pod-network-cidr=10.224.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap
+<pre><code>kubeadm init --kubernetes-version=v1.14.2 --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap
 </code></pre>
 
 <p>执行后，页面上会输出类似字符串，需要记录下来。</p>

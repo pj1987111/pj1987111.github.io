@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>1 &middot; ZHY ZONE</title>
+  <title>sed命令 &middot; ZHY ZONE</title>
 
   
   <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
@@ -49,7 +49,7 @@
 
     <main class="content container">
     <div class="post">
-  <h1>1</h1>
+  <h1>sed命令</h1>
   <time datetime=2019-07-02T19:26:07&#43;0800 class="post-date">Tue, Jul 2, 2019</time>
   
 
@@ -85,10 +85,8 @@ sed 's/原字符串/替换字符串/g'
 </code></pre></li>
 </ol></li>
 
-<li><p>一些特殊字符的使用</p></li>
-</ol>
-
-<p>　　^ 表示行首
+<li><p>一些特殊字符的使用
+　　^ 表示行首
 　　$符号如果在引号中表示行尾，但是在引号外却表示末行(最后一行)</p>
 
 <pre><code class="language-c"># 注意这里的 &quot; &amp; &quot; 符号，如果没有 “&amp;”，就会直接将匹配到的字符串替换掉
@@ -101,25 +99,26 @@ sed '2,$s/原字符串/替换字符串/g' #替换2到最后一行
 </code></pre>
 
 <ol>
-<li><p>批量替换字符串</p>
-
-<pre><code class="language-c">sed -i &quot;s/查找字段/替换字段/g&quot; `grep 查找字段 -rl 路径`
+<li>批量替换字符串
+<code>c
+sed -i &quot;s/查找字段/替换字段/g&quot; `grep 查找字段 -rl 路径`
 sed -i &quot;s/oldstring/newstring/g&quot; `grep oldstring -rl yourdir
-</code></pre>
+</code></li>
+</ol></li>
 
-<ol>
 <li><p>sed处理过的输出是直接输出到屏幕上的,使用参数”i”直接在文件中替换。</p>
 
 <pre><code class="language-c"># 替换文件中的所有匹配项
 sed -i 's/原字符串/替换字符串/g' filename
-</code></pre></li>
-</ol></li>
+</code></pre>
 
+<ol>
 <li><p>多个替换可以在同一条命令中执行,用分号”;”分隔，其格式为:</p>
 
 <pre><code class="language-c"># 同时执行两个替换规则
 sed 's/^/添加的头部&amp;/g；s/$/&amp;添加的尾部/g' 
 </code></pre></li>
+</ol></li>
 </ol>
 
 </div>
