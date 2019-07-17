@@ -6,10 +6,28 @@
     <description>Recent content in Posts on ZHY ZONE</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 05 Jul 2019 22:12:05 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 15 Jul 2019 16:12:05 +0800</lastBuildDate>
     
 	<atom:link href="https://pj1987111.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Linux Shell 脚本攻略笔记</title>
+      <link>https://pj1987111.github.io/posts/linux/linux-shell-%E8%84%9A%E6%9C%AC%E6%94%BB%E7%95%A5%E7%AC%94%E8%AE%B0/</link>
+      <pubDate>Mon, 15 Jul 2019 16:12:05 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/linux/linux-shell-%E8%84%9A%E6%9C%AC%E6%94%BB%E7%95%A5%E7%AC%94%E8%AE%B0/</guid>
+      <description>Linux Shell 脚本攻略笔记[速查] Linux Shell 脚本攻略的笔记，markdown 编写，可以速查(ctrl+f)
+资源[](#资源) sed 简明教程
+awk 简明教程
+shell script[](#shell-script) #!/bin/bash # do something  run shell script[](#run-shell-script) sh script.sh or chmod a+x script.sh ./script.sh # 会读取首行的解释器, 执行  cmd
+cmd1; cmd2 or cmd1 cmd2  echo[](#echo) echo 的功能正如其名，就是基于标准输出打印一段文本
+echo &amp;quot;welcome to bash&amp;quot; echo welcome to bash  使用不带引号的 echo 时，无法显示分号
+使用单引号 echo 时，bash 不会对单引号中变量求值 ‘\$var’
+echo 中转义换行符
+默认情况，echo 将换行标志追加到文本尾部，可以忽略结尾换行符
+echo -n &#39;test\n&#39;  对字符串进行转义</description>
+    </item>
     
     <item>
       <title>Keepalived&#43;HAproxy实现高可用负载均衡</title>
