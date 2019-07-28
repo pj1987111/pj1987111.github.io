@@ -83,23 +83,18 @@ kubectl create -f dashboard-v2.0.0-beta2.yaml
 </code></pre>
 
 <p>然后可以通过查看安装组件，以及部署状态。
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/14/d43802becf1774469000afd6757087.jpg" alt="" /></p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/26/5401877e8ce5337ae813b6c33007f7.jpg" alt="" /></p>
 
-<h1 id="3-dashboard的注意点">3 dashboard的注意点</h1>
-
-<p>测试使用的k8s是1.15.0版本，目前适应的dashboard是dashboard:v2.0.0-beta2版本。
-新建的dashboard在kubernetes-dashboard位置</p>
-
-<h2 id="3-1-dashboard访问">3.1 dashboard访问</h2>
+<h1 id="3-dashboard访问">3 dashboard访问</h1>
 
 <p>这是我认为dashboard部署的重点，也是坑比较多的地方，我在里面陷了很久，在此分享一下。
 我尝试了4种访问dashboard服务的方式，其他服务都可以借鉴。</p>
 
-<h3 id="3-1-1-kubectl-proxy">3.1.1 kubectl proxy</h3>
+<h2 id="3-1-kubectl-proxy">3.1 kubectl proxy</h2>
 
 <p>kubectl proxy 的原理是将机器与kubernetes API Server之间做一个代理，默认情况下，只能从本机访问。
 可以使用<code>kubectl cluster-info</code>命令检查配置是否正确，集群是否可以访问。
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/a5/a88471516703413574663e81f9e0fa.jpg" alt="" /></p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/18/2ccbbd0fd9ecdab00f031799edbafb.jpg" alt="" /></p>
 
 <p>启动代理只需执行如下命令即可：</p>
 
@@ -115,7 +110,7 @@ Starting to serve on [::]:8001
 
 <p>然后在外网访问<code>http://&lt;master-ip&gt;:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/</code>就可以访问到登陆界面，但是却无法登陆，这是因为Dashboard只允许localhost和127.0.0.1使用HTTP连接进行访问，而其它地址只允许使用HTTPS。因此，如果需要在非本机访问Dashboard的话，只能选择其他访问方式。</p>
 
-<h3 id="3-1-2-nodeport">3.1.2 NodePort</h3>
+<h2 id="3-2-nodeport">3.2 NodePort</h2>
 
 <p>NodePort是将节点直接暴露在外网的一种方式，只建议在开发环境，单节点的安装方式中使用。</p>
 
@@ -146,11 +141,12 @@ kubernetes-dashboard   NodePort   10.103.5.139   &lt;none&gt;        443:31795/T
 
 <p>如上所示，Dashboard已经在31795端口上公开，现在可以在外部使用https://<cluster-ip>:31795进行访问。需要注意的是，在多节点的集群中，必须找到运行Dashboard节点的IP来访问，而不是Master节点的IP。
 但是，访问后显示如下：
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/87/eac6673274d1c3964d36c12006e24e.jpg" alt="" />
-由于证书问题，我们无法访问，需要在部署Dashboard时指定有效的证书，才可以访问。由于在正式环境中，并不推荐使用NodePort的方式来访问Dashboard。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/b3/b2edd693ce979d5c39772feef6278b.jpg" alt="" /></p>
+
+<p>由于证书问题，我们无法访问，需要在部署Dashboard时指定有效的证书，才可以访问。由于在正式环境中，并不推荐使用NodePort的方式来访问Dashboard。
 证书的配置后续再研究。。。</p>
 
-<h3 id="3-1-3-api-server">3.1.3 API Server</h3>
+<h2 id="3-3-api-server">3.3 API Server</h2>
 
 <p>如果Kubernetes API服务器是公开的，并可以从外部访问，那我们可以直接使用API Server的方式来访问，也是比较推荐的方式。</p>
 
@@ -194,50 +190,53 @@ openssl pkcs12 -export -clcerts -inkey kubecfg.key -in kubecfg.crt -out kubecfg.
 <ol>
 <li>导入上面生成的p12文件，这一步自行到网上参考。</li>
 <li>最后导入上面生成的p12文件，重新打开浏览器，显示如下：
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/87/eac6673274d1c3964d36c12006e24e.jpg" alt="" /></li>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/b5/428fced2f58a3895a4ac319392bef6.jpg" alt="" /></li>
 </ol>
 
 <p>点击确定，便可以看到熟悉的登录界面了：
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/b9/2ec9b885777c6ef26703d9924769e6.jpg" alt="" />
-token的获取将在3.2用户令牌中描述。</p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/c1/a884fc99b6eb4027ab66cb3b4c6e76.jpg" alt="" /></p>
+
+<p>token的获取将在3.2用户令牌中描述。</p>
 
 <pre><code>注：对于生产系统，我们应该为每个用户应该生成自己的证书，因为不同的用户会有不同的命名空间访问权限。
 </code></pre>
 
-<h3 id="3-1-4-ingress">3.1.4 Ingress</h3>
+<h2 id="3-4-ingress">3.4 Ingress</h2>
 
 <p>Ingress将开源的反向代理负载均衡器（如 Nginx、Apache、Haproxy等）与k8s进行集成，并可以动态的更新Nginx配置等，是比较灵活，更为推荐的暴露服务的方式。
 对于ingress的方式，由于篇幅较长，将在[《Nginx+Ingress-controller解决L7外网Web服务暴露和负载均衡》]()中详细介绍。</p>
 
-<h2 id="3-2-用户令牌">3.2 用户令牌</h2>
+<h1 id="4-用户令牌">4 用户令牌</h1>
 
 <p>经过服务发现暴露ip后，登陆dashboard可以看到如下界面，我们使用kubernetes-dashboard账号作为管理员登陆，那么这个账号令牌又是什么呢，从哪可以获取到呢？
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/91/6fccb7c4fbad85606d42bca81dc104.jpg" alt="" /></p>
-
-<p>我们可以通过命令查看这个账户的令牌是什么内容，命令是<code>kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
+我们可以通过命令查看这个账户的令牌是什么内容，命令是<code>kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
 </code></p>
 
-<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/ed/839b0a7c3258a9bf6464197bc0960c.jpg" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/04/1c9163c7feaf18460d06f25d9f8997.jpg" alt="" /></p>
 
-<h2 id="3-3-dashboard权限相关">3.3 dashboard权限相关</h2>
+<h1 id="5-dashboard-管理员权限">5 dashboard 管理员权限</h1>
 
 <p>Dashboard Role只给了kubernetes-dashboard比较小的权限
-创建role后，可以通过kubectl get role -nkubernetes-dashboard查看</p>
+创建role后，可以通过kubectl get role -nkubernetes-dashboard查看
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/0f/b0f0aa30bfbc7fae72a90389770b10.jpg" alt="" /></p>
 
-<h2 id="https-raw-githubusercontent-com-pj1987111-pj1987111-github-io-master-images-2e-17b95af3f26ae59f2ebd424fa116dd-jpg"><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/2e/17b95af3f26ae59f2ebd424fa116dd.jpg" alt="" /></h2>
+<hr />
 
-<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/f4/538d5035b555a32a5db34d5ef5de30.jpg" alt="" />
-还可以通过kubectl get secret来查看Secret-token列表：
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/cc/18b38fb7bb261f4ae2d8e826129a7a.jpg" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/be/a14586a40ee4aac2dacbf7887aec82.jpg" alt="" /></p>
+
+<p>还可以通过kubectl get secret来查看Secret-token列表：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/f1/486930897106a8261e278357da50f4.jpg" alt="" /></p>
 
 <p>用户登陆后，在dashboard界面将看到很多权限不足的报错，类似如下图所示：
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/6e/2979f109f16e45481e4194b2f90fe9.jpg" alt="" /></p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/a2/6818bdb77d5870cf426d3db8c9e8d8.jpg" alt="" /></p>
 
-<p>所以通过将kubernetes-dashboard账号权限改成cluster-admin就可以获得无比大的管理员权限，创建完之前所示的yaml后，可以来查看一下kube-system命名空间下的ClusterRoleBinding列表：
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/e1/aa87bd19830ff05a1ffc89950abc6e.jpg" alt="" /></p>
+<p>所以通过将kubernetes-dashboard账号权限改成cluster-admin就可以获得无比大的管理员权限，创建完之前所示的yaml后，可以来查看一下kubernetes-dashboard命名空间下的ClusterRoleBinding列表：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/5d/6eacdecbb1997eefb55c44fa9b6c96.jpg" alt="" /></p>
 
 <p>再次使用kubernetes-dashboard用户登录dashboard管理界面，我们发现不在有警告提示，而且权限超级大：
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/7f/55b4d16a96e46dedc975b3a55aa662.jpg" alt="" /></p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/cc/39c13ab4d1aa3f60a0d04b02747f7a.jpg" alt="" /></p>
+
+<h1 id="6-多用户权限隔离">6 多用户权限隔离</h1>
 
 </div>
 
