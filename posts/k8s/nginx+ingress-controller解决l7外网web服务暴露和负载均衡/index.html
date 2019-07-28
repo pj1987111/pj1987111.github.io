@@ -442,11 +442,14 @@ spec:
 <p>这种使用nginx-ingress给web服务做外部服务暴露的玩法看上去很爽，但是这种搞法并不完美：
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/79/ef845d4f12d8cc606776c7d8ce60e2.jpg" alt="" /></p>
 
-<p>主要有以下四个问题：
-1. 由于微服务架构以及Docker技术和Kubernetes编排工具最近几年才开始逐渐流行，所以一开始的反向代理服务器比如Nginx/HAProxy并未提供其支持，毕竟他们也不是先知，所以才会出现IngressController这种东西来做Kubernetes和前端负载均衡器如Nginx/HAProxy之间做衔接，即Ingress Controller的存在就是为了能跟Kubernetes交互，又能写 Nginx/HAProxy配置，还能 reload 它，这是一种折中方案。
-2. 当你要添加了一个新的服务或hostname而需要升级你的ingress配置文件的时候，也就是说（你在一个持续集成的环境中）你要为你的pipeline去增加一个额外的步骤，让它去检查ingress的配置是否需要更新（这意味着在某种程度上你的所有microservices之间共享一个ingress）或者你是需要把你的pipeline分成两部分，其中一部分用来更新ingress（也就是说一个微服务的部署不是独立的，它还需要去更新ingress的配置才能生效）。
-3. 由于多了一层ingress controll，其性能损耗相对增加了许多。
-4. 没有一个直观的界面可以方便的查看其转发的规则和过程。</p>
+<p>主要有以下四个问题：</p>
+
+<ol>
+<li>由于微服务架构以及Docker技术和Kubernetes编排工具最近几年才开始逐渐流行，所以一开始的反向代理服务器比如Nginx/HAProxy并未提供其支持，毕竟他们也不是先知，所以才会出现IngressController这种东西来做Kubernetes和前端负载均衡器如Nginx/HAProxy之间做衔接，即Ingress Controller的存在就是为了能跟Kubernetes交互，又能写 Nginx/HAProxy配置，还能 reload 它，这是一种折中方案。</li>
+<li>当你要添加了一个新的服务或hostname而需要升级你的ingress配置文件的时候，也就是说（你在一个持续集成的环境中）你要为你的pipeline去增加一个额外的步骤，让它去检查ingress的配置是否需要更新（这意味着在某种程度上你的所有microservices之间共享一个ingress）或者你是需要把你的pipeline分成两部分，其中一部分用来更新ingress（也就是说一个微服务的部署不是独立的，它还需要去更新ingress的配置才能生效）。</li>
+<li>由于多了一层ingress controll，其性能损耗相对增加了许多。</li>
+<li>没有一个直观的界面可以方便的查看其转发的规则和过程。</li>
+</ol>
 
 <p>Traefik的诞生似乎很爽的解决了问题，它保留了nginx-ingress的所有优点，而且还解决了nginx-ingress的缺点。Traefik天生就是提供了对Kubernetes的支持，也就是说Traefik本身就能跟Kubernetes API交互，感知后端变化，因此在使用Traefik时，Ingress Controller已经没有卵用了。
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/c6/c72b94ccc8c2627726a1eada9b08b6.jpg" alt="" /></p>
