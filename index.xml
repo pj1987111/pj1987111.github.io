@@ -6,10 +6,46 @@
     <description>Recent content on ZHY ZONE</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 15 Jul 2019 16:12:05 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 28 Jul 2019 12:04:05 +0800</lastBuildDate>
     
 	<atom:link href="https://pj1987111.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Nginx&#43;Ingress-controller解决L7外网Web服务暴露和负载均衡</title>
+      <link>https://pj1987111.github.io/posts/k8s/nginx&#43;ingress-controller%E8%A7%A3%E5%86%B3l7%E5%A4%96%E7%BD%91web%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</link>
+      <pubDate>Sun, 28 Jul 2019 12:04:05 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/k8s/nginx&#43;ingress-controller%E8%A7%A3%E5%86%B3l7%E5%A4%96%E7%BD%91web%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>k8s小技巧</title>
+      <link>https://pj1987111.github.io/posts/k8s/k8s%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
+      <pubDate>Fri, 26 Jul 2019 10:44:05 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/k8s/k8s%E5%B0%8F%E6%8A%80%E5%B7%A7/</guid>
+      <description> 1 设置默认ns 1.1 问题描述： 之前装过jhub，后来删除，jhub创建时候会修改namespace从default到jhub。后来导致所有缺省namespace的应用都装在jhub上，手动删除jhub的ns后新pod创建不上，报错找不到jhub。
+1.2 解决方式： 输入kubectl config view命令查看与context相关的配置，如下图所示，可见name是kubernetes-admin@kubernetes的namespace是jhub。 输入kubectl config set-context $(kubectl config current-context) &amp;ndash;namespace=default 命令将namespace的jhub改成default即可。 $(kubectl config current-context)的输出是kubernetes-admin@kubernetes。修改后输出结果如下图所示。 </description>
+    </item>
+    
+    <item>
+      <title>k8s部署dashboard与踩坑</title>
+      <link>https://pj1987111.github.io/posts/k8s/k8s%E9%83%A8%E7%BD%B2dashboard%E4%B8%8E%E8%B8%A9%E5%9D%91/</link>
+      <pubDate>Tue, 23 Jul 2019 13:42:05 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/k8s/k8s%E9%83%A8%E7%BD%B2dashboard%E4%B8%8E%E8%B8%A9%E5%9D%91/</guid>
+      <description>1 简介 使用kube-dashboard来完成日常的一些k8s集群运维工作。
+Dashboard是Kubernetes社区官方开发的仪表板，有了仪表板后管理者就能够透过 Web-based 方式来管理 Kubernetes 集群，除了提升管理方便，也让资源可视化，让人更直觉看见系统信息的呈现结果。
+下面我们就来看如何基于部署kube-dashboard。
+2 安装kube-dashboard组件 在安装之前，先通过删除namespace来清除之前版本的内容，通过命令
+kubectl delete ns kubernetes-dashboard  下载yaml文件，使用目前最新的v2.0.0-beta2版本，很好的适应k8s-1.15.0版本。 需要修改两处地方： * 修改镜像地址 sed命令中第一个匹配 * 默认配置文件中ClusterRole为kubernetes-dashboard权限过低，修改成cluster-admin sed命令中第二个匹配，上一行满足替换下一行的模式。 为何更改，下文将详细介绍。
+#官网下载yaml curl -o dashboard-v2.0.0-beta2.yaml https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta2/aio/deploy/recommended.yaml #更改镜像地址，改成私仓的地址 sed -i &amp;quot;s/kubernetesui/10.57.26.15:4000/g;/kind: ClusterRole/{n;s/name: kubernetes-dashboard/name: cluster-admin/g}&amp;quot; dashboard-v2.0.0-beta2.yaml #安装 kubectl create -f dashboard-v2.0.0-beta2.yaml  然后可以通过查看安装组件，以及部署状态。 3 dashboard的注意点 测试使用的k8s是1.15.0版本，目前适应的dashboard是dashboard:v2.0.0-beta2版本。 新建的dashboard在kubernetes-dashboard位置
+3.1 dashboard访问 这是我认为dashboard部署的重点，也是坑比较多的地方，我在里面陷了很久，在此分享一下。 我尝试了4种访问dashboard服务的方式，其他服务都可以借鉴。
+3.1.1 kubectl proxy kubectl proxy 的原理是将机器与kubernetes API Server之间做一个代理，默认情况下，只能从本机访问。 可以使用kubectl cluster-info命令检查配置是否正确，集群是否可以访问。 启动代理只需执行如下命令即可：
+$ kubectl proxy Starting to serve on 127.</description>
+    </item>
     
     <item>
       <title>Linux Shell 脚本攻略笔记</title>
@@ -42,6 +78,15 @@ HAProxy提供高可用性、负载均衡以及基于TCP和HTTP应用的代理，
 Keepalived监控A、B上的HAproxy，利用Keepalived的VIP漂移技术，若A、B上的HAprox都工作正常，则VIP与优先级别高的服务器（主服务器）绑定，当主服务器当掉时，则与从服务器绑定，而VIP则是暴露给外部访问的ip；HAproxy利用Keepalived生产的VIP对应用所在的nginx进行高可用保障。
 部署图如下图所示。 2 HAProxy安装 2.1 编译安装 tar zxvf haproxy-1.7.8.tar.gz cd haproxy-1.7.8 make TARGET=linux2628 PREFIX=/usr/local/haproxy make install PREFIX=/usr/local/haproxy  2.2 配置 2.2.1 编写配置文件 默认安装目录下没有配置文件，只有”doc”，“sbin”，“share”三个目录，可手工创建目录及配置文件； 配置文件中使用的应用程序ip是10.57.26.5，实际使用时需要修改。
 mkdir -p /usr/local/haproxy/etc cat&amp;gt;&amp;gt;/usr/local/haproxy/etc/haproxy.cfg&amp;lt;&amp;lt;EOF #全局配置, 用于设定义全局参数, 属于进程级的配置, 通常与操作系统配置有关. global #定义全局日志, 配置在本地, 通过local0 输出, 默认是info级别，可配置两条 log 127.0.0.1 local0 warning #定义日志级别【error warning info debug】 #log 127.0.0.1 local1 info #运行路径 chroot /usr/local/haproxy #PID 文件存放路径 pidfile /var/run/haproxy.pid #设置每haproxy进程的最大并发连接数, 其等同于命令行选项“-n”; “ulimit -n”自动计算的结果参照此参数设定.</description>
+    </item>
+    
+    <item>
+      <title>KDC服务安装及配置</title>
+      <link>https://pj1987111.github.io/posts/hadoop/kdc%E6%9C%8D%E5%8A%A1%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/</link>
+      <pubDate>Fri, 05 Jul 2019 22:11:36 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/hadoop/kdc%E6%9C%8D%E5%8A%A1%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/</guid>
+      <description>1 源码安装 1.1 依赖下载与安装 cd /root/kdc/src wget http://10.57.30.218:1080/downloads/gcc/gcc-c++.tar.gz wget http://10.57.30.218:1080/downloads/krb5/byacc.tar.gz wget http://10.57.30.218:1080/downloads/krb5/krb5-1.17.tar.gz cd gcc tar zxvf gcc-c++.tar.gz cd gcc-c++ yum install * cd byacc-20190617 ./configure --prefix=/usr/local/byacc make make install cd krb5-1.17/src ./configure --prefix=/usr/local/krb5 make make install  1.2 环境变量添加 ln -s /usr/local/byacc/bin/yacc /usr/local/bin/yacc cat &amp;gt;&amp;gt; /etc/profile &amp;lt;&amp;lt; EOF KDC_HOME=/usr/local/krb5 PATH=\$PATH:\$KDC_HOME/bin:\$KDC_HOME/sbin EOF source /etc/profile  2 配置 2.1 /etc/krb5.conf配置 cat &amp;gt; /etc/krb5.conf &amp;lt;&amp;lt; EOF # Configuration snippets may be placed in this directory as well includedir /etc/krb5.</description>
     </item>
     
     <item>

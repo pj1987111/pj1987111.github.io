@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>k8s小技巧 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>k8s小技巧</h1>
+  <time datetime=2019-07-26T10:44:05&#43;0800 class="post-date">Fri, Jul 26, 2019</time>
+  
+
+<h1 id="1-设置默认ns">1 设置默认ns</h1>
+
+<h1 id="1-1-问题描述">1.1 问题描述：</h1>
+
+<p>之前装过jhub，后来删除，jhub创建时候会修改namespace从default到jhub。后来导致所有缺省namespace的应用都装在jhub上，手动删除jhub的ns后新pod创建不上，报错找不到jhub。</p>
+
+<h1 id="1-2-解决方式">1.2 解决方式：</h1>
+
+<p>输入kubectl config view命令查看与context相关的配置，如下图所示，可见name是kubernetes-admin@kubernetes的namespace是jhub。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/84/1e98061a201e21f30d108f72656911.jpg" alt="" /></p>
+
+<p>输入kubectl config set-context $(kubectl config current-context) &ndash;namespace=default 命令将namespace的jhub改成default即可。
+$(kubectl config current-context)的输出是kubernetes-admin@kubernetes。修改后输出结果如下图所示。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/ce/55e6be6da1546dcce5cd9d7086e74e.jpg" alt="" /></p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

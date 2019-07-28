@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>KDC服务安装及配置 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>KDC服务安装及配置</h1>
+  <time datetime=2019-07-05T22:11:36&#43;0800 class="post-date">Fri, Jul 5, 2019</time>
+  
+
+<h1 id="1-源码安装">1 源码安装</h1>
+
+<h2 id="1-1-依赖下载与安装">1.1 依赖下载与安装</h2>
+
+<pre><code>cd /root/kdc/src
+wget http://10.57.30.218:1080/downloads/gcc/gcc-c++.tar.gz
+wget http://10.57.30.218:1080/downloads/krb5/byacc.tar.gz 
+wget http://10.57.30.218:1080/downloads/krb5/krb5-1.17.tar.gz
+
+cd gcc
+tar zxvf gcc-c++.tar.gz
+cd gcc-c++
+yum install *
+
+cd byacc-20190617
+./configure --prefix=/usr/local/byacc
+make
+make install
+
+cd krb5-1.17/src 
+./configure --prefix=/usr/local/krb5
+make
+make install
+</code></pre>
+
+<h2 id="1-2-环境变量添加">1.2 环境变量添加</h2>
+
+<pre><code>ln -s /usr/local/byacc/bin/yacc /usr/local/bin/yacc
+
+cat &gt;&gt; /etc/profile &lt;&lt; EOF
+KDC_HOME=/usr/local/krb5
+PATH=\$PATH:\$KDC_HOME/bin:\$KDC_HOME/sbin
+EOF
+source /etc/profile
+</code></pre>
+
+<h1 id="2-配置">2 配置</h1>
+
+<h2 id="2-1-etc-krb5-conf配置">2.1 /etc/krb5.conf配置</h2>
+
+<pre><code>cat &gt; /etc/krb5.conf &lt;&lt; EOF
+# Configuration snippets may be placed in this directory as well
+includedir /etc/krb5.conf.d/
+
+[logging]
+ default = FILE:/var/log/krb5libs.log
+ kdc = FILE:/var/log/krb5kdc.log
+ admin_server = FILE:/var/log/kadmind.log
+
+[libdefaults]
+ default_realm = TONGDUN.COM
+ dns_lookup_realm = false
+ dns_lookup_kdc = false
+ ticket_lifetime = 24h
+ renew_lifetime = 7d
+ forwardable = true
+# pkinit_anchors = /etc/pki/tls/certs/ca-bundle.crt
+# default_realm = EXAMPLE.COM
+# default_ccache_name = KEYRING:persistent:%{uid}
+
+[realms]
+ TONGDUN.COM = {
+  kdc = k8s-01
+  admin_server = k8s-01
+ }
+
+[domain_realm]
+ .k8s-01 = TONGDUN.COM
+ k8s-01= TONGDUN.COM
+EOF
+</code></pre>
+
+<h2 id="2-2-var-kerberos-krb5kdc-kadm5-acl配置">2.2 /var/kerberos/krb5kdc/kadm5.acl配置</h2>
+
+<pre><code>cat &gt; /usr/local/krb5/var/krb5kdc/kadm5.acl &lt;&lt;EOF
+*/admin@TONGDUN.COM    *
+EOF
+</code></pre>
+
+<h2 id="2-3-var-kerberos-krb5kdc-kdc-conf配置">2.3 /var/kerberos/krb5kdc/kdc.conf配置</h2>
+
+<pre><code>cat &gt; /usr/local/krb5/var/krb5kdc/kdc.conf &lt;&lt;EOF
+[kdcdefaults]
+ kdc_ports = 88
+ kdc_tcp_ports = 88
+
+[realms]
+ TONGDUN.COM= {
+  #master_key_type = aes256-cts
+
+  master_key_type = aes256-cts
+
+  max_life = 1d 0h 0m 0s
+  max_renewable_life= 900d 0h 0m 0s
+  acl_file = /usr/local/krb5/var/krb5kdc/kadm5.acl
+  dict_file = /usr/share/dict/words
+  admin_keytab = /usr/local/krb5/var/krb5kdc/kadm5.keytab
+  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+ }
+EOF
+</code></pre>
+
+<h2 id="2-4-krb5kdc启动">2.4 krb5kdc启动</h2>
+
+<pre><code>[root@k8s-01 krb5kdc]# krb5kdc
+</code></pre>
+
+<h2 id="2-5-kadmind启动">2.5 kadmind启动</h2>
+
+<pre><code>[root@k8s-01 krb5kdc]# kadmind
+</code></pre>
+
+<h1 id="3-创建kerberos数据库">3 创建Kerberos数据库</h1>
+
+<pre><code>kdb5_util create –r TONGDUN.COM -s
+</code></pre>
+
+<p>此处需要输入Kerberos数据库的密码，测试中密码输入为admin</p>
+
+<h1 id="4-创建kerberos的管理账号">4 创建Kerberos的管理账号</h1>
+
+<pre><code>[root@k8s-01 src]# kadmin.local
+Authenticating as principal root/admin@TONGDUN.COM with password.
+kadmin.local:  addprinc admin/admin@TONGDUN.COM
+WARNING: no policy specified for admin/admin@TONGDUN.COM; defaulting to no policy
+Enter password for principal &quot;admin/admin@TONGDUN.COM&quot;:
+Re-enter password for principal &quot;admin/admin@TONGDUN.COM&quot;:
+Principal &quot;admin/admin@TONGDUN.COM&quot; created.
+kadmin.local:  exit
+[root@k8s-01 src]#
+</code></pre>
+
+<p>此处admin/admin@TONGDUN.COM为管理员账号，需要输入密码，测试中使用admin作为密码。</p>
+
+<h1 id="5-测试kerberos的管理员账号">5 测试Kerberos的管理员账号</h1>
+
+<pre><code>[root@k8s-01 krb5kdc]# kinit admin/admin@TONGDUN.COM
+Password for admin/admin@TONGDUN.COM:
+[root@k8s-01 krb5kdc]# klist
+Ticket cache: FILE:/tmp/krb5cc_0
+Default principal: admin/admin@TONGDUN.COM
+
+Valid starting       Expires              Service principal
+2019-07-25T14:34:33  2019-07-26T14:34:33  krbtgt/TONGDUN.COM@TONGDUN.COM
+	renew until 2019-07-25T14:34:33
+</code></pre>
+
+<p>参考
+<a href="http://wiki.tongdun.me/pages/viewpage.action?pageId=25867025">http://wiki.tongdun.me/pages/viewpage.action?pageId=25867025</a></p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

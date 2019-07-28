@@ -6,10 +6,46 @@
     <description>Recent content in k8s on ZHY ZONE</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 24 Jun 2019 14:05:02 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 28 Jul 2019 12:04:05 +0800</lastBuildDate>
     
 	<atom:link href="https://pj1987111.github.io/tags/k8s/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Nginx&#43;Ingress-controller解决L7外网Web服务暴露和负载均衡</title>
+      <link>https://pj1987111.github.io/posts/k8s/nginx&#43;ingress-controller%E8%A7%A3%E5%86%B3l7%E5%A4%96%E7%BD%91web%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</link>
+      <pubDate>Sun, 28 Jul 2019 12:04:05 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/k8s/nginx&#43;ingress-controller%E8%A7%A3%E5%86%B3l7%E5%A4%96%E7%BD%91web%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>k8s小技巧</title>
+      <link>https://pj1987111.github.io/posts/k8s/k8s%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
+      <pubDate>Fri, 26 Jul 2019 10:44:05 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/k8s/k8s%E5%B0%8F%E6%8A%80%E5%B7%A7/</guid>
+      <description> 1 设置默认ns 1.1 问题描述： 之前装过jhub，后来删除，jhub创建时候会修改namespace从default到jhub。后来导致所有缺省namespace的应用都装在jhub上，手动删除jhub的ns后新pod创建不上，报错找不到jhub。
+1.2 解决方式： 输入kubectl config view命令查看与context相关的配置，如下图所示，可见name是kubernetes-admin@kubernetes的namespace是jhub。 输入kubectl config set-context $(kubectl config current-context) &amp;ndash;namespace=default 命令将namespace的jhub改成default即可。 $(kubectl config current-context)的输出是kubernetes-admin@kubernetes。修改后输出结果如下图所示。 </description>
+    </item>
+    
+    <item>
+      <title>k8s部署dashboard与踩坑</title>
+      <link>https://pj1987111.github.io/posts/k8s/k8s%E9%83%A8%E7%BD%B2dashboard%E4%B8%8E%E8%B8%A9%E5%9D%91/</link>
+      <pubDate>Tue, 23 Jul 2019 13:42:05 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/k8s/k8s%E9%83%A8%E7%BD%B2dashboard%E4%B8%8E%E8%B8%A9%E5%9D%91/</guid>
+      <description>1 简介 使用kube-dashboard来完成日常的一些k8s集群运维工作。
+Dashboard是Kubernetes社区官方开发的仪表板，有了仪表板后管理者就能够透过 Web-based 方式来管理 Kubernetes 集群，除了提升管理方便，也让资源可视化，让人更直觉看见系统信息的呈现结果。
+下面我们就来看如何基于部署kube-dashboard。
+2 安装kube-dashboard组件 在安装之前，先通过删除namespace来清除之前版本的内容，通过命令
+kubectl delete ns kubernetes-dashboard  下载yaml文件，使用目前最新的v2.0.0-beta2版本，很好的适应k8s-1.15.0版本。 需要修改两处地方： * 修改镜像地址 sed命令中第一个匹配 * 默认配置文件中ClusterRole为kubernetes-dashboard权限过低，修改成cluster-admin sed命令中第二个匹配，上一行满足替换下一行的模式。 为何更改，下文将详细介绍。
+#官网下载yaml curl -o dashboard-v2.0.0-beta2.yaml https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta2/aio/deploy/recommended.yaml #更改镜像地址，改成私仓的地址 sed -i &amp;quot;s/kubernetesui/10.57.26.15:4000/g;/kind: ClusterRole/{n;s/name: kubernetes-dashboard/name: cluster-admin/g}&amp;quot; dashboard-v2.0.0-beta2.yaml #安装 kubectl create -f dashboard-v2.0.0-beta2.yaml  然后可以通过查看安装组件，以及部署状态。 3 dashboard的注意点 测试使用的k8s是1.15.0版本，目前适应的dashboard是dashboard:v2.0.0-beta2版本。 新建的dashboard在kubernetes-dashboard位置
+3.1 dashboard访问 这是我认为dashboard部署的重点，也是坑比较多的地方，我在里面陷了很久，在此分享一下。 我尝试了4种访问dashboard服务的方式，其他服务都可以借鉴。
+3.1.1 kubectl proxy kubectl proxy 的原理是将机器与kubernetes API Server之间做一个代理，默认情况下，只能从本机访问。 可以使用kubectl cluster-info命令检查配置是否正确，集群是否可以访问。 启动代理只需执行如下命令即可：
+$ kubectl proxy Starting to serve on 127.</description>
+    </item>
     
     <item>
       <title>k8s高可用架构</title>
