@@ -108,7 +108,14 @@ Starting to serve on 127.0.0.1:8001
 Starting to serve on [::]:8001
 </code></pre>
 
-<p>然后在外网访问<code>http://&lt;master-ip&gt;:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/</code>就可以访问到登陆界面，但是却无法登陆，这是因为Dashboard只允许localhost和127.0.0.1使用HTTP连接进行访问，而其它地址只允许使用HTTPS。因此，如果需要在非本机访问Dashboard的话，只能选择其他访问方式。</p>
+<p>然后在外网访问<code>http://&lt;master-ip&gt;:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/</code>就可以访问到登陆界面，但是却无法登陆，这是因为Dashboard只允许localhost和127.0.0.1使用HTTP连接进行访问，而其它地址只允许使用HTTPS。因此，如果需要在非本机访问Dashboard的话，只能选择其他访问方式。
+写法的补充：
+如下图所示是dashboard的endpoints输出，endpoints输出中的部分信息填入，并添加http或https的信息，还需要添加端口号，因为dashboard是443默认，所以:后面可以不加任何东西
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/a3/ef0b920e3ec7c427304595e1022cd1.jpg" alt="" />
+换个例子，tomcat的service，暴露8080端口号的访问路径如下：
+<code>http://&lt;master-ip&gt;:8001/api/v1/namespaces/default/services/http:tomcat:8080/proxy/</code>
+对应endpoint如下
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/43/9f988377f8ad915bbf5f5fffea9c18.jpg" alt="" /></p>
 
 <h2 id="3-2-nodeport">3.2 NodePort</h2>
 
@@ -148,7 +155,8 @@ kubernetes-dashboard   NodePort   10.103.5.139   &lt;none&gt;        443:31795/T
 
 <h2 id="3-3-api-server">3.3 API Server</h2>
 
-<p>如果Kubernetes API服务器是公开的，并可以从外部访问，那我们可以直接使用API Server的方式来访问，也是比较推荐的方式。</p>
+<p>API Server访问方式和proxy方式最大的区别在于，路径开头是https的。
+如果Kubernetes API服务器是公开的，并可以从外部访问，那我们可以直接使用API Server的方式来访问，也是比较推荐的方式。</p>
 
 <p>Dashboard的访问地址为：
 <code>https://&lt;master-ip&gt;:&lt;apiserver-port&gt;/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/</code>
@@ -183,7 +191,7 @@ kubernetes-dashboard   NodePort   10.103.5.139   &lt;none&gt;        443:31795/T
 <code>grep 'client-key-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d &gt;&gt; kubecfg.key</code><br/>
 生成p12<br/>
 <code>openssl pkcs12 -export -clcerts -inkey kubecfg.key -in kubecfg.crt -out kubecfg.p12 -name &quot;kubernetes-client&quot;</code><br/></li>
-<li>导入上面生成的p12文件，这一步自行到网上参考。</li>
+<li>导入上面生成的p12文件，这一步自行到网上参考。最后好像还需要对浏览器清理缓存。</li>
 <li>最后导入上面生成的p12文件，重新打开浏览器，显示如下：
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/b5/428fced2f58a3895a4ac319392bef6.jpg" alt="" /></li>
 <li>点击确定，便可以看到熟悉的登录界面了：
@@ -199,6 +207,15 @@ kubernetes-dashboard   NodePort   10.103.5.139   &lt;none&gt;        443:31795/T
 
 <p>Ingress将开源的反向代理负载均衡器（如 Nginx、Apache、Haproxy等）与k8s进行集成，并可以动态的更新Nginx配置等，是比较灵活，更为推荐的暴露服务的方式。
 对于ingress的方式，由于篇幅较长，将在[《Nginx+Ingress-controller解决L7外网Web服务暴露和负载均衡》]()中详细介绍。</p>
+
+<h2 id="3-5-服务暴露小结">3.5 服务暴露小结</h2>
+
+<p>简单说几句四个暴露方式的差异点：
+1. NodePort需要寄主机也开端口来对pod中服务的端口做映射。
+2. clusterip方式不需要寄主机开端口，是比较好的适应生产模式的方式。
+3. clusterip的发现主要有三种，分别是proxy，开放api server以及ingress。
+4. proxy方式是http方式暴露，apiserver方式是https方式暴露。
+5. ingress可以通过域名的方式访问service ip。根据不同实现，有nginx，traefik等。</p>
 
 <h1 id="4-用户令牌">4 用户令牌</h1>
 
@@ -230,6 +247,13 @@ kubernetes-dashboard   NodePort   10.103.5.139   &lt;none&gt;        443:31795/T
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/cc/39c13ab4d1aa3f60a0d04b02747f7a.jpg" alt="" /></p>
 
 <h1 id="6-多用户权限隔离">6 多用户权限隔离</h1>
+
+<p><a href="http://wiki.tongdun.me/pages/viewpage.action?pageId=20166021">http://wiki.tongdun.me/pages/viewpage.action?pageId=20166021</a></p>
+
+<h1 id="7-kubernetes-dashboard的官方介绍">7 Kubernetes-Dashboard的官方介绍</h1>
+
+<p><a href="http://wiki.tongdun.me/pages/viewpage.action?pageId=20166049">http://wiki.tongdun.me/pages/viewpage.action?pageId=20166049</a>
+<a href="https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/">https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/</a></p>
 
 </div>
 

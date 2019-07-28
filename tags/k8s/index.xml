@@ -12,12 +12,18 @@
     
     
     <item>
-      <title>Nginx&#43;Ingress-controller解决L7外网Web服务暴露和负载均衡</title>
+      <title>Nginx&#43;Ingress-controller解决服务暴露和负载均衡</title>
       <link>https://pj1987111.github.io/posts/k8s/nginx&#43;ingress-controller%E8%A7%A3%E5%86%B3l7%E5%A4%96%E7%BD%91web%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</link>
       <pubDate>Sun, 28 Jul 2019 12:04:05 +0800</pubDate>
       
       <guid>https://pj1987111.github.io/posts/k8s/nginx&#43;ingress-controller%E8%A7%A3%E5%86%B3l7%E5%A4%96%E7%BD%91web%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</guid>
-      <description></description>
+      <description>1 环境说明和准备 Ingress 使用开源的反向代理负载均衡器来实现对外暴露服务，比如 Nginx、Apache、Haproxy等。Nginx Ingress 一般有三个组件组成：
+Nginx：反向代理负载均衡器
+Ingress Controller ：Ingress Controller 可以理解为控制器，它通过不断的跟 Kubernetes API 交互，实时获取后端 Service、Pod 等的变化，比如新增、删除等，然后结合 Ingress 定义的规则生成配置，然后动态更新上边的 Nginx 负载均衡器，并刷新使配置生效，来达到服务自动发现的作用。
+Ingress： Ingress 则是定义规则，通过它定义某个域名的请求过来之后转发到集群中指定的 Service。它可以通过 Yaml 文件定义，可以给一个或多个 Service 定义一个或多个 Ingress 规则。
+以上三者有机的协调配合起来，就可以完成 Kubernetes 集群服务的暴露。
+拿前后端分离的frontend和testweb两个web服务为例，大致拓扑如下： 2 安装部署 2.1 安装部署default-backend 创建Deployment，副本为1，并创建service绑定pod。配置文件如下所示：
+apiVersion: extensions/v1beta1 kind: Deployment metadata: name: default-http-backend labels: k8s-app: default-http-backend namespace: kube-system spec: replicas: 1 template: metadata: labels: k8s-app: default-http-backend spec: terminationGracePeriodSeconds: 60 containers: - name: default-http-backend # Any image is permissable as long as: # 1.</description>
     </item>
     
     <item>
@@ -28,6 +34,29 @@
       <guid>https://pj1987111.github.io/posts/k8s/k8s%E5%B0%8F%E6%8A%80%E5%B7%A7/</guid>
       <description> 1 设置默认ns 1.1 问题描述： 之前装过jhub，后来删除，jhub创建时候会修改namespace从default到jhub。后来导致所有缺省namespace的应用都装在jhub上，手动删除jhub的ns后新pod创建不上，报错找不到jhub。
 1.2 解决方式： 输入kubectl config view命令查看与context相关的配置，如下图所示，可见name是kubernetes-admin@kubernetes的namespace是jhub。 输入kubectl config set-context $(kubectl config current-context) &amp;ndash;namespace=default 命令将namespace的jhub改成default即可。 $(kubectl config current-context)的输出是kubernetes-admin@kubernetes。修改后输出结果如下图所示。 </description>
+    </item>
+    
+    <item>
+      <title>不错的参考文章</title>
+      <link>https://pj1987111.github.io/posts/k8s/%E4%B8%8D%E9%94%99%E7%9A%84%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0/</link>
+      <pubDate>Tue, 23 Jul 2019 21:42:05 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/k8s/%E4%B8%8D%E9%94%99%E7%9A%84%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0/</guid>
+      <description>1 kubernetes-crash-course系列 0 - Kubernetes Overview
+1 - Kubernetes Objects 
+2 - Kubernetes Pods
+3 - Kubernetes Services and Ingress
+4 - Kubernetes Storage</description>
+    </item>
+    
+    <item>
+      <title>mysql</title>
+      <link>https://pj1987111.github.io/posts/k8s/mysql/</link>
+      <pubDate>Tue, 23 Jul 2019 20:42:05 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/k8s/mysql/</guid>
+      <description> 1 进入mysql的pod，并创建数据库，表，并插入数据。 执行 kubectl delete pod mysql-6d6cb6c594-t6k4w 后，删除老的pod，deploy会新建同样的pod做恢复。
+再进入新的pod中，show database，可以发现之前那个mysql pod建立的数据库，表和数据都不存在，如图所示： </description>
     </item>
     
     <item>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Nginx&#43;Ingress-controller解决L7外网Web服务暴露和负载均衡 &middot; ZHY ZONE</title>
+  <title>Nginx&#43;Ingress-controller解决服务暴露和负载均衡 &middot; ZHY ZONE</title>
 
   
   <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
@@ -49,9 +49,414 @@
 
     <main class="content container">
     <div class="post">
-  <h1>Nginx&#43;Ingress-controller解决L7外网Web服务暴露和负载均衡</h1>
+  <h1>Nginx&#43;Ingress-controller解决服务暴露和负载均衡</h1>
   <time datetime=2019-07-28T12:04:05&#43;0800 class="post-date">Sun, Jul 28, 2019</time>
   
+
+<h1 id="1-环境说明和准备">1 环境说明和准备</h1>
+
+<p>Ingress 使用开源的反向代理负载均衡器来实现对外暴露服务，比如 Nginx、Apache、Haproxy等。Nginx Ingress 一般有三个组件组成：</p>
+
+<p><strong>Nginx</strong>：反向代理负载均衡器</p>
+
+<p><strong>Ingress Controller</strong> ：Ingress Controller 可以理解为控制器，它通过不断的跟 Kubernetes API 交互，实时获取后端 Service、Pod 等的变化，比如新增、删除等，然后结合 Ingress 定义的规则生成配置，然后动态更新上边的 Nginx 负载均衡器，并刷新使配置生效，来达到服务自动发现的作用。</p>
+
+<p><strong>Ingress</strong>： Ingress 则是定义规则，通过它定义某个域名的请求过来之后转发到集群中指定的 Service。它可以通过 Yaml 文件定义，可以给一个或多个 Service 定义一个或多个 Ingress 规则。</p>
+
+<p>以上三者有机的协调配合起来，就可以完成 Kubernetes 集群服务的暴露。</p>
+
+<p>拿前后端分离的frontend和testweb两个web服务为例，大致拓扑如下：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/5c/c7b0836a0cb0ebd78ef63b3b536497.jpg" alt="" /></p>
+
+<h1 id="2-安装部署">2 安装部署</h1>
+
+<h2 id="2-1-安装部署default-backend">2.1 安装部署default-backend</h2>
+
+<p>创建Deployment，副本为1，并创建service绑定pod。配置文件如下所示：</p>
+
+<pre><code>apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: default-http-backend
+  labels:
+    k8s-app: default-http-backend
+  namespace: kube-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: default-http-backend
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: default-http-backend
+        # Any image is permissable as long as:
+        # 1. It serves a 404 page at /
+        # 2. It serves 200 on a /healthz endpoint
+        image: 10.57.26.15:4000/defaultbackend
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 10m
+            memory: 20Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: default-http-backend
+  namespace: kube-system
+  labels:
+    k8s-app: default-http-backend
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    k8s-app: default-http-backend
+</code></pre>
+
+<p>执行
+<code>kubectl create -f default-backend.yaml</code>
+安装default-backend。</p>
+
+<p>查看default-http-backend的service，deploy和pod
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/fc/6a2e6499ffe6b60faa448d46eeae9d.jpg" alt="" /></p>
+
+<p>随后测试default-http-backend的访问，分别测试pod和service的访问，如下图所示：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/07/7c443f7a144561ced41276f18c9050.jpg" alt="" /></p>
+
+<p>这说明default backend可以正常访问了。</p>
+
+<h2 id="2-2-安装部署nginx-ingress-controller">2.2 安装部署Nginx Ingress-Controller</h2>
+
+<p>采用官网的例子，创建ServiceAccount，ClusterRole，ClusterRoleBinding，创建Deployment，副本为1，通过&ndash;default-backend-service将之前创建的default-http-backend绑定上去。</p>
+
+<p>注意：hostNetwork: true表示nginx-ingress与node共用网络命名空间，使用node的物理网卡直接转发。</p>
+
+<pre><code>apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ingress
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: system:ingress
+rules:
+- apiGroups:
+  - &quot;&quot;
+  resources: [&quot;configmaps&quot;,&quot;secrets&quot;,&quot;endpoints&quot;,&quot;events&quot;,&quot;services&quot;]
+  verbs: [&quot;list&quot;,&quot;watch&quot;,&quot;create&quot;,&quot;update&quot;,&quot;delete&quot;,&quot;get&quot;]
+- apiGroups:
+  - &quot;&quot;
+  - &quot;extensions&quot;
+  resources: [&quot;services&quot;,&quot;nodes&quot;,&quot;ingresses&quot;,&quot;pods&quot;,&quot;ingresses/status&quot;]
+  verbs: [&quot;list&quot;,&quot;watch&quot;,&quot;create&quot;,&quot;update&quot;,&quot;delete&quot;,&quot;get&quot;]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: ingress
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:ingress
+subjects:
+  - kind: ServiceAccount
+    name: ingress
+    namespace: kube-system
+
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx-ingress-controller
+  labels:
+    k8s-app: nginx-ingress-controller
+  namespace: kube-system
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: nginx-ingress-controller
+      annotations:
+        prometheus.io/port: '10254'
+        prometheus.io/scrape: 'true'
+    spec:
+      # hostNetwork makes it possible to use ipv6 and to preserve the source IP correctly regardless of docker configuration
+      # however, it is not a hard dependency of the nginx-ingress-controller itself and it may cause issues if port 10254 already is taken on the host
+      # that said, since hostPort is broken on CNI (https://github.com/kubernetes/kubernetes/issues/31307) we have to use hostNetwork where CNI is used
+      # like with kubeadm
+      hostNetwork: true
+      serviceAccountName: ingress
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: nginx-ingress-controller
+        image: 10.57.26.15:4000/nginx-ingress-controller:0.9.0-beta.10
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        args:
+          - /nginx-ingress-controller
+          - --default-backend-service=$(POD_NAMESPACE)/default-http-backend
+          - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
+          - --udp-services-configmap=$(POD_NAMESPACE)/udp-services
+#          - --v=5
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 80
+          hostPort: 80
+        - containerPort: 443
+          hostPort: 443
+</code></pre>
+
+<p>执行
+<code>kubectl create -f nginx-ingress-controller.yaml</code>
+创建ingress</p>
+
+<p>部署完成后，查看nginx-ingress-controller的service，deploy和pod
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/37/ebf3b2b7eb7db29436dd5c50211080.jpg" alt="" /></p>
+
+<p>注意pod的IP和default-http-backend有所不同，是真实机器的ip地址，这就是hostNetwork: true的作用。</p>
+
+<p>使用命令测试一下：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/b3/1dcefcf1bcd19a22f41119c348b783.jpg" alt="" /></p>
+
+<p>说明nginx-ingress-controller可以正常访问了，已经正常链接到了default-http-backend上了。</p>
+
+<h1 id="3-编写tcp-udp端口转发规则实现l4层服务暴露">3 编写TCP/UDP端口转发规则实现L4层服务暴露</h1>
+
+<p>L4层暴露在平常开放使用非常多，比方说数据库暴露端口。</p>
+
+<p>为将使用简单的mysql进行测试，将pod中的端口暴露出来。
+输入命令<code>kubectl get svc</code> 查看mysql相关的service情况，可以看到，其占用TCP的3306端口，我们的目标就是把这个3306端口暴露出去。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/65/1aeca757f716259e2cf5476782a646.jpg" alt="" /></p>
+
+<h2 id="3-1-配置tcp的configmap">3.1 配置TCP的configmap</h2>
+
+<p>还记得之前nginx-ingress-controller.yaml配置文件中的参数<code>--tcp-services-configmap=$(POD_NAMESPACE)/tcp-services</code>吗，这是对应TCP端口映射的。
+编辑端口转发配置文件tcp-services-configmap.yaml写入下面内容，其中name和namespace对应&ndash;tcp-services-configmap中的参数：</p>
+
+<pre><code>kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: tcp-services
+  namespace: kube-system
+data:
+  13306: &quot;default/mysql:3306&quot;
+</code></pre>
+
+<p>非常好理解，将default/mysql这个service的TCP 3306端口暴露出来，为13306端口。
+运行<code>kubectl create -f tcp-services-configmap.yaml</code>命令创建configmap。</p>
+
+<p>然后执行<code>kubectl get cm -nkube-system</code>和<code>kubectl describe cm tcp-services -nkube-system</code>查看创建的端口映射，如图所示：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/14/42327382ecb03651d5563c78db1aba.jpg" alt="" /></p>
+
+<h2 id="3-2-验证tcp-端口的l4服务暴露">3.2 验证TCP 端口的L4服务暴露</h2>
+
+<p>使用笔记本访问nginx-ingress-controller的ip，在这里如下图红框所示，是10.57.26.8。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/9c/b77fcfbedaa50466235a63ebee574b.jpg" alt="" /></p>
+
+<p>输入mysql客户端命令<code>mysql -h 10.57.26.8 -P 13306 -uroot -p</code>即可成功访问，验证成功。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/5b/514ffb821aa98b89d9f6cffb930616.jpg" alt="" /></p>
+
+<h2 id="3-3-配置udp的configmap">3.3 配置UDP的configmap</h2>
+
+<p>nginx-ingress-controller.yaml配置文件中的参数<code>--udp-services-configmap=$(POD_NAMESPACE)/udp-services</code>，这是对应UDP端口映射的。
+编辑端口转发配置文件udp-services-configmap.yaml写入下面内容，其中name和namespace对应&ndash;udp-services-configmap中的参数：</p>
+
+<pre><code>kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: udp-services
+  namespace: kube-system
+data:
+  10053: &quot;kube-system/coredns:53&quot;
+</code></pre>
+
+<p>非常好理解，将kube-system/coredns这个service的UDP 53端口暴露出来，为10053端口。
+运行<code>kubectl create -f udp-services-configmap.yaml</code>命令创建configmap。</p>
+
+<p>然后执行<code>kubectl get cm -nkube-system</code>和<code>kubectl describe cm udp-services -nkube-system</code>查看创建的端口映射，如图所示：
+ <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/4d/235587e25ba82ac6112cf9f9e4aace.jpg" alt="" /></p>
+
+<h2 id="3-4-验证udp-端口的l4服务暴露">3.4 验证UDP 端口的L4服务暴露</h2>
+
+<p>在macbook上自带nslookup程序，所以就直接用nslookup来对coredns集群解析进行测试。测试nginx-ingress-controller的ip(10.57.26.8)的UDP 10053端口访问：</p>
+
+<p>我现有的k8s平台中有4个service服务，如下：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/d9/a84da34600f064c17ad9d3209ec5aa.jpg" alt="" /></p>
+
+<p>我随便找几个service来测试一下：</p>
+
+<p>指定dns服务器为10.57.26.8，nslookup去解析default命名空间中的frontend服务(tomcat.default.svc.cluster.local)的A记录</p>
+
+<p>nslookup -qt=a tomcat.default.svc.cluster.local 10.57.26.8</p>
+
+<h1 id="4-编写ingress规则实现l7层服务暴露">4 编写ingress规则实现L7层服务暴露</h1>
+
+<p>通过上面的default-http-backend以及nginx-ingress-controller安装，就可以来给服务定义ingress规则了。</p>
+
+<p>我使用简单的tomcat和mysql进行测试。
+在此给出测试的yaml文件，如下所示：
+其中path表示host下的根路径，serviceName表示k8s上的服务，servicePort表示服务对应的端口。</p>
+
+<pre><code>apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-tomcat-mysql
+  namespace: default
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: tomcat.tongdunzhy.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: tomcat
+          servicePort: 8080
+  - host: mysql.tongdunzhy.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: mysql
+          servicePort: 3306
+  - host: mix.tongdunzhy.com
+    http:
+      paths:
+      - path: /tomcat
+        backend:
+          serviceName: tomcat
+          servicePort: 8080
+      - path: /mysql
+        backend:
+          serviceName: mysql
+          servicePort: 3306
+</code></pre>
+
+<p>如图所示，这个yaml包含了下面将要介绍的两个例子：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/40/fc1152aeeb83f8e18a482ef7e0e03e.jpg" alt="" /></p>
+
+<h2 id="4-1-基于不同域名的ingress访问">4.1 基于不同域名的ingress访问</h2>
+
+<p>执行<code>kubectl get ing</code>以及<code>kubectl describe ing ingress-tomcat-mysql</code>
+可以看到如下的输出，红框部分为不同域名的ingress的规则，包括tomcat和mysql。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/b7/e7a0abf93c3d4d14b1a50f20476aa4.jpg" alt="" /></p>
+
+<p>编辑hosts文件，加入域名tomcat.tongdunzhy.com和mysql.tongdunzhy.com，如图所示：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/18/c934e6049f10fce1ab1e75c68d1c05.jpg" alt="" /></p>
+
+<p>添加后就可以通过域名访问服务，使用curl命令快速测试一下，图中标红的地方为输出，可以看见，通过不同域名访问已经成功。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/9b/4127f58ec154c6cf575db2a548a3d3.jpg" alt="" /></p>
+
+<h2 id="4-2-基于相同域名的ingress访问">4.2 基于相同域名的ingress访问</h2>
+
+<p>执行<code>kubectl get ing</code>以及<code>kubectl describe ing ingress-tomcat-mysql</code>
+可以看到如下的输出，红框部分为相同域名的ingress的规则，包括tomcat和mysql。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/29/58e95120b07a8121c07363fafe10de.jpg" alt="" /></p>
+
+<p>编辑hosts文件，加入域名mix.tongdunzhy.com，如图所示：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/22/719e2218dc39e844d99b3eb8f7bb73.jpg" alt="" /></p>
+
+<p>添加后就可以通过域名访问服务，使用curl命令快速测试一下，图中标红的地方为输出，可以看见，通过相同域名的访问也成功。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/89/170fc0361c220f27d4bbe89ac907b3.jpg" alt="" /></p>
+
+<p>注
+<code>ingress.kubernetes.io/rewrite-target: /</code>
+的作用</p>
+
+<p>若不加此参数，输入<code>curl mix.tongdunzhy.com/tomcat</code> 会得到一个404错误，看上去是tomcat已经连上，但是不在根路径。估计变成了 /tomcat 子页面导致。
+加入参数以后，会将target重写成/就可以避免这个问题。</p>
+
+<h1 id="5-更新ingress">5 更新ingress</h1>
+
+<p>假如想要向已有的ingress中增加一个新的Host，你可以编辑和更新该ingress：</p>
+
+<pre><code>kubectl edit ing test
+</code></pre>
+
+<p>这会弹出一个包含已有的yaml文件的编辑器，修改它，增加新的Host配置，就像编辑yaml一样。</p>
+
+<p>保存它会更新API server中的资源，这会触发ingress controller重新配置loadbalancer。</p>
+
+<pre><code>注：在一个修改过的ingress yaml文件上调用kubectl replace -f命令一样可以达到同样的效果。
+</code></pre>
+
+<h1 id="6-nginx-ingress自身的扩容">6 Nginx-ingress自身的扩容</h1>
+
+<p>如果访问用户过多，nginx-ingress自身压力很大怎么办？下面给出一些思路：</p>
+
+<p>使用nodeSelector通过&rdquo;定向调度&rdquo;将nginx-ingress固定在特定范围的node上，利用k8s平台的优势进行弹性扩展。</p>
+
+<p>然后使用软/硬负载均衡将用户流量分发到多个nginx-ingress，拓扑如下：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/ee/36646f93fb0e0f717e7f7f123e6129.jpg" alt="" /></p>
+
+<p>下面，我们来看看当前的nginx-ingress-ingress的pod和deploymet都只有1个:</p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/66/70f49619334d66ef62a12fbfc91001.jpg" alt="" /></p>
+
+<p>下面我们来将nginx-ingress-ingress扩容到2个：
+通过通用扩缩容命令
+<code>kubectl scale --replicas=2 deploy nginx-ingress-controller -nkube-system</code>
+进行扩容，通过下图可以看到红框部分的pod已经变成两个，分别位于k8s-02和k8s-03两个节点上，做负载均衡，同时，deployment也变成了2个。</p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/24/ec4bcedfd757492bd09805f2a33dbb.jpg" alt="" /></p>
+
+<h1 id="7-nginx-ingress做web服务暴露的问题">7 Nginx-Ingress做web服务暴露的问题</h1>
+
+<p>这种使用nginx-ingress给web服务做外部服务暴露的玩法看上去很爽，但是这种搞法并不完美：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/79/ef845d4f12d8cc606776c7d8ce60e2.jpg" alt="" /></p>
+
+<p>主要有以下四个问题：
+1. 由于微服务架构以及Docker技术和Kubernetes编排工具最近几年才开始逐渐流行，所以一开始的反向代理服务器比如Nginx/HAProxy并未提供其支持，毕竟他们也不是先知，所以才会出现IngressController这种东西来做Kubernetes和前端负载均衡器如Nginx/HAProxy之间做衔接，即Ingress Controller的存在就是为了能跟Kubernetes交互，又能写 Nginx/HAProxy配置，还能 reload 它，这是一种折中方案。
+2. 当你要添加了一个新的服务或hostname而需要升级你的ingress配置文件的时候，也就是说（你在一个持续集成的环境中）你要为你的pipeline去增加一个额外的步骤，让它去检查ingress的配置是否需要更新（这意味着在某种程度上你的所有microservices之间共享一个ingress）或者你是需要把你的pipeline分成两部分，其中一部分用来更新ingress（也就是说一个微服务的部署不是独立的，它还需要去更新ingress的配置才能生效）。
+3. 由于多了一层ingress controll，其性能损耗相对增加了许多。
+4. 没有一个直观的界面可以方便的查看其转发的规则和过程。</p>
+
+<p>Traefik的诞生似乎很爽的解决了问题，它保留了nginx-ingress的所有优点，而且还解决了nginx-ingress的缺点。Traefik天生就是提供了对Kubernetes的支持，也就是说Traefik本身就能跟Kubernetes API交互，感知后端变化，因此在使用Traefik时，Ingress Controller已经没有卵用了。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/c6/c72b94ccc8c2627726a1eada9b08b6.jpg" alt="" /></p>
+
+<h1 id="8-扩展阅读">8 扩展阅读</h1>
+
+<p><a href="https://kubernetes.github.io/ingress-nginx/troubleshooting/">nginx-ingress官方文档</a></p>
+
+<p><a href="https://codefarm.me/2019/03/04/kubernetes-crash-course-3/">kubernetes-crash-course中关于ingress的</a></p>
+
 </div>
 
 
