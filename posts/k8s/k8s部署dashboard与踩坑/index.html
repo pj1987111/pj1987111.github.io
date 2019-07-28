@@ -76,7 +76,7 @@
 
 <pre><code>#官网下载yaml
 curl -o dashboard-v2.0.0-beta2.yaml https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta2/aio/deploy/recommended.yaml
-#更改镜像地址，改成私仓的地址
+#更改镜像地址，改成私仓的地址；并将clusterrolebinding附近name: kubernetes-dashboard改成name: cluster-admin以获得管理员权限
 sed -i &quot;s/kubernetesui/10.57.26.15:4000/g;/kind: ClusterRole/{n;s/name: kubernetes-dashboard/name: cluster-admin/g}&quot; dashboard-v2.0.0-beta2.yaml
 #安装
 kubectl create -f dashboard-v2.0.0-beta2.yaml
@@ -176,16 +176,13 @@ kubernetes-dashboard   NodePort   10.103.5.139   &lt;none&gt;        443:31795/T
 
 <ol>
 <li>首先找到kubectl命令的配置文件，默认情况下为/etc/kubernetes/admin.conf，确保已经复制到了$HOME/.kube/config中。</li>
-<li>使用client-certificate-data和client-key-data生成一个p12文件，可使用下列命令
-&mdash;
-生成client-certificate-data
-<code>grep 'client-certificate-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d &gt;&gt; kubecfg.crt</code>
-&mdash;
-生成client-key-data
-<code>grep 'client-key-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d &gt;&gt; kubecfg.key</code>
-&mdash;
-生成p12
-<code>openssl pkcs12 -export -clcerts -inkey kubecfg.key -in kubecfg.crt -out kubecfg.p12 -name &quot;kubernetes-client&quot;</code><br /></li>
+<li>使用client-certificate-data和client-key-data生成一个p12文件，可使用下列命令<br/>
+生成client-certificate-data<br/>
+<code>grep 'client-certificate-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d &gt;&gt; kubecfg.crt</code><br/>
+生成client-key-data<br/>
+<code>grep 'client-key-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d &gt;&gt; kubecfg.key</code><br/>
+生成p12<br/>
+<code>openssl pkcs12 -export -clcerts -inkey kubecfg.key -in kubecfg.crt -out kubecfg.p12 -name &quot;kubernetes-client&quot;</code><br/></li>
 <li>导入上面生成的p12文件，这一步自行到网上参考。</li>
 <li>最后导入上面生成的p12文件，重新打开浏览器，显示如下：
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/b5/428fced2f58a3895a4ac319392bef6.jpg" alt="" /></li>
@@ -193,7 +190,7 @@ kubernetes-dashboard   NodePort   10.103.5.139   &lt;none&gt;        443:31795/T
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/c1/a884fc99b6eb4027ab66cb3b4c6e76.jpg" alt="" /></li>
 </ol>
 
-<p>token的获取将在3.2用户令牌中描述。</p>
+<p>token的获取将在用户令牌中描述。</p>
 
 <pre><code>注：对于生产系统，我们应该为每个用户应该生成自己的证书，因为不同的用户会有不同的命名空间访问权限。
 </code></pre>
@@ -207,9 +204,8 @@ kubernetes-dashboard   NodePort   10.103.5.139   &lt;none&gt;        443:31795/T
 
 <p>经过服务发现暴露ip后，登陆dashboard可以看到如下界面，我们使用kubernetes-dashboard账号作为管理员登陆，那么这个账号令牌又是什么呢，从哪可以获取到呢？
 我们可以通过命令查看这个账户的令牌是什么内容，命令是<code>kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
-</code></p>
-
-<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/04/1c9163c7feaf18460d06f25d9f8997.jpg" alt="" /></p>
+</code>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/04/1c9163c7feaf18460d06f25d9f8997.jpg" alt="" /></p>
 
 <h1 id="5-dashboard-管理员权限">5 dashboard 管理员权限</h1>
 
