@@ -172,29 +172,26 @@ kubernetes-dashboard   NodePort   10.103.5.139   &lt;none&gt;        443:31795/T
 </code></pre>
 
 <p>这是因为最新版的k8s默认启用了RBAC，并为未认证用户赋予了一个默认的身份：anonymous。
-对于API Server来说，它是使用证书进行认证的，我们需要先创建一个证书：
-1. 首先找到kubectl命令的配置文件，默认情况下为/etc/kubernetes/admin.conf，确保已经复制到了$HOME/.kube/config中。
-2. 使用client-certificate-data和client-key-data生成一个p12文件，可使用下列命令：
-    ```
-    生成client-certificate-data
-    grep &lsquo;client-certificate-data&rsquo; ~/.kube/config | head -n 1 | awk &lsquo;{print $2}&rsquo; | base64 -d &gt;&gt; kubecfg.crt</p>
-
-<pre><code>生成client-key-data
-grep 'client-key-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d &gt;&gt; kubecfg.key
-
-生成p12
-openssl pkcs12 -export -clcerts -inkey kubecfg.key -in kubecfg.crt -out kubecfg.p12 -name &quot;kubernetes-client&quot;
-```
-</code></pre>
+对于API Server来说，它是使用证书进行认证的，我们需要先创建一个证书：</p>
 
 <ol>
+<li>首先找到kubectl命令的配置文件，默认情况下为/etc/kubernetes/admin.conf，确保已经复制到了$HOME/.kube/config中。</li>
+<li>使用client-certificate-data和client-key-data生成一个p12文件，可使用下列命令
+&mdash;
+生成client-certificate-data
+<code>grep 'client-certificate-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d &gt;&gt; kubecfg.crt</code>
+&mdash;
+生成client-key-data
+<code>grep 'client-key-data' ~/.kube/config | head -n 1 | awk '{print $2}' | base64 -d &gt;&gt; kubecfg.key</code>
+&mdash;
+生成p12
+<code>openssl pkcs12 -export -clcerts -inkey kubecfg.key -in kubecfg.crt -out kubecfg.p12 -name &quot;kubernetes-client&quot;</code><br /></li>
 <li>导入上面生成的p12文件，这一步自行到网上参考。</li>
 <li>最后导入上面生成的p12文件，重新打开浏览器，显示如下：
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/b5/428fced2f58a3895a4ac319392bef6.jpg" alt="" /></li>
+<li>点击确定，便可以看到熟悉的登录界面了：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/c1/a884fc99b6eb4027ab66cb3b4c6e76.jpg" alt="" /></li>
 </ol>
-
-<p>点击确定，便可以看到熟悉的登录界面了：
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/c1/a884fc99b6eb4027ab66cb3b4c6e76.jpg" alt="" /></p>
 
 <p>token的获取将在3.2用户令牌中描述。</p>
 
