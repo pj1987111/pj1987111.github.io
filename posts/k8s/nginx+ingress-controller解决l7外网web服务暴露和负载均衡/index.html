@@ -294,6 +294,9 @@ data:
 
 <h2 id="3-3-配置udp的configmap">3.3 配置UDP的configmap</h2>
 
+<p>输入<code>kubectl get svc -nkube-system</code> 查看coredns的service，如下图所示红框为服务名和需要暴露的udp端口号。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/ce/c94f7c9c010b420b2239753189fbb3.jpg" alt="" /></p>
+
 <p>nginx-ingress-controller.yaml配置文件中的参数<code>--udp-services-configmap=$(POD_NAMESPACE)/udp-services</code>，这是对应UDP端口映射的。
 编辑端口转发配置文件udp-services-configmap.yaml写入下面内容，其中name和namespace对应&ndash;udp-services-configmap中的参数：</p>
 
@@ -303,34 +306,34 @@ metadata:
   name: udp-services
   namespace: kube-system
 data:
-  10053: &quot;kube-system/coredns:53&quot;
+  10053: &quot;kube-system/kube-dns:53&quot;
 </code></pre>
 
-<p>非常好理解，将kube-system/coredns这个service的UDP 53端口暴露出来，为10053端口。
+<p>非常好理解，将kube-system/kube-dns这个service的UDP 53端口暴露出来，为10053端口。
 运行<code>kubectl create -f udp-services-configmap.yaml</code>命令创建configmap。</p>
 
 <p>然后执行<code>kubectl get cm -nkube-system</code>和<code>kubectl describe cm udp-services -nkube-system</code>查看创建的端口映射，如图所示：
- <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/4d/235587e25ba82ac6112cf9f9e4aace.jpg" alt="" /></p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/eb/abc89379f8f3b4058c2420c432e1c6.jpg" alt="" /></p>
 
 <h2 id="3-4-验证udp-端口的l4服务暴露">3.4 验证UDP 端口的L4服务暴露</h2>
 
-<p>在macbook上自带nslookup程序，所以就直接用nslookup来对coredns集群解析进行测试。测试nginx-ingress-controller的ip(10.57.26.8)的UDP 10053端口访问：</p>
+<p>位于外网的macbook上自带nslookup程序，直接用nslookup来对coredns集群解析进行测试。测试nginx-ingress-controller的ip(10.57.26.8)的UDP 10053端口访问：</p>
 
 <p>我现有的k8s平台中有4个service服务，如下：
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/d9/a84da34600f064c17ad9d3209ec5aa.jpg" alt="" /></p>
 
 <p>我随便找几个service来测试一下：</p>
 
-<p>指定coredns服务器为10.244.1.2和10.244.1.3(通过<code>kubectl get pod -nkube-system -owide</code>查看)，nslookup去解析default命名空间中的四个服务</p>
+<p>指定dns服务器为10.57.26.8(nginx-ingress地址)，端口号为映射出来的10053，nslookup去解析default命名空间中的四个服务</p>
 
-<pre><code>nslookup -qt=a tomcat.default.svc.cluster.local 10.244.1.2
-nslookup hardy-rabbit-mongodb.default.svc.cluster.local 10.244.1.2
-nslookup mysql.default.svc.cluster.local 10.244.1.2
-nslookup kubernetes.default.svc.cluster.local 10.244.1.2
+<pre><code>nslookup tomcat.default.svc.cluster.local 10.57.26.8 -port=10053
+nslookup hardy-rabbit-mongodb.default.svc.cluster.local 10.57.26.8 -port=10053
+nslookup mysql.default.svc.cluster.local 10.57.26.8 -port=10053
+nslookup kubernetes.default.svc.cluster.local 10.57.26.8 -port=10053
 </code></pre>
 
 <p>得到结果如下，与<code>kubectl get svc</code>命令得到的服务CLUSTER-IP相同
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/6c/0ec3dda44ee3d4b45780e4dd4d0132.jpg" alt="" /></p>
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/29/319295379b1b8d93be56666bfa10be.jpg" alt="" /></p>
 
 <p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/95/5b9b4886c48337e580042961801f24.jpg" alt="" /></p>
 
