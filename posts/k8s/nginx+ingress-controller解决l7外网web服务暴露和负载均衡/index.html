@@ -289,8 +289,14 @@ data:
 <p>使用笔记本访问nginx-ingress-controller的ip，在这里如下图红框所示，是10.57.26.8。
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/9c/b77fcfbedaa50466235a63ebee574b.jpg" alt="" /></p>
 
-<p>输入mysql客户端命令<code>mysql -h 10.57.26.8 -P 13306 -uroot -p</code>即可成功访问，验证成功。
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/5b/514ffb821aa98b89d9f6cffb930616.jpg" alt="" /></p>
+<p>在我的笔记本上安装了navicat，使用它配置之前创建的mysql，如图所示，注意左下角，test connection成功的绿色小灯。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/25/30ba1de51ad7ea47d68e8a6f6727d5.jpg" alt="" /></p>
+
+<p>登陆后可以看到建立的表以及里面的数据。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/e0/5f8e007c8eaef0af4048c3a50b5803.jpg" alt="" /></p>
+
+<p>此时，外网笔记本到mysql服务的访问拓扑如下：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/89/879da0616b561b961441f222eaa024.jpg" alt="" /></p>
 
 <h2 id="3-3-配置udp的configmap">3.3 配置UDP的configmap</h2>
 
@@ -336,6 +342,9 @@ nslookup kubernetes.default.svc.cluster.local 10.57.26.8 -port=10053
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/29/319295379b1b8d93be56666bfa10be.jpg" alt="" /></p>
 
 <p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/95/5b9b4886c48337e580042961801f24.jpg" alt="" /></p>
+
+<p>此时，外网的笔记本到coredns服务的访问拓扑如下：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/0d/c93bddc13a9b0a2ebaa1b342d09785.jpg" alt="" /></p>
 
 <h1 id="4-编写ingress规则实现l7层服务暴露">4 编写ingress规则实现L7层服务暴露</h1>
 
