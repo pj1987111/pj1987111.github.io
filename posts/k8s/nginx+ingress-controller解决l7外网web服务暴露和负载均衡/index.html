@@ -321,9 +321,18 @@ data:
 
 <p>我随便找几个service来测试一下：</p>
 
-<p>指定dns服务器为10.57.26.8，nslookup去解析default命名空间中的frontend服务(tomcat.default.svc.cluster.local)的A记录</p>
+<p>指定coredns服务器为10.244.1.2和10.244.1.3(通过<code>kubectl get pod -nkube-system -owide</code>查看)，nslookup去解析default命名空间中的四个服务</p>
 
-<p>nslookup -qt=a tomcat.default.svc.cluster.local 10.57.26.8</p>
+<pre><code>nslookup -qt=a tomcat.default.svc.cluster.local 10.244.1.2
+nslookup hardy-rabbit-mongodb.default.svc.cluster.local 10.244.1.2
+nslookup mysql.default.svc.cluster.local 10.244.1.2
+nslookup kubernetes.default.svc.cluster.local 10.244.1.2
+</code></pre>
+
+<p>得到结果如下，与<code>kubectl get svc</code>命令得到的服务CLUSTER-IP相同
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/6c/0ec3dda44ee3d4b45780e4dd4d0132.jpg" alt="" /></p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/95/5b9b4886c48337e580042961801f24.jpg" alt="" /></p>
 
 <h1 id="4-编写ingress规则实现l7层服务暴露">4 编写ingress规则实现L7层服务暴露</h1>
 
