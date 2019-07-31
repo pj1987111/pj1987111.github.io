@@ -1,0 +1,1362 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>4 SQL 语法 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-prism/prism-solarizedlight.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-atoc/atoc.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../_" />
+    
+    
+    <link rel="prev" href="../3.用户指南/3.6 权限管理/3.6.3 个人信息.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    1 产品简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../概念介绍.html">
+            
+                <a href="../概念介绍.html">
+            
+                    
+                    2 概念简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../3.用户指南.md">
+            
+                <span>
+            
+                    
+                    3 用户指南
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../3.用户指南/3.1.整体介绍.html">
+            
+                <a href="../3.用户指南/3.1.整体介绍.html">
+            
+                    
+                    3.1 整体介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../_">
+            
+                <span>
+            
+                    
+                    3.2 数据开发
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.2.1" data-path="../3.用户指南/3.2数据开发/3.2.1.作业开发.html">
+            
+                <a href="../3.用户指南/3.2数据开发/3.2.1.作业开发.html">
+            
+                    
+                    3.2.1 作业开发
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.2" data-path="../3.用户指南/3.2数据开发/3.2.2.资源管理.html">
+            
+                <a href="../3.用户指南/3.2数据开发/3.2.2.资源管理.html">
+            
+                    
+                    3.2.2 资源管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.3" data-path="../3.用户指南/3.2数据开发/3.2.3.函数管理.html">
+            
+                <a href="../3.用户指南/3.2数据开发/3.2.3.函数管理.html">
+            
+                    
+                    3.2.3 函数管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.4" data-path="../3.用户指南/3.2数据开发/3.2.4.表查询.html">
+            
+                <a href="../3.用户指南/3.2数据开发/3.2.4.表查询.html">
+            
+                    
+                    3.2.4 表查询
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.5" data-path="../3.用户指南/3.2数据开发/3.2.5.回收站.html">
+            
+                <a href="../3.用户指南/3.2数据开发/3.2.5.回收站.html">
+            
+                    
+                    3.2.5 回收站
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../_">
+            
+                <span>
+            
+                    
+                    3.3 数据管理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.3.1" data-path="../3.用户指南/3.3 数据管理/3.3.1 数据管理概览.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.1 数据管理概览.html">
+            
+                    
+                    3.3.1 数据管理概览
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.2" data-path="../3.用户指南/3.3 数据管理/3.3.2 数据查找.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.2 数据查找.html">
+            
+                    
+                    3.3.2 数据查找
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.3" data-path="../3.用户指南/3.3 数据管理/3.3.3 我的表管理.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.3 我的表管理.html">
+            
+                    
+                    3.3.3 我的表管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.4" data-path="../3.用户指南/3.3 数据管理/3.3.4 数据质量.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.4 数据质量.html">
+            
+                    
+                    3.3.4 数据质量
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.5" data-path="../3.用户指南/3.3 数据管理/3.3.5 数据导出.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.5 数据导出.html">
+            
+                    
+                    3.3.5 数据导出
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.6" data-path="../3.用户指南/3.3 数据管理/3.3.6 数据源管理.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.6 数据源管理.html">
+            
+                    
+                    3.3.6 数据源管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.7" data-path="../3.用户指南/3.3 数据管理/3.3.7 数据权限申请.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.7 数据权限申请.html">
+            
+                    
+                    3.3.7 数据权限申请
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.8" data-path="../3.用户指南/3.3 数据管理/3.3.8 数据权限审核.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.8 数据权限审核.html">
+            
+                    
+                    3.3.8 数据权限审核
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../_">
+            
+                <span>
+            
+                    
+                    3.4 运维中心
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" data-path="../3.用户指南/3.4运维中心/3.4.1运维中心概览.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.1运维中心概览.html">
+            
+                    
+                    3.4.1 运维中心概览
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../3.用户指南/3.4运维中心/3.4.2作业运维.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.2作业运维.html">
+            
+                    
+                    3.4.2 作业运维
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.3" data-path="../3.用户指南/3.4运维中心/3.4.3作业管理.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.3作业管理.html">
+            
+                    
+                    3.4.3 作业管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.4" data-path="../3.用户指南/3.4运维中心/3.4.4作业监控.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.4作业监控.html">
+            
+                    
+                    3.4.4 作业监控
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.5" data-path="../3.用户指南/3.4运维中心/3.4.5流作业管理.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.5流作业管理.html">
+            
+                    
+                    3.4.5 流作业管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.6" data-path="../3.用户指南/3.4运维中心/3.4.6流作业监控.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.6流作业监控.html">
+            
+                    
+                    3.4.6 流作业监控
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.7" data-path="../3.用户指南/3.4运维中心/3.4.7服务监控.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.7服务监控.html">
+            
+                    
+                    3.4.7 服务监控
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.8" data-path="../3.用户指南/3.4运维中心/3.4.8集群管理.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.8集群管理.html">
+            
+                    
+                    3.4.8 集群管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../_">
+            
+                <span>
+            
+                    
+                    3.5 系统管理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../3.用户指南/3.5 系统管理/3.5.1 项目管理.html">
+            
+                <a href="../3.用户指南/3.5 系统管理/3.5.1 项目管理.html">
+            
+                    
+                    3.5.1 项目管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../3.用户指南/3.5 系统管理/3.5.2 租户管理.html">
+            
+                <a href="../3.用户指南/3.5 系统管理/3.5.2 租户管理.html">
+            
+                    
+                    3.5.2 租户管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../3.用户指南/3.5 系统管理/3.5.3 资源池管理.html">
+            
+                <a href="../3.用户指南/3.5 系统管理/3.5.3 资源池管理.html">
+            
+                    
+                    3.5.3 资源池管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.4" data-path="../3.用户指南/3.5 系统管理/3.5.4 全局配置.html">
+            
+                <a href="../3.用户指南/3.5 系统管理/3.5.4 全局配置.html">
+            
+                    
+                    3.5.4 全局配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../3.用户指南/3.6 权限管理/3.6 权限管理.html">
+            
+                <a href="../3.用户指南/3.6 权限管理/3.6 权限管理.html">
+            
+                    
+                    3.6 权限管理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.6.1" data-path="../3.用户指南/3.6 权限管理/3.6.1 角色.html">
+            
+                <a href="../3.用户指南/3.6 权限管理/3.6.1 角色.html">
+            
+                    
+                    3.6.1 角色
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.2" data-path="../3.用户指南/3.6 权限管理/3.6.2 用户管理.html">
+            
+                <a href="../3.用户指南/3.6 权限管理/3.6.2 用户管理.html">
+            
+                    
+                    3.6.2 用户管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.3" data-path="../3.用户指南/3.6 权限管理/3.6.3 个人信息.html">
+            
+                <a href="../3.用户指南/3.6 权限管理/3.6.3 个人信息.html">
+            
+                    
+                    3.6.3 个人信息
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4" data-path="sql.html">
+            
+                <a href="sql.html">
+            
+                    
+                    4 SQL 语法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../_">
+            
+                <span>
+            
+                    
+                    5 函数
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../5 公共函数/5.1 公共函数案例/function.html">
+            
+                <a href="../5 公共函数/5.1 公共函数案例/function.html">
+            
+                    
+                    5.1 公共函数案例
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../5 公共函数/5.2 自定义udf.html">
+            
+                <a href="../5 公共函数/5.2 自定义udf.html">
+            
+                    
+                    5.2 自定义UDF案例
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../_">
+            
+                <span>
+            
+                    
+                    6 实时计算
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../6 实时计算/6.1 SparkStream作业.html">
+            
+                <a href="../6 实时计算/6.1 SparkStream作业.html">
+            
+                    
+                    6.1 SparkStream作业
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../6 实时计算/6.2 Flink Sql.html">
+            
+                <a href="../6 实时计算/6.2 Flink Sql.html">
+            
+                    
+                    6.2 Flink SQL
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../_">
+            
+                <span>
+            
+                    
+                    7 最佳实践
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../7最佳实践/7.1 Python作业开发.html">
+            
+                <a href="../7最佳实践/7.1 Python作业开发.html">
+            
+                    
+                    7.1 Python作业案例
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2" data-path="../7最佳实践/7.2 Jar作业开发.html">
+            
+                <a href="../7最佳实践/7.2 Jar作业开发.html">
+            
+                    
+                    7.2 Jar作业开发
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >4 SQL 语法</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <!-- toc -->
+<ul>
+<li><a href="#41-ddl&#x8BED;&#x53E5;">4.1 DDL&#x8BED;&#x53E5;</a><ul>
+<li><a href="#411-&#x521B;&#x5EFA;&#x8868;create-table">4.1.1 &#x521B;&#x5EFA;&#x8868;(CREATE TABLE)</a></li>
+<li><a href="#412-&#x5220;&#x9664;&#x8868;">4.1.2 &#x5220;&#x9664;&#x8868;</a></li>
+<li><a href="#413-&#x91CD;&#x547D;&#x540D;&#x8868;">4.1.3 &#x91CD;&#x547D;&#x540D;&#x8868;</a></li>
+<li><a href="#414-&#x4FEE;&#x6539;&#x8868;&#x7684;&#x6CE8;&#x91CA;">4.1.4 &#x4FEE;&#x6539;&#x8868;&#x7684;&#x6CE8;&#x91CA;</a></li>
+<li><a href="#415-&#x7F13;&#x5B58;&#x8868;">4.1.5 &#x7F13;&#x5B58;&#x8868;</a></li>
+<li><a href="#416-&#x5220;&#x9664;&#x7F13;&#x5B58;&#x8868;">4.1.6 &#x5220;&#x9664;&#x7F13;&#x5B58;&#x8868;</a></li>
+<li><a href="#417-&#x6DFB;&#x52A0;&#x5206;&#x533A;">4.1.7 &#x6DFB;&#x52A0;&#x5206;&#x533A;</a></li>
+<li><a href="#418-&#x5220;&#x9664;&#x5206;&#x533A;">4.1.8 &#x5220;&#x9664;&#x5206;&#x533A;</a></li>
+<li><a href="#419-&#x6DFB;&#x52A0;&#x5217;">4.1.9 &#x6DFB;&#x52A0;&#x5217;</a></li>
+<li><a href="#4110-&#x4FEE;&#x6539;&#x5217;&#x3001;&#x5206;&#x533A;&#x6CE8;&#x91CA;">4.1.10 &#x4FEE;&#x6539;&#x5217;&#x3001;&#x5206;&#x533A;&#x6CE8;&#x91CA;</a></li>
+<li><a href="#4111-&#x4FEE;&#x6539;&#x8868;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x5C5E;&#x6027;">4.1.11 &#x4FEE;&#x6539;&#x8868;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x5C5E;&#x6027;</a></li>
+<li><a href="#4112-&#x521B;&#x5EFA;&#x89C6;&#x56FE;">4.1.12 &#x521B;&#x5EFA;&#x89C6;&#x56FE;</a></li>
+<li><a href="#4113-&#x4FEE;&#x6539;&#x89C6;&#x56FE;&#x540D;&#x79F0;">4.1.13 &#x4FEE;&#x6539;&#x89C6;&#x56FE;&#x540D;&#x79F0;</a></li>
+<li><a href="#4114-&#x4FEE;&#x6539;&#x89C6;&#x56FE;select-&#x8BED;&#x53E5;">4.1.14 &#x4FEE;&#x6539;&#x89C6;&#x56FE;select &#x8BED;&#x53E5;</a></li>
+<li><a href="#4115-&#x5220;&#x9664;&#x89C6;&#x56FE;">4.1.15 &#x5220;&#x9664;&#x89C6;&#x56FE;</a></li>
+<li><a href="#4116-&#x63CF;&#x8FF0;&#x8868;">4.1.16 &#x63CF;&#x8FF0;&#x8868;</a></li>
+<li><a href="#4117-&#x67E5;&#x770B;&#x8868;&#x5206;&#x533A;">4.1.17 &#x67E5;&#x770B;&#x8868;&#x5206;&#x533A;</a></li>
+</ul>
+</li>
+<li><a href="#42-dml&#x8BED;&#x53E5;">4.2 DML&#x8BED;&#x53E5;</a><ul>
+<li><a href="#421-insert">4.2.1 insert</a></li>
+<li><a href="#422-query&#x8BED;&#x53E5;">4.2.2 Query&#x8BED;&#x53E5;</a><ul>
+<li><a href="#422-select">4.2.2 select</a></li>
+</ul>
+</li>
+<li><a href="#423-join">4.2.3 join</a></li>
+<li><a href="#424-lateral-view">4.2.4 Lateral View</a></li>
+</ul>
+</li>
+<li><a href="#43-&#x5176;&#x4ED6;&#x8BED;&#x53E5;">4.3 &#x5176;&#x4ED6;&#x8BED;&#x53E5;</a><ul>
+<li><a href="#431-load">4.3.1 load</a></li>
+<li><a href="#432-export">4.3.2 export</a></li>
+<li><a href="#433-read">4.3.3 read</a></li>
+<li><a href="#434-merge">4.3.4 merge</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h1 id="4-&#x652F;&#x6301;&#x7684;sql-&#x8BED;&#x6CD5;">4 &#x652F;&#x6301;&#x7684;SQL &#x8BED;&#x6CD5;</h1>
+<p>Hive SQL &#x8BED;&#x6CD5;&#x5F88;&#x591A;&#xFF0C;DataOceam&#x5F53;&#x524D;&#x9650;&#x5236;&#x53EA;&#x652F;&#x6301;&#x4EE5;&#x4E0B;SQL&#x8BED;&#x6CD5;&#xFF1A;</p>
+<pre class="language-"><code>1. ALTERTABLE_RENAME,ALTERTABLE_ADDCOLS,ALTERTABLE_RENAMECOL,ALTERTABLE_TOUCH,
+2. ALTERTABLE_DROPPARTS,ALTERTABLE_ADDPARTS,ALTERTABLE_RENAMEPART,ALTERTABLE_PARTCOLTYPE,
+3. CREATETABLE,CREATETABLE_AS_SELECT,DROPTABLE,DESCTABLE,
+4. SELECT,INSERT_OVERWRITE,INSERT_INTO,CACHE,UNCACHE
+5. LOAD,EXPORT
+</code></pre><h2 id="41-ddl&#x8BED;&#x53E5;">4.1 DDL&#x8BED;&#x53E5;</h2>
+<h3 id="411-&#x521B;&#x5EFA;&#x8868;create-table">4.1.1 &#x521B;&#x5EFA;&#x8868;(CREATE TABLE)</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>create table [if not exists] table_name
+ [like table_name2]
+ [(col_name data_type [comment col_comment], ...)]
+ [comment table_comment]
+ [partitioned by (col_name data_type [comment col_comment], ...)]
+ lifecycle days
+ [as select_statement]
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>&#x8868;&#x540D;&#x4E0E;&#x5217;&#x540D;&#x5747;&#x5BF9;&#x5927;&#x5C0F;&#x5199;&#x4E0D;&#x654F;&#x611F;&#x3002;&#x5206;&#x533A;&#x8868;&#x5FC5;&#x987B;&#x4EE5;&apos;_dt&apos;&#x3001;&apos;_mt&apos;&#x3001;&apos;_ht&apos;&#x3001;&apos;_wt&apos;&#x3001;&apos;_ft&apos;&#x7ED3;&#x5C3E;&#x5BF9;&#x5E94;&#x5929;,&#x6708;&#xFF0C;&#x65F6;&#xFF0C;&#x5468;&#xFF0C;&#x5206;&#x3002;</li>
+<li>&#x5728;&#x521B;&#x5EFA;&#x8868;&#x65F6;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x6307;&#x5B9A;if not exists&#x9009;&#x9879;&#x800C;&#x5B58;&#x5728;&#x540C;&#x540D;&#x8868;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;&#x51FA;&#x9519;&#xFF1B;&#x82E5;&#x6307;&#x5B9A;&#x6B64;&#x9009;&#x9879;&#xFF0C;&#x5219;&#x65E0;&#x8BBA;&#x662F;&#x5426;&#x5B58;&#x5728;&#x540C;&#x540D;&#x8868;&#xFF0C;&#x5373;&#x4F7F;&#x539F;&#x8868;&#x7ED3;&#x6784;&#x4E0E;&#x8981;&#x521B;&#x5EFA;&#x7684;&#x76EE;&#x6807;&#x8868;&#x7ED3;&#x6784;&#x4E0D;&#x4E00;&#x81F4;&#xFF0C;&#x5747;&#x8FD4;&#x56DE;&#x6210;&#x529F;&#x3002;&#x5DF2;&#x5B58;&#x5728;&#x7684;&#x540C;&#x540D;&#x8868;&#x7684;&#x5143;&#x4FE1;&#x606F;&#x4E0D;&#x4F1A;&#x88AB;&#x6539;&#x52A8;&#x3002;</li>
+<li>&#x6570;&#x636E;&#x7C7B;&#x578B;&#x53EA;&#x80FD;&#x662F;&#xFF1A;bigint&#xFF0C;double&#xFF0C;boolean&#xFF0C;datetime&#x53CA;string&#x3002;&#x8868;&#x540D;&#xFF0C;&#x5217;&#x540D;&#x4E2D;&#x4E0D;&#x80FD;&#x6709;&#x7279;&#x6B8A;&#x5B57;&#x7B26;&#xFF0C;&#x53EA;&#x80FD;&#x7528;&#x82F1;&#x6587;&#x7684;a-z&#xFF0C;A-Z&#x53CA;&#x6570;&#x5B57;&#x548C;&#x4E0B;&#x5212;&#x7EBF;_ &#x4E14;&#x4EE5;&#x5B57;&#x6BCD;&#x5F00;&#x5934;&#xFF0C;&#x540D;&#x79F0;&#x7684;&#x957F;&#x5EA6;&#x4E0D;&#x8D85;&#x8FC7;128&#x5B57;&#x8282;&#x3002;</li>
+<li>Partitioned by &#x6307;&#x5B9A;&#x8868;&#x7684;&#x5206;&#x533A;&#x5B57;&#x6BB5;&#xFF0C;&#x5206;&#x533A;&#x5B57;&#x6BB5;&#x6709;&#x4EE5;&#x4E0B;&#x9650;&#x5236;&#x3002;
+ 1) &#x5206;&#x533A;&#x5B57;&#x6BB5;&#x5FC5;&#x987B;&#x5305;&#x62EC;<strong>ds</strong>&#x5B57;&#x6BB5;&#x3002;
+ 2) &#x5206;&#x533A;&#x5B57;&#x6BB5;&#x7C7B;&#x578B;&#x76EE;&#x524D;&#x4EC5;&#x652F;&#x6301;string&#x7C7B;&#x578B;&#x3002;
+ 3) &#x5206;&#x533A;&#x503C;&#x4E0D;&#x53EF;&#x4EE5;&#x6709;&#x53CC;&#x5B57;&#x8282;&#x5B57;&#x7B26;(&#x5982;&#x4E2D;&#x6587;)&#xFF0C;&#x5FC5;&#x987B;&#x662F;&#x4EE5;&#x82F1;&#x6587;&#x5B57;&#x6BCD;a-z&#xFF0C;A-Z&#x5F00;&#x59CB;&#x540E;&#x53EF;&#x8DDF;&#x5B57;&#x6BCD;&#x6570;&#x5B57;&#xFF0C;&#x540D;&#x79F0;&#x7684;&#x957F;&#x5EA6;&#x4E0D;&#x8D85;&#x8FC7;128&#x5B57;&#x8282;&#x3002; &#x5982;&#x679C;&#x540D;&#x79F0;&#x4E2D;&#x51FA;&#x73B0;&#x4E86;\t&#xFF0C;\n&#x7B49;&#x7279;&#x6B8A;&#x5B57;&#x7B26;&#x4F1A;&#x5BFC;&#x81F4;&#x5206;&#x533A;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x65E0;&#x6CD5;&#x8BFB;&#x51FA;&#xFF0C;&#x5141;&#x8BB8;&#x7684;&#x5B57;&#x7B26;&#x5305;&#x62EC;&#xFF1A;&#x7A7A;&#x683C; &#x2018; &#x2018;&#xFF0C;&#x5192;&#x53F7;&#x2019;:&#x2019;&#xFF0C;&#x4E0B;&#x5212;&#x7EBF;&#x2019;_&#x2019;&#xFF0C;&#x7F8E;&#x5143;&#x7B26;&#x2019;$&#x2019;&#xFF0C;&#x4E95;&#x53F7;&#x2019;#&#x2019;&#xFF0C;&#x70B9;&#x2019;.&#x2019;&#xFF0C;&#x611F;&#x53F9;&#x53F7;&#x2019;!&#x2019;&#x548C;&#x2019;@&#x2019;&#x3002;
+ 4) &#x5F53;&#x5229;&#x7528;&#x5206;&#x533A;&#x5B57;&#x6BB5;&#x5BF9;&#x8868;&#x8FDB;&#x884C;&#x5206;&#x533A;&#x65F6;&#xFF0C;&#x65B0;&#x589E;&#x5206;&#x533A;&#x3001;&#x66F4;&#x65B0;&#x5206;&#x533A;&#x5185;&#x6570;&#x636E;&#x548C;&#x8BFB;&#x53D6;&#x5206;&#x533A;&#x6570;&#x636E;&#x5747;&#x4E0D;&#x9700;&#x8981;&#x505A;&#x5168;&#x8868;&#x626B;&#x63CF;&#xFF0C;&#x53EF;&#x4EE5;&#x63D0;&#x9AD8;&#x5904;&#x7406;&#x6548;&#x7387;&#x3002;
+ 5) &#x5206;&#x533A;&#x5B57;&#x6BB5;&#x9ED8;&#x8BA4;&#x6700;&#x591A;&#x8BBE;&#x7F6E;3&#x4E2A;&#x3002;</li>
+<li>&#x6CE8;&#x91CA;&#x5185;&#x5BB9;&#x662F;&#x957F;&#x5EA6;&#x4E0D;&#x8D85;&#x8FC7;1024&#x5B57;&#x8282;&#x7684;&#x6709;&#x6548;&#x5B57;&#x7B26;&#x4E32;&#x3002;</li>
+<li>lifecycle&#x6307;&#x660E;&#x6B64;&#x8868;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;.</li>
+<li>&#x76EE;&#x524D;&#xFF0C;&#x5728;&#x8868;&#x4E2D;&#x5EFA;&#x7684;&#x5206;&#x533A;&#x5C42;&#x6B21;&#x4E0D;&#x80FD;&#x8D85;&#x8FC7;5&#x7EA7;&#x3002;</li>
+<li>create as select &#x8BED;&#x6CD5;&#x521B;&#x5EFA;&#x7684;&#x8868;&#x90FD;&#x662F;&#x4E34;&#x65F6;&#x8868;&#xFF0C;&#x6BCF;&#x5929;&#x65E9;&#x4E0A;5&#x70B9;&#x540E;&#x4F1A;&#x5B9A;&#x671F;&#x6E05;&#x7406;&#x3002;</li>
+<li>create table like&#x53EF;&#x4EE5;&#x5FEB;&#x901F;&#x521B;&#x5EFA;&#x76EE;&#x6807;&#x8868;&#x76F8;&#x540C;&#x7684;&#x8868;&#x7ED3;&#x6784;&#xFF0C;&#x914D;&#x5408;insert select from&#x8BED;&#x6CD5;&#x53EF;&#x4EE5;&#x5FEB;&#x901F;&#x5C06;&#x6570;&#x636E;&#x540C;&#x6B65;&#x3002;</li>
+</ol>
+<p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>--&#x521B;&#x5EFA;&#x5206;&#x533A;&#x8868;
+create table if not exists sale_detail_dt(
+ shop_name     string,
+ customer_id   string,
+ total_price   double)
+partitioned by (ds string,sale_date string,region string)
+lifecycle 7;
+
+--&#x521B;&#x5EFA;&#x4E34;&#x65F6;&#x8868;&#x5E76;&#x4ECE;&#x8001;&#x7684;&#x8868;&#x62F7;&#x8D1D;&#x6570;&#x636E;
+create table tbl_sale_detail_ctas1 as
+   select * from sale_detail;
+
+--&#x521B;&#x5EFA;&#x8868;&#x4ECE;&#x8001;&#x7684;&#x8868;&#x62F7;&#x8D1D;&#x6570;&#x636E;&#xFF0C;&#x5E76;&#x6DFB;&#x52A0;&#x4E24;&#x4E2A;&#x5217;
+create table tbl_sale_detail_ctas2 as
+   select shop_name,
+       customer_id,
+       total_price,
+       &apos;2013&apos; as sale_date,
+       &apos;China&apos; as region
+   from sale_detail;
+
+--&#x6839;&#x636E;&#x76EE;&#x6807;&#x8868;&#x7ED3;&#x6784;&#x521B;&#x5EFA;&#x8868;   
+create table people_msg_test1 like people_msg_test;
+--&#x5168;&#x91CF;&#x62F7;&#x8D1D;&#x6570;&#x636E;
+insert overwrite table people_msg_test1 select * from people_msg_test;
+</code></pre><h3 id="412-&#x5220;&#x9664;&#x8868;">4.1.2 &#x5220;&#x9664;&#x8868;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>drop table [if exists] table_name;
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>&#x5982;&#x679C;&#x4E0D;&#x6307;&#x5B9A;if exists&#x9009;&#x9879;&#x800C;&#x8868;&#x4E0D;&#x5B58;&#x5728;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;&#x5F02;&#x5E38;&#xFF1B;&#x82E5;&#x6307;&#x5B9A;&#x6B64;&#x9009;&#x9879;&#xFF0C;&#x65E0;&#x8BBA;&#x8868;&#x662F;&#x5426;&#x5B58;&#x5728;&#xFF0C;&#x7686;&#x8FD4;&#x56DE;&#x6210;&#x529F;&#x3002;</li>
+</ol>
+<p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>create table sale_detail_drop like sale_detail;
+
+--&#x82E5;&#x8868;&#x5B58;&#x5728;&#xFF0C;&#x6210;&#x529F;&#x8FD4;&#x56DE;&#xFF1B;&#x82E5;&#x4E0D;&#x5B58;&#x5728;&#xFF0C;&#x5F02;&#x5E38;&#x8FD4;&#x56DE;&#xFF1B;
+drop table sale_detail_drop;
+
+--&#x65E0;&#x8BBA;&#x662F;&#x5426;&#x5B58;&#x5728;sale_detail_drop2&#x8868;&#xFF0C;&#x5747;&#x6210;&#x529F;&#x8FD4;&#x56DE;&#xFF1B;
+drop table if exists sale_detail_drop2;
+</code></pre><h3 id="413-&#x91CD;&#x547D;&#x540D;&#x8868;">4.1.3 &#x91CD;&#x547D;&#x540D;&#x8868;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>alter table table_name rename to new_table_name;
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>rename&#x64CD;&#x4F5C;&#x4EC5;&#x4FEE;&#x6539;&#x8868;&#x7684;&#x540D;&#x5B57;&#xFF0C;&#x4E0D;&#x6539;&#x52A8;&#x8868;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x3002;</li>
+<li>&#x5982;&#x679C;&#x5DF2;&#x5B58;&#x5728;&#x4E0E;new_table_name&#x540C;&#x540D;&#x8868;&#xFF0C;&#x62A5;&#x9519;&#x3002;</li>
+<li>&#x5982;&#x679C;table_name&#x4E0D;&#x5B58;&#x5728;&#xFF0C;&#x62A5;&#x9519;&#x3002;</li>
+</ol>
+<p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>create table sale_detail_rename1 like sale_detail;
+
+alter table sale_detail_rename1 rename to sale_detail_rename2;
+</code></pre><h3 id="414-&#x4FEE;&#x6539;&#x8868;&#x7684;&#x6CE8;&#x91CA;">4.1.4 &#x4FEE;&#x6539;&#x8868;&#x7684;&#x6CE8;&#x91CA;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;4</strong></p>
+<pre class="language-"><code>alter table table_name set comment &apos;tbl comment&apos;;
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>table_name&#x5FC5;&#x987B;&#x662F;&#x5DF2;&#x5B58;&#x5728;&#x7684;&#x8868;&#xFF1B;comment&#x6700;&#x957F;1024&#x5B57;&#x8282;&#xFF1B;</li>
+</ol>
+<p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>alter table sale_detail set comment &apos;new coments for table sale_detail&apos;;
+</code></pre><h3 id="415-&#x7F13;&#x5B58;&#x8868;">4.1.5 &#x7F13;&#x5B58;&#x8868;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>cache table table_name
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>sql &#x4F18;&#x5316;&#x7F13;&#x5B58;&#x8868;&#x5230;&#x5185;&#x5B58;</li>
+</ol>
+<h3 id="416-&#x5220;&#x9664;&#x7F13;&#x5B58;&#x8868;">4.1.6 &#x5220;&#x9664;&#x7F13;&#x5B58;&#x8868;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>uncache table table_name
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>&#x53D6;&#x6D88;&#x5185;&#x5B58;&#x7F13;&#x5B58;&#x8868;&#x6570;&#x636E;&#xFF0C;&#x56DE;&#x6536;&#x5185;&#x5B58;&#x8D44;&#x6E90;</li>
+</ol>
+<h3 id="417-&#x6DFB;&#x52A0;&#x5206;&#x533A;">4.1.7 &#x6DFB;&#x52A0;&#x5206;&#x533A;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>alter table table_name add [if not exists] partition partition_spec
+
+partition_spec:
+ : (partition_col1 = partition_col_value1, partition_col2 = partiton_col_value2, ...)
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>&#x5982;&#x679C;&#x672A;&#x6307;&#x5B9A;if not exists&#x800C;&#x540C;&#x540D;&#x7684;&#x5206;&#x533A;&#x5DF2;&#x5B58;&#x5728;&#xFF0C;&#x5219;&#x51FA;&#x9519;&#x8FD4;&#x56DE;&#x3002;</li>
+<li>&#x76EE;&#x524D;ODPS&#x652F;&#x6301;&#x7684;&#x5206;&#x533A;&#x6570;&#x91CF;&#x4E0A;&#x9650;&#x4E3A;4&#x4E07;&#x3002;</li>
+<li>&#x5BF9;&#x4E8E;&#x591A;&#x7EA7;&#x5206;&#x533A;&#x7684;&#x8868;&#xFF0C;&#x5982;&#x679C;&#x60F3;&#x6DFB;&#x52A0;&#x65B0;&#x7684;&#x5206;&#x533A;&#xFF0C;&#x5FC5;&#x987B;&#x6307;&#x660E;&#x5168;&#x90E8;&#x7684;&#x5206;&#x533A;&#x503C;&#x3002;</li>
+<li>&#x5206;&#x533A;&#x5B57;&#x6BB5;ds&#x5FC5;&#x987B;&#x5B58;&#x5728;&#x3002;</li>
+</ol>
+<p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>-- &#x6210;&#x529F;&#x6DFB;&#x52A0;&#x5206;&#x533A;&#xFF0C;&#x7528;&#x6765;&#x5B58;&#x50A8;2013&#x5E74;12&#x6708;&#x676D;&#x5DDE;&#x5730;&#x533A;&#x7684;&#x9500;&#x552E;&#x8BB0;&#x5F55;&#x3002;
+alter table sale_detail_dt add if not exists partition (ds=&quot;1&quot;, sale_date=&apos;201312&apos;, region=&apos;hangzhou&apos;);
+
+-- &#x6210;&#x529F;&#x6DFB;&#x52A0;&#x5206;&#x533A;&#xFF0C;&#x7528;&#x6765;&#x5B58;&#x50A8;2013&#x5E74;12&#x6708;&#x4E0A;&#x6D77;&#x5730;&#x533A;&#x7684;&#x9500;&#x552E;&#x8BB0;&#x5F55;&#x3002;
+alter table sale_detail_dt add if not exists partition (ds=&quot;1&quot;,sale_date=&apos;201312&apos;, region=&apos;shanghai&apos;);
+</code></pre><h3 id="418-&#x5220;&#x9664;&#x5206;&#x533A;">4.1.8 &#x5220;&#x9664;&#x5206;&#x533A;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>alter table table_name drop [if exists] partition_spec;
+
+partition_spec:
+: (partition_col1 = partition_col_value1, partition_col2 = partiton_col_value2, ...)
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>&#x5982;&#x679C;&#x5206;&#x533A;&#x4E0D;&#x5B58;&#x5728;&#x4E14;&#x672A;&#x6307;&#x5B9A;if exists&#xFF0C;&#x5219;&#x51FA;&#x9519;&#x8FD4;&#x56DE;&#x3002;</li>
+</ol>
+<p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>-- &#x6210;&#x529F;&#x5220;&#x9664;2013&#x5E74;12&#x6708;&#x676D;&#x5DDE;&#x5206;&#x533A;&#x7684;&#x9500;&#x552E;&#x3002;
+alter table sale_detail drop partition(ds=&quot;1&quot;,sale_date=&apos;201312&apos;,region=&apos;hangzhou&apos;);
+</code></pre><h3 id="419-&#x6DFB;&#x52A0;&#x5217;">4.1.9 &#x6DFB;&#x52A0;&#x5217;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>alter table table_name add columns (col_name1 type1, col_name2 type2...)
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>&#x5217;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x53EA;&#x80FD;&#x662F;&#xFF1A;bigint&#xFF0C;double&#xFF0C;boolean&#xFF0C;datetime&#x53CA;string&#x7C7B;&#x578B;&#x3002;
+<strong>&#x5B9E;&#x4F8B;</strong><pre class="language-"><code>alter table sale_detail_dt add columns (location1 string, location2 string);
+</code></pre></li>
+</ol>
+<h3 id="4110-&#x4FEE;&#x6539;&#x5217;&#x3001;&#x5206;&#x533A;&#x6CE8;&#x91CA;">4.1.10 &#x4FEE;&#x6539;&#x5217;&#x3001;&#x5206;&#x533A;&#x6CE8;&#x91CA;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>alter table table_name change column col_name comment &apos;comment&apos;;
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>comment&#x5185;&#x5BB9;&#x6700;&#x957F;1024&#x5B57;&#x8282;</li>
+</ol>
+<h3 id="4111-&#x4FEE;&#x6539;&#x8868;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x5C5E;&#x6027;">4.1.11 &#x4FEE;&#x6539;&#x8868;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x5C5E;&#x6027;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>alter table table_name set lifecycle days;
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>days &#x53C2;&#x6570;&#x4E3A;&#x751F;&#x547D;&#x5468;&#x671F;&#x65F6;&#x95F4;&#xFF0C;&#x53EA;&#x63A5;&#x53D7;&#x6B63;&#x6574;&#x6570;&#x3002;&#x5355;&#x4F4D;&#xFF1A;&#x5929;
+&#x5982;&#x679C;&#x8868;table_name&#x662F;&#x975E;&#x5206;&#x533A;&#x8868;&#xFF0C;&#x81EA;&#x6700;&#x540E;&#x4E00;&#x6B21;&#x6570;&#x636E;&#x88AB;&#x4FEE;&#x6539;&#x5F00;&#x59CB;&#x8BA1;&#x7B97;&#xFF0C;&#x7ECF;&#x8FC7;days&#x5929;&#x540E;&#x6570;&#x636E;&#x4ECD;&#x672A;&#x88AB;&#x6539;&#x52A8;&#xFF0C;&#x5219;&#x6B64;&#x8868;&#x65E0;&#x9700;&#x7528;&#x6237;&#x5E72;&#x9884;&#xFF0C;&#x5C06;&#x4F1A;&#x88AB;ODPS&#x81EA;&#x52A8;&#x56DE;&#x6536;(&#x7C7B;&#x4F3C;drop table&#x64CD;&#x4F5C;)&#x3002;&#x5728;ODPS&#x4E2D;&#xFF0C;&#x6BCF;&#x5F53;&#x8868;&#x7684;&#x6570;&#x636E;&#x88AB;&#x4FEE;&#x6539;&#x540E;&#xFF0C;&#x8868;&#x7684;LastDataModifiedTime&#x5C06;&#x4F1A;&#x88AB;&#x66F4;&#x65B0;&#xFF0C;&#x56E0;&#x6B64;&#xFF0C;ODPS&#x4F1A;&#x6839;&#x636E;&#x6BCF;&#x5F20;&#x8868;&#x7684;LastDataModifiedTime&#x4EE5;&#x53CA;lifecycle&#x7684;&#x8BBE;&#x7F6E;&#x6765;&#x5224;&#x65AD;&#x662F;&#x5426;&#x8981;&#x56DE;&#x6536;&#x6B64;&#x8868;&#x3002;&#x5982;&#x679C;table_name&#x662F;&#x5206;&#x533A;&#x8868;&#xFF0C;&#x5219;&#x6839;&#x636E;&#x5404;&#x5206;&#x533A;&#x7684;LastDataModifiedTime&#x5224;&#x65AD;&#x8BE5;&#x5206;&#x533A;&#x662F;&#x5426;&#x8BE5;&#x88AB;&#x56DE;&#x6536;&#x3002;&#x5173;&#x4E8E;LastDataModifiedTime&#x7684;&#x4ECB;&#x7ECD;&#x8BF7;&#x53C2;&#x8003; &#x67E5;&#x770B;&#x8868;&#x4FE1;&#x606F; &#x3002;
+&#x4E0D;&#x540C;&#x4E8E;&#x975E;&#x5206;&#x533A;&#x8868;&#xFF0C;&#x5206;&#x533A;&#x8868;&#x7684;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x5206;&#x533A;&#x88AB;&#x56DE;&#x6536;&#x540E;&#xFF0C;&#x8BE5;&#x8868;&#x4E0D;&#x4F1A;&#x88AB;&#x5220;&#x9664;&#x3002;&#x751F;&#x547D;&#x5468;&#x671F;&#x53EA;&#x80FD;&#x8BBE;&#x5B9A;&#x5230;&#x8868;&#x7EA7;&#x522B;&#xFF0C;&#x4E0D;&#x80FD;&#x518D;&#x5206;&#x533A;&#x7EA7;&#x8BBE;&#x7F6E;&#x751F;&#x547D;&#x5468;&#x671F;&#x3002;&#x521B;&#x5EFA;&#x8868;&#x65F6;&#x5373;&#x53EF;&#x6307;&#x5B9A;&#x751F;&#x547D;&#x5468;&#x671F;&#xFF0C;&#x8BE6;&#x60C5;&#x8BF7;&#x53C2;&#x9605; &#x521B;&#x5EFA;&#x8868;(CREATE TABLE) &#x3002;</li>
+</ol>
+<p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>-- &#x65B0;&#x5EFA;test_lifecycle&#x8868;&#xFF0C;&#x751F;&#x547D;&#x5468;&#x671F;&#x4E3A;100&#x5929;&#x3002;
+create table test_lifecycle(key string) lifecycle 100;
+
+-- &#x4FEE;&#x6539;test_lifecycle&#x8868;&#xFF0C;&#x5C06;&#x751F;&#x547D;&#x5468;&#x671F;&#x8BBE;&#x4E3A;50&#x5929;&#x3002;
+alter table test_lifecycle set lifecycle 50;
+</code></pre><h3 id="4112-&#x521B;&#x5EFA;&#x89C6;&#x56FE;">4.1.12 &#x521B;&#x5EFA;&#x89C6;&#x56FE;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>create view [if not exists] view_name
+[comment &apos;&apos;]
+as select ....;
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>&#x89C6;&#x56FE;&#x540D;&#x79F0;&#x4EE5;view_&#x4F5C;&#x4E3A;&#x524D;&#x7F00;</li>
+<li>&#x89C6;&#x56FE;&#x4E0D;&#x9700;&#x8981;&#x7533;&#x8BF7;&#x6743;&#x9650;&#xFF0C;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x4EFB;&#x4F55;&#x4EBA;&#x7684;&#x521B;&#x5EFA;&#x7684;&#x89C6;&#x56FE;&#xFF0C;&#x4F46;&#x9700;&#x8981;&#x7533;&#x8BF7;&#x89C6;&#x56FE;&#x4E2D;&#x5F15;&#x7528;&#x8868;&#x7684;&#x6743;&#x9650;</li>
+</ol>
+<p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>create view if not exists view_users_view
+comment &apos;Hello&apos;
+as select * from test_users_dt;
+</code></pre><h3 id="4113-&#x4FEE;&#x6539;&#x89C6;&#x56FE;&#x540D;&#x79F0;">4.1.13 &#x4FEE;&#x6539;&#x89C6;&#x56FE;&#x540D;&#x79F0;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>ALTER view view_old_name RENAME TO view_new_name
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>rename&#x64CD;&#x4F5C;&#x4EC5;&#x4FEE;&#x6539;&#x89C6;&#x56FE;&#x7684;&#x540D;&#x5B57;&#xFF0C;&#x4E0D;&#x6539;&#x52A8;&#x89C6;&#x56FE;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x3002;</li>
+<li>&#x5982;&#x679C;&#x5DF2;&#x5B58;&#x5728;&#x4E0E;view_new_name&#x540C;&#x540D;&#x89C6;&#x56FE;&#xFF0C;&#x62A5;&#x9519;&#x3002;</li>
+<li>&#x5982;&#x679C;view_old_name&#x4E0D;&#x5B58;&#x5728;&#xFF0C;&#x62A5;&#x9519;&#x3002;</li>
+</ol>
+<p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>ALTER view view_users_view RENAME TO view_users_view1
+</code></pre><h3 id="4114-&#x4FEE;&#x6539;&#x89C6;&#x56FE;select-&#x8BED;&#x53E5;">4.1.14 &#x4FEE;&#x6539;&#x89C6;&#x56FE;select &#x8BED;&#x53E5;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>ALTER view view_name as select ...;
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>ALTER view view_users_view as select name from test_users_dt;
+</code></pre><h3 id="4115-&#x5220;&#x9664;&#x89C6;&#x56FE;">4.1.15 &#x5220;&#x9664;&#x89C6;&#x56FE;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>drop view view_name;
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>&#x5982;&#x679C;&#x89C6;&#x56FE;&#x4E0D;&#x5B58;&#x5728;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;&#x5F02;&#x5E38;</li>
+</ol>
+<p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>drop view view_users_view;
+</code></pre><h3 id="4116-&#x63CF;&#x8FF0;&#x8868;">4.1.16 &#x63CF;&#x8FF0;&#x8868;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>desc sale_detail_dt
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>show partitions sale_detail_dt
+</code></pre><h3 id="4117-&#x67E5;&#x770B;&#x8868;&#x5206;&#x533A;">4.1.17 &#x67E5;&#x770B;&#x8868;&#x5206;&#x533A;</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>show partitions table_name
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>show partitions sale_detail_dt
+</code></pre><p><br></p>
+<h2 id="42-dml&#x8BED;&#x53E5;">4.2 DML&#x8BED;&#x53E5;</h2>
+<h3 id="421-insert">4.2.1 insert</h3>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>INSERT INTO [TABLE] [db_name.]table_name [PARTITION part_spec] select_statement
+
+INSERT OVERWRITE TABLE [db_name.]table_name [PARTITION part_spec] select_statement
+
+part_spec:
+  : (part_col_name1=val1 [, part_col_name2=val2, ...])
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>insert into people_msg_test values(&apos;1&apos;,&apos;1&apos;,&apos;1&apos;,&apos;111&apos;)
+
+insert overwrite table people_msg_test1 select * from people_msg_test;
+</code></pre><h3 id="422-query&#x8BED;&#x53E5;">4.2.2 Query&#x8BED;&#x53E5;</h3>
+<h4 id="422-select">4.2.2 select</h4>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>SELECT [hints, ...] [ALL|DISTINCT] named_expression[, named_expression, ...]
+  FROM relation[, relation, ...]
+  [lateral_view[, lateral_view, ...]]
+  [WHERE boolean_expression]
+  [aggregation [HAVING boolean_expression]]
+  [ORDER BY sort_expressions]
+  [CLUSTER BY expressions]
+  [DISTRIBUTE BY expressions]
+  [SORT BY sort_expressions]
+  [WINDOW named_window[, WINDOW named_window, ...]]
+  [LIMIT num_rows]
+
+named_expression:
+  : expression [AS alias]
+
+relation:
+  | join_relation
+  | (table_name|query|relation) [sample] [AS alias]
+  : VALUES (expressions)[, (expressions), ...]
+        [AS (column_name[, column_name, ...])]
+
+expressions:
+  : expression[, expression, ...]
+
+sort_expressions:
+  : expression [ASC|DESC][, expression [ASC|DESC], ...]
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>
+create table people_msg_test (
+    zjhm    string  comment &apos;&#x8BC1;&#x4EF6;&#x53F7;&#x7801;&apos;,
+    xm  string  comment &apos;&#x59D3;&#x540D;&apos;,
+    xb string  comment  &apos;&#x6027;&#x522B;&apos;,
+    height int comment &apos;&#x8EAB;&#x9AD8;&apos;,
+    phone   string  comment &apos;&#x624B;&#x673A;&apos;
+)
+comment     &apos;&#x4EBA;&#x4FE1;&#x606F;&apos;
+lifecycle 365;
+
+insert overwrite table people_msg_test values(&apos;330103198001010001&apos;,&apos;&#x5F20;&#x4E00;&apos;,&apos;&#x7537;&apos;,180,&apos;13712345678&apos;),
+(&apos;330103198001010002&apos;,&apos;&#x5F20;&#x4E8C;&apos;,&apos;&#x7537;&apos;,172,&apos;13712345688&apos;),
+(&apos;330103198001010003&apos;,&apos;&#x5F20;&#x4E09;&apos;,&apos;&#x7537;&apos;,168,&apos;13712345778&apos;),
+(&apos;330103198001010004&apos;,&apos;&#x5F20;&#x56DB;&apos;,&apos;&#x5973;&apos;,162,&apos;13812345678&apos;),
+(&apos;330103198001010005&apos;,&apos;&#x5F20;&#x4E94;&apos;,&apos;&#x5973;&apos;,153,&apos;13912345678&apos;);
+
+--query
+SELECT zjhm, xm FROM people_msg_test WHERE zjhm=&apos;330103198001010001&apos;
+SELECT DISTINCT zjhm, xm FROM people_msg_test WHERE xb=&apos;&#x7537;&apos; LIMIT 2
+SELECT * FROM VALUES (1, 2, 3) AS (width, length, height)
+SELECT * FROM VALUES (1, 2, 3), (2, 3, 4) AS (width, length, height)
+SELECT * FROM people_msg_test ORDER BY zjhm
+SELECT * FROM people_msg_test DISTRIBUTE BY zjhm SORT BY zjhm
+SELECT * FROM people_msg_test CLUSTER BY zjhm
+
+--sample
+SELECT * FROM people_msg_test TABLESAMPLE (2 ROWS)
+SELECT * FROM people_msg_test TABLESAMPLE (25 PERCENT)
+</code></pre><h3 id="423-join">4.2.3 join</h3>
+<p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>create table vechile_msg_test (
+    vehicle_id    string  comment &apos;&#x8F66;id&apos;,
+    vehicle_type  string  comment &apos;&#x8F66;&#x7C7B;&#x578B;&apos;,
+    color  string  comment  &apos;&#x8F66;&#x989C;&#x8272;&apos;,
+    owner_zjhm    string  comment &apos;&#x8F66;&#x4E3B;&#x8BC1;&#x4EF6;&#x53F7;&#x7801;&apos;
+)
+comment     &apos;&#x8F66;&#x4FE1;&#x606F;&apos;
+lifecycle 365;
+
+insert overwrite table vechile_msg_test values(&apos;1&apos;,&apos;&#x5B9D;&#x9A6C;&apos;,&apos;&#x767D;&apos;,&apos;330103198001010001&apos;),(&apos;2&apos;,&apos;&#x5965;&#x8FEA;&apos;,&apos;&#x767D;&apos;,&apos;330103198001010003&apos;)
+
+SELECT * FROM people_msg_test INNER JOIN vechile_msg_test ON people_msg_test.zjhm = vechile_msg_test.owner_zjhm
+SELECT * FROM people_msg_test LEFT JOIN vechile_msg_test ON people_msg_test.zjhm = vechile_msg_test.owner_zjhm
+SELECT * FROM people_msg_test RIGHT JOIN vechile_msg_test ON people_msg_test.zjhm = vechile_msg_test.owner_zjhm
+</code></pre><h3 id="424-lateral-view">4.2.4 Lateral View</h3>
+<p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>--&#x6BCF;&#x6761;&#x6570;&#x636E;&#x6DFB;&#x52A0;&#x591A;&#x4E2A;&#x5217;
+SELECT * FROM people_msg_test LATERAL VIEW explode(Array(1, 2, 3)) my_view
+SELECT xm, my_view.grade FROM people_msg_test LATERAL VIEW explode(Array(1, 2, 3)) my_view AS grade
+</code></pre><h2 id="43-&#x5176;&#x4ED6;&#x8BED;&#x53E5;">4.3 &#x5176;&#x4ED6;&#x8BED;&#x53E5;</h2>
+<h3 id="431-load">4.3.1 load</h3>
+<p>&#x5BFC;&#x5165;&#x6570;&#x636E;-&#x52A0;&#x8F7D;json&#x3001;csv&#x6216;excel&#x6587;&#x4EF6;&#x6570;&#x636E;&#x4F5C;&#x4E3A;spark &#x4E34;&#x65F6;&#x8868;DataSource<br>
+<strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>load data &apos;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&apos; table [&#x8868;&#x540D;] [options(key=value)]
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>options&#x4E3A;&#x53EF;&#x9009;&#x5C5E;&#x6027;&#xFF0C;&#x5176;&#x4E2D;&#x7684;&#x53D6;&#x503C;&#x548C;spark.read&#x4E2D;&#x7684;option&#x53D6;&#x503C;&#x76F8;&#x540C;</li>
+<li>&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x4E3A;hdfs&#x4E0A;&#x9762;&#x7684;&#x8DEF;&#x5F84;&#xFF0C;&#x540C;&#x65F6;csv&#x6587;&#x4EF6;&#x7684;&#x5217;&#x540D;&#x4E0D;&#x80FD;&#x5305;&#x542B;&#x7A7A;&#x683C;</li>
+<li>&#x4EE5;&#x4E0B;&#x4E3A;option&#x53EF;&#x9009;&#x53C2;&#x6570;</li>
+<li>header: when set to true the first line of files will be used to name columns and will not be included in data. All * types will be assumed string. Default value is false.</li>
+<li>delimiter: by default columns are delimited using ,, but delimiter can be set to any character</li>
+<li>quote: by default the quote character is &quot;, but can be set to any character. Delimiters inside quotes are ignored</li>
+<li>escape: by default the escape character is , but can be set to any character. Escaped quote characters are ignored</li>
+<li>parserLib: by default it is &quot;commons&quot; can be set to &quot;univocity&quot; to use that library for CSV parsing.</li>
+<li>mode: determines the parsing mode. By default it is PERMISSIVE. Possible values are:
+  &#x3002;PERMISSIVE: tries to parse all lines: nulls are inserted for   missing tokens and extra tokens are ignored.
+  &#x3002;DROPMALFORMED: drops lines which have fewer or more tokens than expected or tokens which do not match the schema
+  &#x3002;FAILFAST: aborts with a RuntimeException if encounters any malformed line</li>
+<li>charset: defaults to &apos;UTF-8&apos; but can be set to other valid charset names</li>
+<li>inferSchema: automatically infers column types. It requires one extra pass over the data and is false by default</li>
+<li>comment: skip lines beginning with this character. Default is &quot;#&quot;. Disable comments by setting this to null.</li>
+<li>nullValue: specifies a string that indicates a null value, any fields matching this string will be set as nulls in the DataFrame</li>
+<li>dateFormat: specifies a string that indicates the date format to use when reading dates or timestamps. Custom date formats follow the formats at java.text.SimpleDateFormat. This applies to both DateType and TimestampType. By default, it is null which means trying to parse times and date by java.sql.Timestamp.valueOf() and java.sql.Date.valueOf().</li>
+</ol>
+<p><strong>&#x5B9E;&#x4F8B;&#xFF0C;&#x5C06;scv&#x5BFC;&#x5165;&#x4E34;&#x65F6;&#x8868;</strong></p>
+<pre class="language-"><code>-- sql&#x4F5C;&#x4E1A;&#x4E2D;(&#x6CE8;&#x610F;&#xFF1A;&#x8981;&#x4E24;&#x4E2A;&#x8BED;&#x53E5;&#x540C;&#x65F6;&#x9009;&#x4E2D;&#x6267;&#x884C;&#xFF0C;tdl_spark_test&#x8868;&#x53EA;&#x662F;&#x4E34;&#x65F6;&#x8868;&#xFF0C;&#x6267;&#x884C;&#x5B8C;&#x64CD;&#x4F5C;&#x540E;&#x5C31;&#x4F1A;&#x6D88;&#x5931;&#xFF0C;&#x4EC5;&#x505A;&#x5206;&#x6790;&#x4F7F;&#x7528;&#xFF0C;type=&apos;login&apos;&#x53EA;&#x662F;&#x4E00;&#x4E2A;&#x4E3E;&#x4F8B;)
+load data &apos;/user/datacompute/platformtool/resources/169/latest/dc_load_data.csv&apos; table tdl_spark_test options( delimiter=&apos;,&apos;);
+select * from tdl_spark_test where type=&apos;login&apos;;
+
+-- load &#x547D;&#x4EE4;&#x6570;&#x636E;&#x4E0D;&#x843D;&#x78C1;&#x76D8;&#x5B58;&#x50A8;&#xFF0C;&#x5982;&#x679C;&#x9700;&#x8981;&#x5B58;&#x50A8;&#x7684;&#x8868;&#xFF0C;&#x4F7F;&#x7528;&#x5982;&#x4E0B;&#x65B9;&#x5F0F;(&#x6CE8;&#x610F;&#xFF1A;&#x8981;&#x4E24;&#x4E2A;&#x8BED;&#x53E5;&#x540C;&#x65F6;&#x9009;&#x4E2D;&#x6267;&#x884C;&#xFF0C;tdl_data_table&#x8868;&#x4E3A;&#x9700;&#x8981;&#x63D2;&#x5165;&#x6570;&#x636E;&#x7684;&#x8868;&#xFF0C;&#x9700;&#x8981;&#x63D0;&#x524D;&#x521B;&#x5EFA;&#x597D;)
+load data &apos;/user/datacompute/platformtool/resources/169/latest/dc_load_data.csv&apos; table tdl_spark_test options( delimiter=&apos;,&apos;);
+insert overwrite table tdl_data_table select * from tdl_spark_test where type=&apos;login&apos;;
+
+-- load &#x5C06;&#x6570;&#x636E;&#x52A0;&#x8F7D;&#x8FDB;&#x4E00;&#x5F20;&#x4E03;&#x5929;&#x751F;&#x547D;&#x5468;&#x671F;&#x7684;&#x4E34;&#x65F6;&#x8868;
+load data &apos;/user/datacompute/platformtool/resources/169/latest/dc_load_data.csv&apos; table tdl_spark_test options(delimiter=&apos;,&apos;);
+create table tdl_data_table lifecycle 7 select * from tdl_spark_test;
+</code></pre><p><strong>&#x5B9E;&#x4F8B;&#xFF0C;&#x5C06;excel&#x5BFC;&#x5165;&#x4E34;&#x65F6;&#x8868;(&#x6570;&#x91CF;&#x91CF;&#x5C11;&#x65F6;&#x4F7F;&#x7528;)</strong></p>
+<pre class="language-"><code>-- sql&#x4F5C;&#x4E1A;&#x4E2D;(&#x6CE8;&#x610F;&#xFF1A;&#x8981;&#x4E24;&#x4E2A;&#x8BED;&#x53E5;&#x540C;&#x65F6;&#x9009;&#x4E2D;&#x6267;&#x884C;&#xFF0C;tdl_spark_test&#x8868;&#x53EA;&#x662F;&#x4E34;&#x65F6;&#x8868;&#xFF0C;&#x6267;&#x884C;&#x5B8C;&#x64CD;&#x4F5C;&#x540E;&#x5C31;&#x4F1A;&#x6D88;&#x5931;)
+-- &#x5BFC;&#x5165;excel &#x53C2;&#x6570;&#x8BF4;&#x660E;&#x53C2;&#x8003;&#x6587;&#x6863;&#xFF1A; https://github.com/crealytics/spark-excel
+load data &apos;/user/datacompute/platformtool/resources/169/latest/dc_load_data.xlsx&apos; table tdl_spark_test ;
+select * from tdl_spark_test ;
+
+-- load &#x547D;&#x4EE4;&#x6570;&#x636E;&#x4E0D;&#x843D;&#x78C1;&#x76D8;&#x5B58;&#x50A8;&#xFF0C;&#x5982;&#x679C;&#x9700;&#x8981;&#x5B58;&#x50A8;&#x7684;&#x8868;&#xFF0C;&#x4F7F;&#x7528;&#x5982;&#x4E0B;&#x65B9;&#x5F0F;(&#x6CE8;&#x610F;&#xFF1A;&#x8981;&#x4E24;&#x4E2A;&#x8BED;&#x53E5;&#x540C;&#x65F6;&#x9009;&#x4E2D;&#x6267;&#x884C;&#xFF0C;tdl_data_table&#x8868;&#x4E3A;&#x9700;&#x8981;&#x63D2;&#x5165;&#x6570;&#x636E;&#x7684;&#x8868;&#xFF0C;&#x9700;&#x8981;&#x63D0;&#x524D;&#x521B;&#x5EFA;&#x597D;)
+load data &apos;/user/datacompute/platformtool/resources/169/latest/dc_load_data.xlsx&apos; table tdl_spark_test ;
+insert overwrite table tdl_data_table select * from tdl_spark_test;
+
+-- load &#x5C06;&#x6570;&#x636E;&#x52A0;&#x8F7D;&#x8FDB;&#x4E00;&#x5F20;&#x4E03;&#x5929;&#x751F;&#x547D;&#x5468;&#x671F;&#x7684;&#x4E34;&#x65F6;&#x8868;
+load data &apos;/user/datacompute/platformtool/resources/169/latest/dc_load_data.xlsx&apos; table tdl_spark_test ;
+create table tdl_data_table lifecycle 7 select * from tdl_spark_test;
+</code></pre><p><strong>&#x5B9E;&#x4F8B;&#xFF0C;&#x5BFC;&#x5165;zip&#x6587;&#x4EF6;</strong></p>
+<pre class="language-"><code>--zip&#x6587;&#x4EF6;&#x91CC;&#x53EA;&#x80FD;&#x5B58;&#x653E;&#x591A;&#x4E2A;csv&#x548C;json&#x6587;&#x4EF6;&#xFF0C;&#x4E0D;&#x652F;&#x6301;json&#x3001;csv&#x548C;excel&#x6587;&#x4EF6;&#x6DF7;&#x653E;&#x7684;&#x60C5;&#x51B5;
+-- load &#x5C06;&#x6570;&#x636E;&#x52A0;&#x8F7D;&#x8FDB;&#x4E00;&#x5F20;&#x4E03;&#x5929;&#x751F;&#x547D;&#x5468;&#x671F;&#x7684;&#x4E34;&#x65F6;&#x8868;
+load data &apos;/user/datacompute/users/xiuxiu.zheng/csv_test.zip&apos; table tdl_spark_test options(delimiter=&apos;,&apos;,header=&apos;true&apos;) ;
+create table tdl_data_table lifecycle 7 select * from tdl_spark_test;
+</code></pre><h3 id="432-export">4.3.2 export</h3>
+<p>&#x5BFC;&#x51FA;&#x8868;&#x6570;&#x636E;&#x4E3A;csv&#x6587;&#x4EF6;&#x6216;excel&#x6587;&#x4EF6;<br>
+&#x6CE8;&#x610F;&#xFF1A;<br>
+-1&#x3001;&#x76EE;&#x524D;excel&#x6587;&#x4EF6;&#x5BFC;&#x5165;&#x6027;&#x80FD;&#x4E0D;&#x662F;&#x90A3;&#x4E48;&#x597D;&#xFF0C;&#x6545;&#x53EA;&#x5EFA;&#x8BAE;&#x5728;&#x6570;&#x636E;&#x91CF;&#x6BD4;&#x8F83;&#x5C11;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x7528;excel&#x5BFC;&#x51FA;&#xFF0C;&#x6570;&#x636E;&#x6BD4;&#x8F83;&#x591A;&#x7684;&#x60C5;&#x51B5;&#x8FD8;&#x662F;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;csv&#x6587;&#x4EF6;&#x5BFC;&#x51FA;<br></p>
+<p>-2&#x3001;&#x5982;&#x679C;&#x5E0C;&#x671B;&#x5BFC;&#x51FA;&#x6570;&#x636E;&#x5207;&#x5206;&#x4E3A;&#x591A;&#x4E2A;&#x6587;&#x4EF6;&#x538B;&#x7F29;&#x6253;&#x5305;&#xFF0C;&#x6587;&#x4EF6;&#x540E;&#x7F00;&#x7EA6;&#x5B9A;&#x4E3A;&#xFF1A;zip&#xFF0C; &#x6307;&#x5B9A;&#x5207;&#x5206;&#x6587;&#x4EF6;&#x6570;&#x91CF;&#x901A;&#x8FC7;&#x5728;options&#x4E2D;&#x6307;&#x5B9A;&#x53C2;&#x6570;: fileCount&#x3002; <br></p>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>export table tablename [PARTITION (part_column=&quot;value&quot;[, ...])] TO &apos;export_file_name.csv&apos; [options(key=value)]
+</code></pre><p><strong>&#x8BF4;&#x660E;</strong></p>
+<ol>
+<li>&#x5176;&#x4E2D;&#x7684;&#x8868;&#x65E2;&#x53EF;&#x4EE5;&#x4E3A;hive&#x8868;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x662F;&#x540C;&#x4E00;&#x4E2A;&#x4F5C;&#x4E1A;&#x4E2D;&#x901A;&#x8FC7;createOrReplaceTempView&#x521B;&#x5EFA;&#x7684;&#x4E34;&#x65F6;&#x8868;&#xFF0C;&#x4FDD;&#x5B58;&#x540E;&#x6587;&#x4EF6;&#x5728;&#x8D44;&#x6E90;&#x7BA1;&#x7406;-&gt;&#x6211;&#x7684;&#x8D44;&#x6E90; &#x76EE;&#x5F55;&#x4E0B;&#x9762;&#xFF0C;</li>
+<li>&#x5BFC;&#x51FA;csv&#x6587;&#x4EF6;&#x9ED8;&#x8BA4;&#x662F;&#x4EE5;&#x9017;&#x53F7;&#x4F5C;&#x4E3A;&#x5B57;&#x6BB5;&#x5206;&#x5272;&#xFF0C;&#x5982;&#x679C;&#x9700;&#x8981;&#x6307;&#x5B9A;&#x5206;&#x5272;&#x7B26;&#xFF0C;&#x53EF;&#x4EE5;&#x5728;options&#x9009;&#x9879;&#x4E2D;&#x6307;&#x5B9A;delimiter&#xFF0C;options&#x53EF;&#x9009;&#x5C5E;&#x6027;&#x540C;Load&#x5C5E;&#x6027;</li>
+<li>&#x76EE;&#x524D;excel&#x6587;&#x4EF6;&#x5BFC;&#x5165;&#x6027;&#x80FD;&#x4E0D;&#x662F;&#x90A3;&#x4E48;&#x597D;&#xFF0C;&#x6545;&#x53EA;&#x5EFA;&#x8BAE;&#x5728;&#x6570;&#x636E;&#x91CF;&#x6BD4;&#x8F83;&#x5C11;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x7528;excel&#x5BFC;&#x51FA;&#xFF0C;&#x6570;&#x636E;&#x6BD4;&#x8F83;&#x591A;&#x7684;&#x60C5;&#x51B5;&#x8FD8;&#x662F;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;csv&#x6587;&#x4EF6;&#x5BFC;&#x51FA;</li>
+<li>&#x5982;&#x679C;&#x5E0C;&#x671B;&#x5BFC;&#x51FA;&#x6570;&#x636E;&#x5207;&#x5206;&#x4E3A;&#x591A;&#x4E2A;&#x6587;&#x4EF6;&#x538B;&#x7F29;&#x6253;&#x5305;&#xFF0C;&#x6587;&#x4EF6;&#x540E;&#x7F00;&#x7EA6;&#x5B9A;&#x4E3A;&#xFF1A;zip&#xFF0C; &#x6307;&#x5B9A;&#x5207;&#x5206;&#x6587;&#x4EF6;&#x6570;&#x91CF;&#x901A;&#x8FC7;&#x5728;options&#x4E2D;&#x6307;&#x5B9A;&#x53C2;&#x6570;: fileCount&#x3002;</li>
+</ol>
+<p><strong>&#x5B9E;&#x4F8B;&#xFF0C;&#x5BFC;&#x51FA;csv&#x6587;&#x4EF6;</strong></p>
+<pre class="language-"><code>--delimiter&#x8868;&#x793A;csv&#x6587;&#x4EF6;&#x5206;&#x9694;&#x7B26;
+export table raw_activity_flat PARTITION (year=2018, month=3, day=12) TO &apos;activity_20180312.csv&apos; options(delimiter=&apos;;&apos;)
+
+--&#x8986;&#x76D6;&#x539F;&#x6587;&#x4EF6;&#x5BFC;&#x51FA;, &#x6DFB;&#x52A0;&#x53C2;&#x6570;&#xFF1A;overwrite = true
+export table raw_activity_flat PARTITION (year=2018, month=3, day=12) TO &apos;activity_20180312.csv&apos; options(delimiter=&apos;;&apos;,overwrite=true)
+
+--&#x9ED8;&#x8BA4;&#x4E0D;&#x652F;&#x6301;array,map,struct &#x590D;&#x6742;&#x7C7B;&#x578B;&#x7684;&#x6570;&#x636E;&#x5BFC;&#x51FA;&#xFF0C;&#x6DFB;&#x52A0;&#x53C2;&#x6570;&#xFF1A;complexTypeToJson = true&#xFF0C;&#x590D;&#x6742;&#x7C7B;&#x578B;&#x6570;&#x636E;&#x8F6C;&#x4E3A;json string &#x5BFC;&#x51FA;
+export table raw_activity_flat PARTITION (year=2018, month=3, day=12) TO &apos;activity_20180312.csv&apos; options(delimiter=&apos;;&apos;,complexTypeToJson = true)
+
+--&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x53EA;&#x80FD;&#x5728;python &#x4F5C;&#x4E1A;&#x4E2D;&#x4F7F;&#x7528;
+sparkSession.sql(&quot;select email, idnumber, wifi from raw_activity_flat where year=2018 and month=3 and partnerCode=&apos;qunaer&apos; &quot;).createOrReplaceTempView(&quot;tdl_raw_activity_qunaer&quot;);
+sparkSession.sql(&quot;export table tdl_raw_activity_qunaer TO &apos;activity_20180312.csv&apos;&quot;)
+
+--&#x5982;&#x679C;&#x5BFC;&#x51FA; zip &#x538B;&#x7F29;&#x6587;&#x4EF6;&#xFF0C;&#x6587;&#x4EF6;&#x540D;&#x540E;&#x7F00;&#x4E3A;.csv.zip
+</code></pre><p><strong>&#x5B9E;&#x4F8B;&#xFF0C;&#x5BFC;&#x51FA;excel&#x6587;&#x4EF6;(&#x6570;&#x91CF;&#x91CF;&#x5C11;&#x65F6;&#x4F7F;&#x7528;)</strong></p>
+<pre class="language-"><code>-- &#x5BFC;&#x51FA;excel &#x53C2;&#x6570;&#x8BF4;&#x660E;&#x53C2;&#x8003;&#x6587;&#x6863;&#xFF1A; https://github.com/crealytics/spark-excel
+export table raw_activity_flat PARTITION (year=2018, month=3, day=12) TO &apos;activity_20180312.xlsx&apos;
+
+--&#x8986;&#x76D6;&#x539F;&#x6587;&#x4EF6;&#x5BFC;&#x51FA;, &#x6DFB;&#x52A0;&#x53C2;&#x6570;&#xFF1A;overwrite = true
+export table raw_activity_flat PARTITION (year=2018, month=3, day=12) TO &apos;activity_20180312.xlsx&apos; options(overwrite=true)
+
+--&#x8FD9;&#x6BB5;&#x4EE3;&#x7801;&#x53EA;&#x80FD;&#x5728;python &#x4F5C;&#x4E1A;&#x4E2D;&#x4F7F;&#x7528;
+sparkSession.sql(&quot;select email, idnumber, wifi from raw_activity_flat where year=2018 and month=3 and partnerCode=&apos;qunaer&apos; &quot;).createOrReplaceTempView(&quot;tdl_raw_activity_qunaer&quot;);
+sparkSession.sql(&quot;export table tdl_raw_activity_qunaer TO &apos;activity_20180312.xlsx&apos;&quot;)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;&#xFF0C;&#x5BFC;&#x51FA;json&#x6587;&#x4EF6;</strong></p>
+<pre class="language-"><code>--&#x5BFC;&#x51FA;&#x6587;&#x4EF6;&#x540D;&#x540E;&#x7F00;&#x53EA;&#x80FD;&#x662F;&#xFF1A;.json &#x6216; .json.zip
+--&#x540E;&#x7F00;.json.zip &#x751F;&#x6210;&#x6570;&#x636E;&#x6587;&#x4EF6;&#x662F;&#x4E00;&#x4E2A;&#x538B;&#x7F29;&#x6587;&#x4EF6;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;fileCount &#x53C2;&#x6570;&#x6307;&#x5B9A;&#x5BFC;&#x51FA;&#x7684;&#x6587;&#x4EF6;&#x6570;&#x91CF;&#x3002;
+export table raw_activity_flat PARTITION (year=2018, month=3, day=12) TO &apos;activity_20180312.json&apos; options(overwrite=true)
+export table raw_activity_flat PARTITION (year=2018, month=3, day=12) TO &apos;activity_20180312.json.zip&apos; options(overwrite=true, fileCount=3)
+</code></pre><h3 id="433-read">4.3.3 read</h3>
+<p>&#x5FEB;&#x901F;&#x8BFB;&#x53D6;&#x6570;&#x636E;&#xFF0C;&#x76F4;&#x63A5;&#x8BFB;&#x53D6;&#x6587;&#x4EF6;&#x6570;&#x636E;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x901A;&#x8FC7;spark&#x8BA1;&#x7B97;&#x542F;&#x52A8;task&#x83B7;&#x53D6;&#x6570;&#x636E;&#xFF0C;&#x901F;&#x5EA6;&#x4E0A;&#x6709;&#x5F88;&#x5927;&#x4F18;&#x52BF;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x5E26;&#x6761;&#x4EF6;&#x7684;&#x67E5;&#x8BE2;&#x6570;&#x636E;&#xFF0C;&#x63A8;&#x8350;&#x4F7F;&#x7528;read &#x8BED;&#x53E5;<br>
+<strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>read table [&#x8868;&#x540D;] limit [&#x8BFB;&#x53D6;&#x6570;&#x636E;&#x91CF;] --&#x975E;&#x5206;&#x533A;&#x8868;
+read table [&#x8868;&#x540D;] PARTITION (&#x5206;&#x533A;&#x4FE1;&#x606F;) limit [&#x8BFB;&#x53D6;&#x6570;&#x636E;&#x91CF;] --&#x5206;&#x533A;&#x8868;&#xFF0C;&#x5206;&#x533A;&#x8868;&#x5FC5;&#x987B;&#x6307;&#x5B9A;&#x5206;&#x533A;
+</code></pre><p><strong>&#x5B9E;&#x4F8B; &#x5BFC;&#x51FA;csv&#x6587;&#x4EF6;</strong></p>
+<pre class="language-"><code>read table test_users_dt PARTITION (ds=20170205) limit 100;
+read table read_users_test limit 100;
+</code></pre><h3 id="434-merge">4.3.4 merge</h3>
+<p>&#x8868;&#x788E;&#x7247;&#x5C0F;&#x6587;&#x4EF6;&#x5408;&#x5E76;&#x4E3A;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#xFF0C;&#x5206;&#x533A;&#x8868;&#x53EF;&#x4EE5;&#x6307;&#x5B9A;&#x5206;&#x533A;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x5E26;&#x5206;&#x533A;&#xFF0C;&#x5219;&#x4F9D;&#x6B21;&#x5408;&#x5E76;&#x6BCF;&#x4E00;&#x4E2A;&#x5206;&#x533A;</p>
+<p><strong>&#x8BED;&#x6CD5;&#x683C;&#x5F0F;</strong></p>
+<pre class="language-"><code>merge table [&#x8868;&#x540D;] [options (fileCount=&#x5408;&#x5E76;&#x540E;&#x6587;&#x4EF6;&#x6570;&#x91CF;)]  --&#x975E;&#x5206;&#x533A;&#x8868;
+merge table [&#x8868;&#x540D;] PARTITION (&#x5206;&#x533A;&#x4FE1;&#x606F;) [options (fileCount=&#x5408;&#x5E76;&#x540E;&#x6587;&#x4EF6;&#x6570;&#x91CF;)] --&#x5206;&#x533A;&#x8868;
+</code></pre><p><strong>&#x793A;&#x4F8B;</strong></p>
+<pre class="language-"><code>merge table test_users_dt PARTITION (ds=20170205) options(fileCount=1);
+merge table read_users_test;
+</code></pre><script type="text/javascript">var className='atoc';</script>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../3.用户指南/3.6 权限管理/3.6.3 个人信息.html" class="navigation navigation-prev " aria-label="Previous page: 3.6.3 个人信息">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../_" class="navigation navigation-next " aria-label="Next page: 5 函数">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"4 SQL 语法","level":"1.4","depth":1,"next":{"title":"5 函数","level":"1.5","depth":1,"path":"_","ref":"_","articles":[{"title":"5.1 \u001d\b公共函数案例","level":"1.5.1","depth":2,"path":"5 公共函数/5.1 公共函数案例/function.md","ref":"5 公共函数/5.1 公共函数案例/function.md","articles":[]},{"title":"5.2 \u001d\b自定义UDF案例","level":"1.5.2","depth":2,"path":"5 公共函数/5.2 自定义udf.md","ref":"5 公共函数/5.2 自定义udf.md","articles":[]}]},"previous":{"title":"3.6.3 个人信息","level":"1.3.6.3","depth":3,"path":"3.用户指南/3.6 权限管理/3.6.3 个人信息.md","ref":"3.用户指南/3.6 权限管理/3.6.3 个人信息.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-highlight","-sharing","prism","prism-themes","atoc","livereload"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"prism":{"css":["prismjs/themes/prism-solarizedlight.css"]},"atoc":{"addClass":true,"className":"atoc"},"prism-themes":{},"livereload":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"zh-hans","gitbook":"*"},"file":{"path":"4 SQL语法/sql.md","mtime":"2019-07-24T02:54:36.679Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-24T02:56:16.570Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-atoc/atoc.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

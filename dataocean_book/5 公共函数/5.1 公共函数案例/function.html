@@ -1,0 +1,1457 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>5.1 公共函数案例 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-prism/prism-solarizedlight.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-atoc/atoc.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../5.2 自定义udf.html" />
+    
+    
+    <link rel="prev" href="../../_" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    1 产品简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../../概念介绍.html">
+            
+                <a href="../../概念介绍.html">
+            
+                    
+                    2 概念简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../../3.用户指南.md">
+            
+                <span>
+            
+                    
+                    3 用户指南
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../../3.用户指南/3.1.整体介绍.html">
+            
+                <a href="../../3.用户指南/3.1.整体介绍.html">
+            
+                    
+                    3.1 整体介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../../_">
+            
+                <span>
+            
+                    
+                    3.2 数据开发
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.2.1" data-path="../../3.用户指南/3.2数据开发/3.2.1.作业开发.html">
+            
+                <a href="../../3.用户指南/3.2数据开发/3.2.1.作业开发.html">
+            
+                    
+                    3.2.1 作业开发
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.2" data-path="../../3.用户指南/3.2数据开发/3.2.2.资源管理.html">
+            
+                <a href="../../3.用户指南/3.2数据开发/3.2.2.资源管理.html">
+            
+                    
+                    3.2.2 资源管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.3" data-path="../../3.用户指南/3.2数据开发/3.2.3.函数管理.html">
+            
+                <a href="../../3.用户指南/3.2数据开发/3.2.3.函数管理.html">
+            
+                    
+                    3.2.3 函数管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.4" data-path="../../3.用户指南/3.2数据开发/3.2.4.表查询.html">
+            
+                <a href="../../3.用户指南/3.2数据开发/3.2.4.表查询.html">
+            
+                    
+                    3.2.4 表查询
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.5" data-path="../../3.用户指南/3.2数据开发/3.2.5.回收站.html">
+            
+                <a href="../../3.用户指南/3.2数据开发/3.2.5.回收站.html">
+            
+                    
+                    3.2.5 回收站
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../../_">
+            
+                <span>
+            
+                    
+                    3.3 数据管理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.3.1" data-path="../../3.用户指南/3.3 数据管理/3.3.1 数据管理概览.html">
+            
+                <a href="../../3.用户指南/3.3 数据管理/3.3.1 数据管理概览.html">
+            
+                    
+                    3.3.1 数据管理概览
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.2" data-path="../../3.用户指南/3.3 数据管理/3.3.2 数据查找.html">
+            
+                <a href="../../3.用户指南/3.3 数据管理/3.3.2 数据查找.html">
+            
+                    
+                    3.3.2 数据查找
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.3" data-path="../../3.用户指南/3.3 数据管理/3.3.3 我的表管理.html">
+            
+                <a href="../../3.用户指南/3.3 数据管理/3.3.3 我的表管理.html">
+            
+                    
+                    3.3.3 我的表管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.4" data-path="../../3.用户指南/3.3 数据管理/3.3.4 数据质量.html">
+            
+                <a href="../../3.用户指南/3.3 数据管理/3.3.4 数据质量.html">
+            
+                    
+                    3.3.4 数据质量
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.5" data-path="../../3.用户指南/3.3 数据管理/3.3.5 数据导出.html">
+            
+                <a href="../../3.用户指南/3.3 数据管理/3.3.5 数据导出.html">
+            
+                    
+                    3.3.5 数据导出
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.6" data-path="../../3.用户指南/3.3 数据管理/3.3.6 数据源管理.html">
+            
+                <a href="../../3.用户指南/3.3 数据管理/3.3.6 数据源管理.html">
+            
+                    
+                    3.3.6 数据源管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.7" data-path="../../3.用户指南/3.3 数据管理/3.3.7 数据权限申请.html">
+            
+                <a href="../../3.用户指南/3.3 数据管理/3.3.7 数据权限申请.html">
+            
+                    
+                    3.3.7 数据权限申请
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.8" data-path="../../3.用户指南/3.3 数据管理/3.3.8 数据权限审核.html">
+            
+                <a href="../../3.用户指南/3.3 数据管理/3.3.8 数据权限审核.html">
+            
+                    
+                    3.3.8 数据权限审核
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../../_">
+            
+                <span>
+            
+                    
+                    3.4 运维中心
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" data-path="../../3.用户指南/3.4运维中心/3.4.1运维中心概览.html">
+            
+                <a href="../../3.用户指南/3.4运维中心/3.4.1运维中心概览.html">
+            
+                    
+                    3.4.1 运维中心概览
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../../3.用户指南/3.4运维中心/3.4.2作业运维.html">
+            
+                <a href="../../3.用户指南/3.4运维中心/3.4.2作业运维.html">
+            
+                    
+                    3.4.2 作业运维
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.3" data-path="../../3.用户指南/3.4运维中心/3.4.3作业管理.html">
+            
+                <a href="../../3.用户指南/3.4运维中心/3.4.3作业管理.html">
+            
+                    
+                    3.4.3 作业管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.4" data-path="../../3.用户指南/3.4运维中心/3.4.4作业监控.html">
+            
+                <a href="../../3.用户指南/3.4运维中心/3.4.4作业监控.html">
+            
+                    
+                    3.4.4 作业监控
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.5" data-path="../../3.用户指南/3.4运维中心/3.4.5流作业管理.html">
+            
+                <a href="../../3.用户指南/3.4运维中心/3.4.5流作业管理.html">
+            
+                    
+                    3.4.5 流作业管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.6" data-path="../../3.用户指南/3.4运维中心/3.4.6流作业监控.html">
+            
+                <a href="../../3.用户指南/3.4运维中心/3.4.6流作业监控.html">
+            
+                    
+                    3.4.6 流作业监控
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.7" data-path="../../3.用户指南/3.4运维中心/3.4.7服务监控.html">
+            
+                <a href="../../3.用户指南/3.4运维中心/3.4.7服务监控.html">
+            
+                    
+                    3.4.7 服务监控
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.8" data-path="../../3.用户指南/3.4运维中心/3.4.8集群管理.html">
+            
+                <a href="../../3.用户指南/3.4运维中心/3.4.8集群管理.html">
+            
+                    
+                    3.4.8 集群管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../../_">
+            
+                <span>
+            
+                    
+                    3.5 系统管理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../../3.用户指南/3.5 系统管理/3.5.1 项目管理.html">
+            
+                <a href="../../3.用户指南/3.5 系统管理/3.5.1 项目管理.html">
+            
+                    
+                    3.5.1 项目管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../../3.用户指南/3.5 系统管理/3.5.2 租户管理.html">
+            
+                <a href="../../3.用户指南/3.5 系统管理/3.5.2 租户管理.html">
+            
+                    
+                    3.5.2 租户管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../../3.用户指南/3.5 系统管理/3.5.3 资源池管理.html">
+            
+                <a href="../../3.用户指南/3.5 系统管理/3.5.3 资源池管理.html">
+            
+                    
+                    3.5.3 资源池管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.4" data-path="../../3.用户指南/3.5 系统管理/3.5.4 全局配置.html">
+            
+                <a href="../../3.用户指南/3.5 系统管理/3.5.4 全局配置.html">
+            
+                    
+                    3.5.4 全局配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../../3.用户指南/3.6 权限管理/3.6 权限管理.html">
+            
+                <a href="../../3.用户指南/3.6 权限管理/3.6 权限管理.html">
+            
+                    
+                    3.6 权限管理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.6.1" data-path="../../3.用户指南/3.6 权限管理/3.6.1 角色.html">
+            
+                <a href="../../3.用户指南/3.6 权限管理/3.6.1 角色.html">
+            
+                    
+                    3.6.1 角色
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.2" data-path="../../3.用户指南/3.6 权限管理/3.6.2 用户管理.html">
+            
+                <a href="../../3.用户指南/3.6 权限管理/3.6.2 用户管理.html">
+            
+                    
+                    3.6.2 用户管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.3" data-path="../../3.用户指南/3.6 权限管理/3.6.3 个人信息.html">
+            
+                <a href="../../3.用户指南/3.6 权限管理/3.6.3 个人信息.html">
+            
+                    
+                    3.6.3 个人信息
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../../4 SQL语法/sql.html">
+            
+                <a href="../../4 SQL语法/sql.html">
+            
+                    
+                    4 SQL 语法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../../_">
+            
+                <span>
+            
+                    
+                    5 函数
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.5.1" data-path="function.html">
+            
+                <a href="function.html">
+            
+                    
+                    5.1 公共函数案例
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../5.2 自定义udf.html">
+            
+                <a href="../5.2 自定义udf.html">
+            
+                    
+                    5.2 自定义UDF案例
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../../_">
+            
+                <span>
+            
+                    
+                    6 实时计算
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../../6 实时计算/6.1 SparkStream作业.html">
+            
+                <a href="../../6 实时计算/6.1 SparkStream作业.html">
+            
+                    
+                    6.1 SparkStream作业
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../../6 实时计算/6.2 Flink Sql.html">
+            
+                <a href="../../6 实时计算/6.2 Flink Sql.html">
+            
+                    
+                    6.2 Flink SQL
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../../_">
+            
+                <span>
+            
+                    
+                    7 最佳实践
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../../7最佳实践/7.1 Python作业开发.html">
+            
+                <a href="../../7最佳实践/7.1 Python作业开发.html">
+            
+                    
+                    7.1 Python作业案例
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2" data-path="../../7最佳实践/7.2 Jar作业开发.html">
+            
+                <a href="../../7最佳实践/7.2 Jar作业开发.html">
+            
+                    
+                    7.2 Jar作业开发
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >5.1 公共函数案例</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <!-- toc -->
+<ul>
+<li><a href="#51-json-&#x51FD;&#x6570;">5.1 json &#x51FD;&#x6570;</a><ul>
+<li><a href="#511-jsonextractvalue">5.1.1 json_extract_value</a></li>
+<li><a href="#512-jsonextractarrayvalue">5.1.2 json_extract_array_value</a></li>
+<li><a href="#513-explodejsonarray">5.1.3 explode_json_array</a></li>
+<li><a href="#514-tojson">5.1.4 to_json</a></li>
+<li><a href="#515-reducejson">5.1.5 reduce_json</a></li>
+<li><a href="#516-jsoncompress">5.1.6 json_compress</a></li>
+<li><a href="#517-jsonsplit">5.1.7 json_split</a></li>
+</ul>
+</li>
+<li><a href="#52-&#x5B57;&#x7B26;&#x4E32;&#x51FD;&#x6570;">5.2 &#x5B57;&#x7B26;&#x4E32;&#x51FD;&#x6570;</a><ul>
+<li><a href="#521-encodesha512">5.2.1 encode_sha512</a></li>
+<li><a href="#522-getidcardinfo">5.2.2 get_idcard_info</a></li>
+<li><a href="#523-getipinfo">5.2.3 get_ip_info</a></li>
+<li><a href="#524-md5hash">5.2.4 md5_hash</a></li>
+<li><a href="#525-useragentparser">5.2.5 user_agent_parser</a></li>
+<li><a href="#526-regexpextractall">5.2.6 regexp_extract_all</a></li>
+</ul>
+</li>
+<li><a href="#53-&#x65F6;&#x95F4;&#x51FD;&#x6570;">5.3 &#x65F6;&#x95F4;&#x51FD;&#x6570;</a><ul>
+<li><a href="#531-dateformat">5.3.1 dateformat</a></li>
+</ul>
+</li>
+<li><a href="#54-&#x6570;&#x5B57;&#x51FD;&#x6570;">5.4 &#x6570;&#x5B57;&#x51FD;&#x6570;</a><ul>
+<li><a href="#541-randomint">5.4.1 random_int</a></li>
+</ul>
+</li>
+<li><a href="#55-&#x6570;&#x7EC4;&#x51FD;&#x6570;">5.5 &#x6570;&#x7EC4;&#x51FD;&#x6570;</a><ul>
+<li><a href="#551-arrayconcat">5.5.1 array_concat</a></li>
+<li><a href="#552-arraycontains">5.5.2 array_contains</a></li>
+<li><a href="#553-arraydistinct">5.5.3 array_distinct</a></li>
+<li><a href="#554-arrayelementat">5.5.4 array_element_at</a></li>
+<li><a href="#555-arrayequals">5.5.5 array_equals</a></li>
+<li><a href="#556-arrayfromjson">5.5.6 array_from_json</a></li>
+<li><a href="#557-arrayintersect">5.5.7 array_intersect</a></li>
+<li><a href="#558-arrayjoin">5.5.8 array_join</a></li>
+<li><a href="#559-arraymax">5.5.9 array_max</a></li>
+<li><a href="#5510-arraymin">5.5.10 array_min</a></li>
+<li><a href="#5511-arrayposition">5.5.11 array_position</a></li>
+<li><a href="#5512-arrayremove">5.5.12 array_remove</a></li>
+<li><a href="#5513-arrayreverse">5.5.13 array_reverse</a></li>
+<li><a href="#5514-arrayslice">5.5.14 array_slice</a></li>
+<li><a href="#5515-arraysort">5.5.15 array_sort</a></li>
+<li><a href="#5516-arrayvaluecount">5.5.16 array_value_count</a></li>
+<li><a href="#5517-mergelist">5.5.17 merge_list</a></li>
+<li><a href="#5518-mergeset">5.5.18 merge_set</a></li>
+</ul>
+</li>
+<li><a href="#56-&#x6570;&#x636E;&#x8131;&#x654F;&#x51FD;&#x6570;">5.6 &#x6570;&#x636E;&#x8131;&#x654F;&#x51FD;&#x6570;</a><ul>
+<li><a href="#561-mask">5.6.1 mask</a></li>
+<li><a href="#562-maskfirstn">5.6.2 mask_first_n</a></li>
+<li><a href="#563-masklastn">5.6.3 mask_last_n</a></li>
+<li><a href="#564-maskshowfirstn">5.6.4 mask_show_first_n</a></li>
+<li><a href="#565-maskshowlastn">5.6.5 mask_show_last_n</a></li>
+<li><a href="#566-maskhash">5.6.6 mask_hash</a></li>
+</ul>
+</li>
+<li><a href="#57-&#x52A0;&#x89E3;&#x5BC6;&#x51FD;&#x6570;">5.7 &#x52A0;&#x89E3;&#x5BC6;&#x51FD;&#x6570;</a><ul>
+<li><a href="#571-decodebase64">5.7.1 decode_base64</a></li>
+<li><a href="#572-desgenkey">5.7.2 des_gen_key</a></li>
+<li><a href="#573-desencrypt">5.7.3 des_encrypt</a></li>
+<li><a href="#574-desdecrypt">5.7.4 des_decrypt</a></li>
+</ul>
+</li>
+<li><a href="#58-&#x5730;&#x7406;&#x4F4D;&#x7F6E;&#x51FD;&#x6570;">5.8 &#x5730;&#x7406;&#x4F4D;&#x7F6E;&#x51FD;&#x6570;</a><ul>
+<li><a href="#581-udfsysgeodistance">5.8.1 udf_sys_geo_distance</a></li>
+<li><a href="#582-udfsysgeoincycle">5.8.2 udf_sys_geo_in_cycle</a></li>
+<li><a href="#583-udfsysgeoinrectangle">5.8.3 udf_sys_geo_in_rectangle</a></li>
+</ul>
+</li>
+</ul>
+<!-- tocstop -->
+<h1 id="5-&#x516C;&#x5171;&#x51FD;&#x6570;">5 &#x516C;&#x5171;&#x51FD;&#x6570;</h1>
+<p>&#x5E73;&#x53F0;&#x5185;&#x7F6E;&#x7684;&#x516C;&#x5171;&#x51FD;&#x6570;&#x9ED8;&#x8BA4;&#x6302;&#x8F7D;&#x5728;bigdata&#x9879;&#x76EE;&#x4E0B; &#x5176;&#x4ED6;&#x9879;&#x76EE;&#x8981;&#x4F7F;&#x7528;&#x7684;&#x8BDD;&#x8981;&#x52A0;&#x4E0A;bigdata.&#x7684;&#x524D;&#x7F00;</p>
+<h2 id="51-json-&#x51FD;&#x6570;">5.1 json &#x51FD;&#x6570;</h2>
+<h3 id="511-jsonextractvalue">5.1.1 json_extract_value</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x4ECE;json&#x5B57;&#x7B26;&#x4E32;&#x6570;&#x636E;&#x4E2D;&#xFF0C;&#x83B7;&#x53D6;key&#x503C;&#xFF0C;&#x53EF;&#x4EE5;&#x4E00;&#x6B21;&#x83B7;&#x53D6;&#x591A;&#x4E2A;key&#x7684;&#x503C;&#x8FD4;&#x56DE;
+&#x5982;&#x679C;&#x83B7;&#x53D6;&#x591A;&#x4E2A;&#x5B57;&#x6BB5;&#xFF0C;&#x4F18;&#x5148;json_extract_value&#x51FD;&#x6570;&#xFF0C;&#x4E0D;&#x8981;&#x4F7F;&#x7528;hive &#x81EA;&#x5E26;&#x7684;get_json_object&#xFF0C;get_json_object&#x6BCF;&#x8C03;&#x7528;&#x4E00;&#x6B21;&#xFF0C;&#x9700;&#x8981;&#x89E3;&#x6790;&#x4E00;&#x6B21;&#xFF0C;&#x91CD;&#x590D;&#x89E3;&#x6790;&#x5F71;&#x54CD;&#x6027;&#x80FD;</p>
+<pre class="language-"><code>bigdata.json_extract_value(jsondata, key1, ..., keyn) as (col1, ..., coln)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.json_extract_value(&apos;{&quot;name&quot;:&quot;hongyi.zhou&quot;,&quot;address&quot;:&quot;hangzhou&quot;}&apos;, &quot;name&quot;, &quot;address&quot;) as (name, address);
+--output
+name        address
+hongyi.zhou hangzhou
+
+--&#x89E3;&#x6790;json&#x6570;&#x7EC4;
+select bigdata.json_extract_value(&apos;[{&quot;name&quot;:&quot;hongyi.zhou&quot;}, {&quot;address&quot;:&quot;hangzhou&quot;}, {&quot;address2&quot;:&quot;hangzhou2&quot;}]&apos;, &quot;/0/name&quot;, &quot;/1/address&quot;, &quot;/2/address2&quot;) as (name, address, address2);
+--output
+name        address     address2
+hongyi.zhou hangzhou    hangzhou2
+</code></pre><h3 id="512-jsonextractarrayvalue">5.1.2 json_extract_array_value</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x4ECE;json&#x5B57;&#x7B26;&#x4E32;&#x6570;&#x636E;&#x4E2D;&#xFF0C;&#x83B7;&#x53D6;key&#x503C;&#xFF0C;&#x53EF;&#x4EE5;&#x4E00;&#x6B21;&#x83B7;&#x53D6;&#x591A;&#x4E2A;key&#x7684;&#x503C;&#x8FD4;&#x56DE;&#xFF0C;&#x7C7B;&#x4F3C;json_extract_value&#xFF0C;&#x7528;&#x4E8E;&#x89E3;&#x6790;json &#x6570;&#x7EC4;&#x683C;&#x5F0F;&#x5B57;&#x7B26;&#x4E32;&#xFF0C;&#x8FD4;&#x56DE;&#x503C;&#x7C7B;&#x578B;&#x4E3A;&#x6570;&#x7EC4;&#x3002;</p>
+<pre class="language-"><code>bigdata.json_extract_array_value(jsondata, key1, ..., keyn) as (col1, ..., coln)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.json_extract_array_value(&apos;[{&quot;a&quot;: {&quot;c&quot;: &quot;val12&quot;}}, {&quot;a&quot;: {&quot;c&quot;: &quot;val2&quot;}}]&apos;, &quot;a/c&quot;) as (name);
+--output
+name
+[&quot;val12&quot;,&quot;val2&quot;]
+</code></pre><h3 id="513-explodejsonarray">5.1.3 explode_json_array</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x4ECE;json&#x5B57;&#x7B26;&#x4E32;&#x6570;&#x7EC4;&#x4E2D;&#x83B7;&#x53D6;key&#x503C;&#xFF0C;&#x53EF;&#x4EE5;&#x4E00;&#x6B21;&#x83B7;&#x53D6;&#x591A;&#x4E2A;key&#x7684;&#x503C;&#x8FD4;&#x56DE;&#xFF0C;&#x7C7B;&#x4F3C;explode&#x51FD;&#x6570;&#xFF0C;&#x6570;&#x7EC4;&#x503C;&#x8F6C;&#x4E3A;&#x591A;&#x884C;&#x8FD4;&#x56DE;&#x3002;</p>
+<pre class="language-"><code>bigdata.explode_json_array(jsondata, key1, ..., keyn) as (col1, ..., coln)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.explode_json_array(&apos;[{&quot;name&quot;:&quot;hongyi.zhou&quot;, &quot;address&quot;:{&quot;name&quot;: &quot;hangzhou&quot;}}]&apos;, &quot;name&quot;, &quot;address/name&quot;) as (name, address);
+--output
+name        address
+hongyi.zhou hangzhou
+
+select bigdata.explode_json_array(&apos;[{&quot;name&quot;:&quot;hongyi.zhou&quot;, &quot;address&quot;:&quot;hangzhou&quot;},{&quot;name&quot;:&quot;jian.tang&quot;, &quot;address&quot;:&quot;hangzhou&quot;}]&apos;, &quot;name&quot;, &quot;address&quot;) as (name, address);
+--output
+name        address
+hongyi.zhou hangzhou
+jian.tang   hangzhou
+</code></pre><h3 id="514-tojson">5.1.4 to_json</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x6570;&#x636E;&#x8F6C;&#x4E3A;JSON &#x5B57;&#x7B26;&#x4E32;&#xFF0C;&#x652F;&#x6301;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF1A;map,list,struct,array,&#x57FA;&#x672C;&#x7C7B;&#x578B;&#xFF08;string, int, bigint&#x7B49;&#xFF09;&#xFF0C;&#x7B2C;&#x4E8C;&#x53C2;&#x6570;&#x5B9A;&#x4E49;key &#x7F29;&#x5199;&#x540D;&#x79F0;&#xFF0C;&#x6709;&#x4E00;&#x4E9B;key&#x540D;&#x79F0;&#x6BD4;&#x8F83;&#x957F;&#xFF0C;&#x4E3A;&#x4E86;&#x51CF;&#x5C11;&#x5B58;&#x50A8;&#x5927;&#x5C0F;&#xFF0C;&#x63D0;&#x9AD8;&#x8BA1;&#x7B97;&#x6548;&#x7387;&#x6709;&#x5E2E;&#x52A9;, &#x53EF;&#x4EE5;&#x7F3A;&#x7701;&#x4E0D;&#x586B;&#x5199;</p>
+<pre class="language-"><code>bigdata.to_json(data, key&#x6240;&#x6709;&#x5B57;&#x540D;&#x79F0;&#x683C;&#x5F0F;&#xFF1A;key=simplekey,...)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>--map&#x8F6C;json
+select bigdata.to_json(map(&quot;k1&quot;, &quot;v1&quot;, &quot;k2&quot;, &quot;212&quot;));
+--output
+{&quot;k1&quot;:&quot;v1&quot;,&quot;k2&quot;:&quot;212&quot;}
+
+--array&#x8F6C;json
+select bigdata.to_json(array(&quot;e1&quot;, &quot;e2&quot;, &quot;e3&quot;));
+--output
+[&quot;e1&quot;,&quot;e2&quot;,&quot;e3&quot;]
+</code></pre><p><strong>todo &#x66F4;&#x590D;&#x6742;&#x7684;&#x540E;&#x7EED;&#x8865;&#x5145;&#x3002;&#x3002;</strong></p>
+<h3 id="515-reducejson">5.1.5 reduce_json</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+reduce_json &#x4E0E; to_json &#x6BD4;&#x8F83;&#x7C7B;&#x4F3C;&#xFF0C;&#x4E5F;&#x662F;&#x628A;&#x590D;&#x6742;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x8F6C;&#x4E3A;json &#x5B57;&#x7B26;&#x4E32;&#xFF0C;&#x4F46;&#x652F;&#x6301;&#x62BD;&#x53D6;&#x90E8;&#x5206;&#x5B57;&#x6BB5;&#xFF0C;&#x4F8B;&#x5982;map &#x5B57;&#x6BB5;&#x5F88;&#x591A;&#xFF0C;&#x4F46;&#x8BA1;&#x7B97;&#x53EA;&#x9700;&#x8981;&#x90E8;&#x5206;&#x5B57;&#x6BB5;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x90E8;&#x5206;&#x5B57;&#x6BB5;&#xFF0C;&#x901A;&#x8FC7;&#x7B2C;&#x4E8C;&#x53C2;&#x6570;&#x5B9A;&#x4E49;&#x62BD;&#x53D6;&#x5B57;&#x6BB5;&#x3002;&#x4E5F;&#x53EF;&#x4EE5;&#x5BF9;&#x5B57;&#x6BB5;&#x540D;&#x548C;&#x7C7B;&#x578B;&#x8FDB;&#x884C;&#x8F6C;&#x6362;&#xFF0C;&#x5177;&#x4F53;&#x53C2;&#x8003;&#x5B9E;&#x4F8B;&#x3002;</p>
+<pre class="language-"><code>bigdata.reduce_json(data, key&#x6240;&#x6709;&#x5B57;&#x540D;&#x79F0;&#x683C;&#x5F0F;&#xFF1A;key=simplekey[:number],...)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.reduce_json(map(&quot;k1&quot;, &quot;hongyi.zhou&quot;, &quot;k2&quot;, &quot;hangzhou&quot;, &quot;k3&quot;, &quot;male&quot;), &apos;k1=name,k2=address:number&apos;)
+--output
+{&quot;name&quot;:&quot;hongyi.zhou&quot;,&quot;address&quot;:hangzhou}
+</code></pre><h3 id="516-jsoncompress">5.1.6 json_compress</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+json&#x5143;&#x7D20;&#x8FDE;&#x63A5;&#x5B57;&#x7B26;&#x4E32;&#x3002;&#x53BB;&#x6389;json &#x4E2D;key,&#x4F7F;&#x7528;&#x7279;&#x5B9A;&#x5B57;&#x7B26;&#x62FC;&#x63A5;json&#x4E2D;key&#x5BF9;&#x5E94;&#x503C;&#xFF0C;&#x9ED8;&#x8BA4;&#x62FC;&#x63A5;&#x7B26;&#x4E3A; ~~&#xFF0C; &#x5982;&#x679C;&#x4E3A;json array&#xFF0C;&#x6BCF;&#x4E2A;item&#x62FC;&#x63A5;&#x5B57;&#x7B26;&#x4E3A; ;,</p>
+<pre class="language-"><code>bigdata.json_compress(json)
+bigdata.json_compress(json, fields)
+bigdata.json_compress(json, recordSplitChars, fieldSplitChars)
+bigdata.json_compress(json, fields, recordSplitChars, fieldSplitChars)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.json_compress(&apos;[{&quot;name&quot;:&quot;zhangsan&quot;, &quot;age&quot;: 18, &quot;address&quot;: &quot;hangzhou&quot;}, {&quot;name&quot;:&quot;wangwu&quot;, &quot;age&quot;: 17, &quot;address&quot;: &quot;hangzhou&quot;}]&apos;)
+--output
+hangzhou~~zhangsan~~18;hangzhou~~wangwu~~17
+
+--&#x6DFB;&#x52A0;&#x8FC7;&#x6EE4;&#x5217;
+select bigdata.json_compress(&apos;[{&quot;name&quot;:&quot;zhangsan&quot;, &quot;age&quot;: 18, &quot;address&quot;: &quot;hangzhou&quot;}, {&quot;name&quot;:&quot;wangwu&quot;, &quot;age&quot;: 17, &quot;address&quot;: &quot;hangzhou&quot;}]&apos;,&apos;name,address&apos;)
+--output
+zhangsan~~hangzhou;wangwu~~hangzhou
+
+--&#x81EA;&#x5B9A;&#x4E49;&#x5206;&#x5272;&#x7B26;
+select bigdata.json_compress(&apos;[{&quot;name&quot;:&quot;zhangsan&quot;, &quot;age&quot;: 18, &quot;address&quot;: &quot;hangzhou&quot;}, {&quot;name&quot;:&quot;wangwu&quot;, &quot;age&quot;: 17, &quot;address&quot;: &quot;hangzhou&quot;}]&apos;,&apos;,&apos;,&apos;-&apos;)
+--output
+hangzhou-zhangsan-18,hangzhou-wangwu-17
+
+
+--&#x6DFB;&#x52A0;&#x8FC7;&#x6EE4;&#x5217;&#x4EE5;&#x53CA;&#x81EA;&#x5B9A;&#x4E49;&#x5206;&#x9694;&#x7B26;
+select bigdata.json_compress(&apos;[{&quot;name&quot;:&quot;zhangsan&quot;, &quot;age&quot;: 18, &quot;address&quot;: &quot;hangzhou&quot;}, {&quot;name&quot;:&quot;wangwu&quot;, &quot;age&quot;: 17, &quot;address&quot;: &quot;hangzhou&quot;}]&apos;,&apos;name,address&apos;,&apos;,&apos;,&apos;-&apos;)
+--output
+zhangsan-hangzhou,wangwu-hangzhou
+</code></pre><h3 id="517-jsonsplit">5.1.7 json_split</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x5B57;&#x7B26;&#x4E32;&#x5206;&#x5272;&#x540E;&#x8F6C;json&#x3002;
+&#x5B57;&#x7B26;&#x4E32;json &#x6570;&#x7EC4;&#x683C;&#x5F0F;&#xFF0C;split &#x8FD4;&#x56DE;&#x6570;&#x7EC4;&#x7C7B;&#x578B;</p>
+<pre class="language-"><code>bigdata.json_split(jsonStr)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select json_split(&apos;[{&quot;name&quot;:&quot;test&quot;}, {&quot;name&quot;:&quot;test1&quot;}]&apos;);
+</code></pre><h2 id="52-&#x5B57;&#x7B26;&#x4E32;&#x51FD;&#x6570;">5.2 &#x5B57;&#x7B26;&#x4E32;&#x51FD;&#x6570;</h2>
+<h3 id="521-encodesha512">5.2.1 encode_sha512</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+sha_512&#x7B97;&#x6CD5;&#x52A0;&#x5BC6;&#x6587;&#x672C;&#x6570;&#x636E;&#xFF0C;&#x52A0;&#x5BC6;&#x7ED3;&#x679C;&#x4E3A;&#x5B57;&#x8282;&#x6570;&#x7EC4;&#xFF0C;base64&#x7F16;&#x7801;&#x4E3A;&#x5B57;&#x7B26;&#x4E32;&#x8FD4;&#x56DE;</p>
+<pre class="language-"><code>bigdata.encode_sha512(&#x52A0;&#x5BC6;&#x6570;&#x636E;, &#x52A0;&#x5BC6;salt)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.encode_sha512(&quot;hello&quot;, &quot;salt&quot;);
+--output
+acc3054d59588aeff201e46474f717f84cf925e71123acb5ac83bd1b002c4345c266330d86e79e1dba142e51abfcde0bec4b363d39664d883f08c33584ede7ba
+</code></pre><h3 id="522-getidcardinfo">5.2.2 get_idcard_info</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x89E3;&#x6790;&#x8EAB;&#x4EFD;&#x8BC1;ID&#xFF0C;&#x83B7;&#x53D6;&#x7701;&#x4EFD;&#x3001;&#x57CE;&#x5E02;&#x3001;&#x53BF;&#x3001;&#x5E74;&#x9F84;&#x3001;&#x6027;&#x522B;&#x3001;&#x51FA;&#x751F;&#x65E5;&#x671F;&#x3001;&#x51FA;&#x751F;&#x5E74;&#x3001;&#x51FA;&#x751F;&#x6708;&#x3001;&#x51FA;&#x751F;&#x65E5;&#xFF0C;&#x6821;&#x9A8C;idcard &#x65E0;&#x6548;&#xFF0C;&#x8FD4;&#x56DE;null</p>
+<pre class="language-"><code>bigdata.get_idcard_info(idcard, key1, key2, ...)
+
+&#x5728;&#x7EBF;&#x6821;&#x9A8C;&#x8EAB;&#x4EFD;&#x8BC1;&#x6709;&#x6548;&#xFF1A;https://shenfen.supfree.net/search.asp?id=430304197802031322
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>-- &#x7701;&#x4EFD;&#x3001;&#x57CE;&#x5E02;&#x3001;&#x53BF;&#x3001;&#x5E74;&#x9F84;&#x3001;&#x6027;&#x522B;&#x3001;&#x51FA;&#x751F;&#x65E5;&#x671F;&#x3001;&#x51FA;&#x751F;&#x5E74;&#x3001;&#x51FA;&#x751F;&#x6708;&#x3001;&#x51FA;&#x751F;&#x65E5;&#x3001;&#x8EAB;&#x4EFD;&#x8BC1;&#x662F;&#x5426;&#x5408;&#x6CD5; &#x5BF9;&#x5E94;key&#x4E3A;&#xFF1A;
+-- province&#x3001;city&#x3001;county&#x3001;age&#x3001;gender&#x3001;birthdate&#x3001;year&#x3001;month&#x3001;day&#x3001;valid
+-- &#x5BF9;&#x5E94;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF1A;string, string, string, int, string, date, int, int, int  
+select bigdata.get_idcard_info(&apos;330225199002240354&apos;, &apos;province&apos;, &apos;year&apos;, &apos;gender&apos;, &apos;valid&apos;) as (province, birthdate, gender, valid);
+--output
+province    birthdate   gender  valid
+&#x6D59;&#x6C5F;          1990        &#x7537;
+</code></pre><h3 id="523-getipinfo">5.2.3 get_ip_info</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+ ip &#x5730;&#x7406;&#x4F4D;&#x7F6E;&#x4FE1;&#x606F;&#xFF0C;&#x51FD;&#x6570;&#x521D;&#x59CB;&#x5316;&#x65F6;&#x628A;&#x6240;&#x6709;IP&#x4FE1;&#x606F;&#x5168;&#x90E8;&#x52A0;&#x8F7D;&#x5230;&#x5185;&#x5B58;, &#x9700;&#x8981;&#x4E00;&#x70B9;&#x65F6;&#x95F4;&#xFF0C;&#x6279;&#x91CF;&#x8BA1;&#x7B97;&#x975E;&#x5E38;&#x5FEB;&#xFF0C;IP&#x5E93;&#x4FE1;&#x606F;&#x6BCF;&#x5929;&#x4ECE;afraudtech.elfin_geoip_zip&#x8868;&#x4E2D;&#x66F4;&#x65B0;&#x4E00;&#x6B21;</p>
+<pre class="language-"><code> bigdata.get_ip_info(ip, key1, key2, ...)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>-- &#x5BF9;&#x5E94;key&#x4E3A;&#xFF1A;country, province, city, isp, latitude, longitude
+select bigdata.get_ip_info(&apos;221.123.137.11&apos;, &apos;country&apos;, &apos;province&apos;, &apos;city&apos;, &apos;isp&apos;, &apos;latitude&apos;, &apos;longitude&apos;)
+as (country, province, city, isp, latitude, longitude)
+</code></pre><h3 id="524-md5hash">5.2.4 md5_hash</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x6C42;&#x5B57;&#x7B26;&#x4E32;&#x7684;md5</p>
+<pre class="language-"><code>bigdata.md5_hash(str, encoding)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.md5_hash(&quot;&#x76EE;&#x6807;&#x5B57;&#x7B26;&#x4E32;&quot;);
+--output
+97a8d00a8e4662000c3e0e45755f4d2e
+--&#x6DFB;&#x52A0;&#x7F16;&#x7801;
+select bigdata.md5_hash(&quot;&#x76EE;&#x6807;&#x5B57;&#x7B26;&#x4E32;&quot;,&quot;utf-8&quot;);
+--output
+1d08ca7b42897730e6ea6e18f6b280e1
+</code></pre><h3 id="525-useragentparser">5.2.5 user_agent_parser</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x89E3;&#x6790;&#x6D4F;&#x89C8;User Agent, &#x83B7;&#x53D6;browser, browserType, browserVersion, os, osVersion, deviceType, kernel, kernelVersion, netWork, mobile&#x4FE1;&#x606F;</p>
+<pre class="language-"><code>bigdata.user_agent_parser(userAgent, key1, key2, ...)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>-- &#x5BF9;&#x5E94;key&#x4E3A;&#xFF1A;browser, browserType, browserVersion, os, osVersion, deviceType, kernel, kernelVersion, netWork, mobile
+
+select user_agent_parser(&apos;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36&apos;, &apos;browser&apos;, &apos;browserType&apos;, &apos;browserVersion&apos;, &apos;os&apos;, &apos;osVersion&apos;, &apos;deviceType&apos;, &apos;kernel&apos;, &apos;kernelVersion&apos;, &apos;netWork&apos;, &apos;mobile&apos;)
+    as (browser, browserType, browserVersion, os, osVersion, deviceType, kernel, kernelVersion, netWork, mobile)
+</code></pre><h3 id="526-regexpextractall">5.2.6 regexp_extract_all</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x627E;&#x51FA;&#x6240;&#x6709;&#x5728;&#x5B57;&#x7B26;&#x4E32;&#x4E2D;&#x5339;&#x914D;&#x7684;&#x6A21;&#x5F0F;</p>
+<pre class="language-"><code>bigdata.regexp_extract_all(haystack, pattern, [index])
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.regexp_extract_all(&quot;vwerasddger&quot;, &quot;asd&quot;);
+--output
+asd
+</code></pre><h2 id="53-&#x65F6;&#x95F4;&#x51FD;&#x6570;">5.3 &#x65F6;&#x95F4;&#x51FD;&#x6570;</h2>
+<h3 id="531-dateformat">5.3.1 dateformat</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x65F6;&#x95F4;&#x683C;&#x5F0F;&#x8F6C;&#x6362;</p>
+<pre class="language-"><code>dateformat(&#x65F6;&#x95F4;&#x5B57;&#x7B26;&#x4E32;, &#x5F53;&#x524D;&#x65F6;&#x95F4;&#x683C;&#x5F0F;, &#x8F6C;&#x6362;&#x540E;&#x65F6;&#x95F4;&#x683C;&#x5F0F;)
+dateformat(&#x65F6;&#x95F4;&#x6233;, &#x8F6C;&#x6362;&#x540E;&#x65F6;&#x95F4;&#x683C;&#x5F0F;)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select dateformat(&apos;20170513&apos;, &apos;yyyyMMdd&apos;, &apos;yyyy-MM-dd&apos;);
+--output
+2017-05-13
+
+--&#x65F6;&#x95F4;&#x6233;
+select platformtool.dateformat(1496827831004, &apos;yyyy-MM-dd HH:mm:ss&apos;) from test_users_dt
+--output
+2017-06-07 17:30:31
+</code></pre><h2 id="54-&#x6570;&#x5B57;&#x51FD;&#x6570;">5.4 &#x6570;&#x5B57;&#x51FD;&#x6570;</h2>
+<h3 id="541-randomint">5.4.1 random_int</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x751F;&#x6210;&#x6574;&#x6570;&#x968F;&#x673A;&#x6570;</p>
+<pre class="language-"><code>bigdata.random_int()
+bigdata.random_int(maxValue) #&#x751F;&#x6210;[0-maxValue)&#x533A;&#x95F4;&#x7684;&#x7684;&#x968F;&#x673A;&#x6570;
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select random_int();
+select random_int(10);
+</code></pre><h2 id="55-&#x6570;&#x7EC4;&#x51FD;&#x6570;">5.5 &#x6570;&#x7EC4;&#x51FD;&#x6570;</h2>
+<h3 id="551-arrayconcat">5.5.1 array_concat</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x8FDE;&#x63A5;&#x591A;&#x4E2A;&#x6570;&#x7EC4;&#xFF0C;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6570;&#x7EC4;</p>
+<pre class="language-"><code>bigdata.array_concat(array1,array2,...)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_concat(array(1,2,3), array(1,2,3));
+--output
+[1,2,3,1,2,3]
+</code></pre><h3 id="552-arraycontains">5.5.2 array_contains</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x5224;&#x65AD;&#x5143;&#x7D20;&#x662F;&#x5426;&#x5B58;&#x5728;&#x4E8E;&#x6570;&#x7EC4;&#x4E2D;</p>
+<pre class="language-"><code>bigdata.array_contains(array,element)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select array_contains(array(1,2,3), 4);
+--false
+
+select array_contains(array(1,2,3), 1);
+--output
+true
+</code></pre><h3 id="553-arraydistinct">5.5.3 array_distinct</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x6570;&#x7EC4;&#x53BB;&#x91CD;</p>
+<pre class="language-"><code>bigdata.array_distinct(array)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_distinct(array(1,2,3,3));
+--output
+[1,2,3]
+</code></pre><h3 id="554-arrayelementat">5.5.4 array_element_at</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x53D6;&#x5F97;&#x6570;&#x7EC4;&#x4E0B;&#x6807;&#x5143;&#x7D20;&#x3002;&#x6B63;&#x5411;&#x4ECE;0&#x5F00;&#x59CB;&#xFF0C;&#x53CD;&#x5411;&#x4ECE;-1&#x5F00;&#x59CB;&#xFF0C;&#x82E5;&#x4E0D;&#x5B58;&#x5728;&#x8FD4;&#x56DE;&#x7A7A;</p>
+<pre class="language-"><code>bigdata.array_distinct(array,index)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>--&#x6570;&#x7EC4;&#x4E0B;&#x6807;&#x8FD4;&#x56DE;&#x5143;&#x7D20;&#xFF0C;&#x652F;&#x6301;&#x6B63;&#x5411;&#xFF08;0&#x5F00;&#x59CB;&#xFF09;&#x548C;&#x53CD;&#x5411;&#xFF08;-1&#x5F00;&#x59CB;&#xFF09;&#xFF0C;&#x5143;&#x7D20;&#x4E0D;&#x5B58;&#x5728;&#x8FD4;&#x56DE;&#x7A7A;
+select bigdata.array_element_at(array(1,2,3), -1);
+--output
+3
+
+select bigdata.array_element_at(array(1,2,3), 0);
+--output
+0
+</code></pre><h3 id="555-arrayequals">5.5.5 array_equals</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x6570;&#x7EC4;&#x76F8;&#x7B49;&#x6BD4;&#x8F83;&#xFF0C;&#x53EA;&#x6709;&#x957F;&#x5EA6;&#x76F8;&#x540C;&#x4E14;&#x6BCF;&#x4E2A;&#x4E0B;&#x6807;&#x5143;&#x7D20;&#x503C;&#x76F8;&#x540C;&#x624D;&#x8FD4;&#x56DE;true&#xFF0C;&#x5426;&#x5219;&#x8FD4;&#x56DE;false</p>
+<pre class="language-"><code>bigdata.array_equals(array1,array2)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_equals(array(1,2,3), array(1,2,3));
+select
+--output
+true
+
+bigdata.array_equals(array(1,2,3,4), array(1,2,3));
+--output
+false
+
+select bigdata.array_equals(array(3,2,1), array(1,2,3));
+--output
+false
+</code></pre><h3 id="556-arrayfromjson">5.5.6 array_from_json</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+json&#x6570;&#x7EC4;&#x5B57;&#x7B26;&#x4E32;&#x8F6C;&#x6362;&#x4E3A;array&#xFF0C;&#x82E5;&#x975E;&#x6570;&#x7EC4;&#x5C06;&#x62A5;&#x9519;</p>
+<pre class="language-"><code>bigdata.array_from_json(json)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_from_json(&apos;[1, 2, 3]&apos;);
+--output
+[&apos;1&apos;,&apos;2&apos;,&apos;3&apos;]
+</code></pre><h3 id="557-arrayintersect">5.5.7 array_intersect</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x4E24;&#x4E2A;&#x6570;&#x7EC4;&#x53D6;&#x4EA4;&#x96C6;&#xFF0C;&#x82E5;&#x4EA4;&#x96C6;&#x4E0D;&#x5B58;&#x5728;&#x8FD4;&#x56DE;&#x7A7A;&#x6570;&#x7EC4;</p>
+<pre class="language-"><code>bigdata.array_intersect(array1,array2)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_intersect(array(1,2,3), array(1,2,4,7,3));
+--output
+[1,2,3]
+
+select bigdata.array_intersect(array(1,2,3), array(8));
+--output
+[]
+</code></pre><h3 id="558-arrayjoin">5.5.8 array_join</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x5C06;&#x6570;&#x7EC4;&#x5408;&#x6210;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;&#xFF0C;&#x652F;&#x6301;&#x5BF9;null&#x5143;&#x7D20;&#x7684;&#x66FF;&#x6362;&#x3002;</p>
+<pre class="language-"><code>bigdata.array_join(array,delimiter)
+bigdata.array_join(array,delimiter,null_replacement)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_join(array(1,2,3,4), &apos;-&apos;);
+--output
+1-2-3-4
+
+--&#x5BF9;null&#x5143;&#x7D20;&#x66FF;&#x6362;
+select bigdata.array_join(array(1,2,null,4), &apos;-&apos;, &apos;x&apos;);
+--output
+1-2-x-4
+</code></pre><h3 id="559-arraymax">5.5.9 array_max</h3>
+<p>&#x8FD4;&#x56DE;&#x6570;&#x7EC4;&#x4E2D;&#x6700;&#x5927;&#x5143;&#x7D20;&#x503C;
+<strong>&#x8BF4;&#x660E;</strong></p>
+<pre class="language-"><code>bigdata.array_max(array)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_max(array(1,2,3,4));
+--output
+4
+</code></pre><h3 id="5510-arraymin">5.5.10 array_min</h3>
+<p>&#x8FD4;&#x56DE;&#x6570;&#x7EC4;&#x4E2D;&#x6700;&#x5C0F;&#x5143;&#x7D20;&#x503C;
+<strong>&#x8BF4;&#x660E;</strong></p>
+<pre class="language-"><code>bigdata.array_min(array)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_min(array(1,2,3,4));
+--output
+1
+</code></pre><h3 id="5511-arrayposition">5.5.11 array_position</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x83B7;&#x53D6;&#x5143;&#x7D20;&#x5728;&#x6570;&#x7EC4;&#x4E2D;&#x7684;&#x4F4D;&#x7F6E;&#xFF0C;&#x6CE8;&#xFF1A;&#x4ECE;1&#x5F00;&#x59CB;&#x8BA1;&#x7B97;&#x3002;&#x82E5;&#x4E0D;&#x5B58;&#x5728;&#xFF0C;&#x8FD4;&#x56DE;0</p>
+<pre class="language-"><code>bigdata.array_position(array,element)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_position(array(0,1,2,3,4), 3);
+--output
+4
+
+select bigdata.array_position(array(0,1,2,3,4), -1);
+--output
+0
+</code></pre><h3 id="5512-arrayremove">5.5.12 array_remove</h3>
+<p>&#x6570;&#x7EC4;&#x5220;&#x9664;&#x5143;&#x7D20;&#x540E;&#x5E76;&#x8FD4;&#x56DE;&#xFF0C;&#x82E5;&#x4E0D;&#x5B58;&#x5728;&#x5219;&#x8FD4;&#x56DE;&#x539F;&#x59CB;&#x6570;&#x7EC4;&#x3002;
+<strong>&#x8BF4;&#x660E;</strong></p>
+<pre class="language-"><code>bigdata.array_remove(array,element)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_remove(array(1,2,3,4,3), 3);
+--output
+[1,2,4]
+
+--&#x4E0D;&#x5B58;&#x5728;&#x5220;&#x9664;&#x5143;&#x7D20;&#xFF0C;&#x8FD4;&#x56DE;&#x539F;&#x59CB;&#x6570;&#x7EC4;
+select bigdata.array_remove(array(1,2,3,4), -1);
+--output
+[1,2,3,4]
+</code></pre><h3 id="5513-arrayreverse">5.5.13 array_reverse</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x6570;&#x7EC4;&#x9006;&#x5E8F;&#x8F93;&#x51FA;</p>
+<pre class="language-"><code>bigdata.array_reverse(array)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_reverse(array(1,2,3,4));
+--output
+[4,3,2,1]
+</code></pre><h3 id="5514-arrayslice">5.5.14 array_slice</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x6570;&#x7EC4;&#x5207;&#x7247;&#xFF0C;start&#x4ECE;0&#x5F00;&#x59CB;&#xFF0C;&#x652F;&#x6301;&#x9006;&#x5411;&#x904D;&#x5386;&#x3002;</p>
+<pre class="language-"><code>bigdata.array_slice(array,start,length)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_slice(array(1,2,3,4,5,6,7), 1, 3);
+--output
+[2,3,4]
+
+--&#x9006;&#x5411;&#x904D;&#x5386;
+select bigdata.array_slice(array(1,2,3,4,5,6,7), -3, 2);
+--outpupt
+[5,6]
+</code></pre><h3 id="5515-arraysort">5.5.15 array_sort</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x6570;&#x7EC4;&#x6B63;&#x5411;&#x6392;&#x5E8F;&#x5E76;&#x8F93;&#x51FA;</p>
+<pre class="language-"><code>bigdata.sort(array)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_sort(array(7,1,8,3,4));
+-output
+[1,3,4,7,8]
+</code></pre><h3 id="5516-arrayvaluecount">5.5.16 array_value_count</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x8FD4;&#x56DE;&#x6570;&#x7EC4;&#x4E2D;&#x67D0;&#x5143;&#x7D20;&#x503C;&#x4E2A;&#x6570;&#x3002;</p>
+<pre class="language-"><code>bigdata.array_value_count(array,element)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.array_value_count(array(1,2,2,4), 2);
+--output
+2
+</code></pre><h3 id="5517-mergelist">5.5.17 merge_list</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x5408;&#x5E76;&#x591A;&#x4E2A;&#x6570;&#x7EC4;&#xFF0C;&#x8FD4;&#x56DE;&#x4E8C;&#x7EF4;&#x6570;&#x7EC4;&#xFF0C;&#x4E0E;merge_set&#x533A;&#x522B;&#x662F;&#x76F8;&#x540C;&#x7684;&#x5143;&#x7D20;&#x4E0D;&#x4F1A;&#x53BB;&#x91CD;</p>
+<pre class="language-"><code>bigdata.merge_list(array1,array2,...,arrayn)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.merge_list(array(array(1,2),array(2,3),array(2,3)));
+--output
+[[1,2],[2,3],[2,3]]
+</code></pre><h3 id="5518-mergeset">5.5.18 merge_set</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x5408;&#x5E76;&#x591A;&#x4E2A;&#x6570;&#x7EC4;&#xFF0C;&#x8FD4;&#x56DE;&#x4E8C;&#x7EF4;&#x6570;&#x7EC4;&#xFF0C;&#x4E0E;merge_list&#x533A;&#x522B;&#x662F;&#x76F8;&#x540C;&#x7684;&#x5143;&#x7D20;&#x53BB;&#x91CD;</p>
+<pre class="language-"><code>bigdata.merge_set(array1,array2,...,arrayn)
+--output
+[[1,2],[2,3]]
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select bigdata.merge_set(array(array(1,2),array(2,3),array(2,3)));
+</code></pre><h2 id="56-&#x6570;&#x636E;&#x8131;&#x654F;&#x51FD;&#x6570;">5.6 &#x6570;&#x636E;&#x8131;&#x654F;&#x51FD;&#x6570;</h2>
+<h3 id="561-mask">5.6.1 mask</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x6570;&#x636E;&#x8131;&#x654F;&#x65B9;&#x6CD5;&#x3002;</p>
+<pre class="language-"><code>bigdata.mask(value, upperChar, lowerChar, digitChar, otherChar, numberChar, dayValue, monthValue, yearValue)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select mask(&quot;abcd-EFGH-8765-4321&quot;, &quot;U&quot;, &quot;s&quot;, &quot;*&quot;);
+--output
+ssss-UUUU-****-****
+</code></pre><h3 id="562-maskfirstn">5.6.2 mask_first_n</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x524D;n&#x4E2A;&#x5B57;&#x7B26;&#x8131;&#x654F;</p>
+<pre class="language-"><code>bigdata.mask_first_n(value, charCount, upperChar, lowerChar, digitChar, otherChar, numberChar)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select mask_first_n(&quot;1234-5678-8765-4321&quot;, 4);
+--output
+nnnn-5678-8765-4321
+</code></pre><h3 id="563-masklastn">5.6.3 mask_last_n</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x540E;n&#x4E2A;&#x5B57;&#x7B26;&#x8131;&#x654F;</p>
+<pre class="language-"><code>bigdata.mask_last_n(value, charCount, upperChar, lowerChar, digitChar, otherChar, numberChar)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select mask_last_n(&quot;1234-5678-8765-4321&quot;, 4);
+--output
+1234-5678-8765-nnnn
+</code></pre><h3 id="564-maskshowfirstn">5.6.4 mask_show_first_n</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x9664;&#x4E86;&#x524D;n&#x4E2A;&#x5B57;&#x7B26;&#xFF0C;&#x5269;&#x4E0B;&#x7684;&#x5168;&#x8131;&#x654F;</p>
+<pre class="language-"><code>bigdata.mask_show_first_n(value, charCount, upperChar, lowerChar, digitChar, otherChar, numberChar)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select mask_show_first_n(&quot;1234-5678-8765-4321&quot;, 4);
+--output
+1234-nnnn-nnnn-nnnn
+</code></pre><h3 id="565-maskshowlastn">5.6.5 mask_show_last_n</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x9664;&#x4E86;&#x540E;n&#x4E2A;&#x5B57;&#x7B26;&#xFF0C;&#x5269;&#x4E0B;&#x7684;&#x5168;&#x8131;&#x654F;</p>
+<pre class="language-"><code>bigdata.mask_show_last_n(value, charCount, upperChar, lowerChar, digitChar, otherChar, numberChar)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select mask_show_last_n(&quot;1234-5678-8765-4321&quot;, 4);
+--output
+nnnn-nnnn-nnnn-4321
+</code></pre><h3 id="566-maskhash">5.6.6 mask_hash</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+&#x5C06;&#x8F93;&#x5165;&#x8F6C;&#x6362;&#x6210;&#x968F;&#x673A;&#x957F;&#x5EA6;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#xFF0C;&#x5F53;&#x4F20;&#x5165;&#x7684;&#x4E0D;&#x662F;&#x5B57;&#x7B26;&#x4E32;&#x8FD4;&#x56DE;&#x7A7A;</p>
+<pre class="language-"><code>bigdata.mask_hash(value)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select mask_hash(&apos;asdasf&apos;);
+--output
+c094f455d7c10c26ce5ef76e166c42391beaec917629a1236ed334da41006d0d
+</code></pre><h2 id="57-&#x52A0;&#x89E3;&#x5BC6;&#x51FD;&#x6570;">5.7 &#x52A0;&#x89E3;&#x5BC6;&#x51FD;&#x6570;</h2>
+<h3 id="571-decodebase64">5.7.1 decode_base64</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+base64&#x89E3;&#x5BC6;</p>
+<pre class="language-"><code>bigdata.decode_base64(str);
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select decode_base64(&apos;YXNkYXM=&apos;);
+--output
+asdas
+</code></pre><h3 id="572-desgenkey">5.7.2 des_gen_key</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+des&#x751F;&#x6210;key&#x3002;&#x5168;&#x5957;des&#x52A0;&#x89E3;&#x5BC6;&#x9700;&#x8981;&#x914D;&#x5408;des_gen_key,des_encrypt&#x548C;des_decrypt&#x4E00;&#x8D77;&#x4F7F;&#x7528;&#xFF0C;&#x4E14;&#x540C;&#x4E00;&#x4E2A;key&#x53EA;&#x80FD;&#x52A0;&#x89E3;&#x5BC6;&#x540C;&#x4E00;&#x4EFD;&#x6570;&#x636E;&#x3002;</p>
+<pre class="language-"><code>bigdata.des_gen_key();
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select des_gen_key();
+--output
+a/Qsnn9dlHw=
+</code></pre><h3 id="573-desencrypt">5.7.3 des_encrypt</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+des&#x52A0;&#x5BC6;&#x3002;&#x5168;&#x5957;des&#x52A0;&#x89E3;&#x5BC6;&#x9700;&#x8981;&#x914D;&#x5408;des_gen_key,des_encrypt&#x548C;des_decrypt&#x4E00;&#x8D77;&#x4F7F;&#x7528;&#xFF0C;&#x4E14;&#x540C;&#x4E00;&#x4E2A;key&#x53EA;&#x80FD;&#x52A0;&#x89E3;&#x5BC6;&#x540C;&#x4E00;&#x4EFD;&#x6570;&#x636E;&#x3002;</p>
+<pre class="language-"><code>bigdata.des_encrypt(str,deskey)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select des_encrypt(&apos;dfgsdf&apos;,&apos;a/Qsnn9dlHw=&apos;);
+--output
+l2EsEoQxZDY=
+</code></pre><h3 id="574-desdecrypt">5.7.4 des_decrypt</h3>
+<p><strong>&#x8BF4;&#x660E;</strong>
+des&#x89E3;&#x5BC6;&#x3002;&#x5168;&#x5957;des&#x52A0;&#x89E3;&#x5BC6;&#x9700;&#x8981;&#x914D;&#x5408;des_gen_key,des_encrypt&#x548C;des_decrypt&#x4E00;&#x8D77;&#x4F7F;&#x7528;&#xFF0C;&#x4E14;&#x540C;&#x4E00;&#x4E2A;key&#x53EA;&#x80FD;&#x52A0;&#x89E3;&#x5BC6;&#x540C;&#x4E00;&#x4EFD;&#x6570;&#x636E;&#x3002;</p>
+<pre class="language-"><code>bigdata.des_decrypt(str,deskey)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>select des_decrypt(&apos;l2EsEoQxZDY=&apos;,&apos;a/Qsnn9dlHw=&apos;);
+--output
+dfgsdf
+</code></pre><h2 id="58-&#x5730;&#x7406;&#x4F4D;&#x7F6E;&#x51FD;&#x6570;">5.8 &#x5730;&#x7406;&#x4F4D;&#x7F6E;&#x51FD;&#x6570;</h2>
+<h3 id="581-udfsysgeodistance">5.8.1 udf_sys_geo_distance</h3>
+<p><strong>&#x8BF4;&#x660E;</strong></p>
+<pre class="language-"><code>udf_sys_geo_distance(longitude, latitude, point)
+&#xFF08;1&#xFF09;&#x4F5C;&#x7528;&#xFF1A;&#x7528;&#x4F5C;&#x4E00;&#x4E2A;&#x7ECF;&#x7EAC;&#x5EA6;&#x5217;&#x548C;&#x4E00;&#x4E2A;&#x56FA;&#x5B9A;&#x7684;&#x5750;&#x6807;&#x70B9;&#x7684;&#x8DDD;&#x79BB;&#x8BA1;&#x7B97;
+&#xFF08;2&#xFF09;&#x53C2;&#x6570;&#x8BF4;&#x660E;:&#x7B2C;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#x4E3A;&#x7ECF;&#x5EA6;&#x5217;&#x540D;&#x79F0;, &#x7C7B;&#x578B;double                     
+ &#x7B2C;&#x4E8C;&#x4E2A;&#x53C2;&#x6570;&#x4E3A;&#x7EAC;&#x5EA6;&#x5217;&#x540D;&#x79F0;, &#x7C7B;&#x578B;double              
+ &#x7B2C;&#x4E09;&#x4E2A;&#x53C2;&#x6570;&#x4E3A;&#x56FA;&#x5B9A;&#x5750;&#x6807;&#x70B9;&#x7684;&#x7ECF;&#x7EAC;&#x5EA6;&#xFF0C;&#x683C;&#x5F0F;=&gt;&#x201D;&#x7ECF;&#x5EA6;&#xFF0C;&#x7EF4;&#x5EA6;&#x201D;, =&gt;&#x201D;120.85979,30.011984&#x201D;                       
+ &#x8FD4;&#x56DE;&#xFF1A;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6570;&#x503C;&#xFF0C;&#x5355;&#x4F4D;&#x4E3A;&#x7C73;(M)
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>--&#x67E5;&#x8BE2;&#xFF08;longitude,latitude),&#xFF08;120.85979,30.011984&#xFF09;&#x4E24;&#x70B9;&#x4E4B;&#x95F4;&#x7684;&#x8DDD;&#x79BB;
+select bigdata.udf_sys_geo_distance(121.85979,32.011984, &quot;120.85979,30.011984&quot;);
+--output
+241933.56454198112
+</code></pre><h3 id="582-udfsysgeoincycle">5.8.2 udf_sys_geo_in_cycle</h3>
+<p><strong>&#x8BF4;&#x660E;</strong></p>
+<pre class="language-"><code>udf_sys_geo_in_cycle(longitude, latitude, point, radius)
+&#xFF08;1&#xFF09;&#x4F5C;&#x7528;:&#x505A;&#x57FA;&#x4E8E;&#x5730;&#x7406;&#x4F4D;&#x7F6E;&#x7684;&#x7ECF;&#x7EAC;&#x5EA6;&#x753B;&#x5708;
+&#xFF08;2&#xFF09;&#x53C2;&#x6570;&#x8BF4;&#x660E;:&#x7B2C;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#x4E3A;&#x7ECF;&#x5EA6;&#x5217;&#x540D;&#x79F0;&#xFF0C; &#x7C7B;&#x578B;double                        
+     &#x7B2C;&#x4E8C;&#x4E2A;&#x53C2;&#x6570;&#x4E3A;&#x7EAC;&#x5EA6;&#x5217;&#x540D;&#x79F0;&#xFF0C; &#x7C7B;&#x578B;double                       
+     &#x7B2C;&#x4E09;&#x4E2A;&#x53C2;&#x6570;&#x4E3A;&#x5706;&#x5708;&#x4E2D;&#x5FC3;&#x70B9;&#x7684;&#x4F4D;&#x7F6E;&#xFF0C;&#x683C;&#x5F0F;=&gt;&#x201D;&#x7ECF;&#x5EA6;&#xFF0C;&#x7EF4;&#x5EA6;&#x201D;, =&gt;&#x201D;120.85979,30.011984&#x201D;                        
+     &#x7B2C;&#x56DB;&#x4E2A;&#x53C2;&#x6570;&#x4E3A;&#x5706;&#x5708;&#x7684;&#x534A;&#x5F84;&#xFF0C;&#x5355;&#x4F4D;&#x7C73;                        
+    &#x8FD4;&#x56DE;&#xFF1A;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;boolean&#x503C;&#xFF08;3&#xFF09;
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>--&#x5224;&#x65AD;&#x70B9;121.85979&#xFF0C;32.011984 &#x662F;&#x5426;&#x5728;&#x201D;120.85979,30.011984&#x201D;&#x4E3A;&#x4E2D;&#x5FC3;&#x70B9;&#xFF0C;&#x534A;&#x5F84;&#x4E3A;5km&#x7684;&#x5706;&#x5708;&#x5185;
+select udf_sys_geo_in_cycle(121.85979,32.011984, &quot;120.85979,30.011984&quot;, 5000);
+--output
+false
+</code></pre><h3 id="583-udfsysgeoinrectangle">5.8.3 udf_sys_geo_in_rectangle</h3>
+<p><strong>&#x8BF4;&#x660E;</strong></p>
+<pre class="language-"><code>udf_sys_geo_in_rectangle(longitude, latitude, pointA, pointB)
+&#xFF08;1&#xFF09;&#x4F5C;&#x7528;&#xFF1A;&#x7528;&#x4E8E;&#x505A;&#x57FA;&#x4E8E;&#x5730;&#x7406;&#x4F4D;&#x7F6E;&#x7684;&#x7ECF;&#x7EAC;&#x5EA6;&#x753B;&#x77E9;&#x5F62;
+&#xFF08;2&#xFF09;&#x53C2;&#x6570;&#x8BF4;&#x660E;:&#x7B2C;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#x4E3A;&#x7ECF;&#x5EA6;&#x5217;&#x540D;&#x79F0;, &#x7C7B;&#x578B;double                       
+&#x7B2C;&#x4E8C;&#x4E2A;&#x53C2;&#x6570;&#x4E3A;&#x7EAC;&#x5EA6;&#x5217;&#x540D;&#x79F0;, &#x7C7B;&#x578B;double                    
+&#x7B2C;&#x4E09;&#x4E2A;&#x53C2;&#x6570;&#x4E3A;&#x77E9;&#x5F62;&#x7684;&#x5DE6;&#x4E0B;&#x89D2;&#x5750;&#x6807;&#xFF0C;&#x683C;&#x5F0F;=&gt;&#x201D;&#x7ECF;&#x5EA6;&#xFF0C;&#x7EF4;&#x5EA6;&#x201D;, =&gt;&#x201D;120.85979,30.011984&#x201D;                        
+&#x7B2C;&#x56DB;&#x4E2A;&#x53C2;&#x6570;&#x4E3A;&#x77E9;&#x5F62;&#x7684;&#x53F3;&#x4E0A;&#x89D2;&#x5750;&#x6807;&#xFF0C;&#x683C;&#x5F0F;=&gt;&#x201D;&#x7ECF;&#x5EA6;&#xFF0C;&#x7EF4;&#x5EA6;&#x201D;, =&gt;&#x201D;120.88450,31.21011&#x201D;                        
+&#x8FD4;&#x56DE;&#xFF1A;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;boolean&#x503C;
+</code></pre><p><strong>&#x5B9E;&#x4F8B;</strong></p>
+<pre class="language-"><code>--&#x5224;&#x65AD;&#x70B9;121.85979,32.011984 &#x662F;&#x5426;&#x5728;&#x201D;120.85979,30.011984&#x201D;&#x548C;&#x201D;&#x201D;120.88450,31.21011&#x201D;&#x201D;&#x4E3A;2&#x4E2A;&#x659C;&#x89D2;&#x6784;&#x6210;&#x7684;&#x77E9;&#x5F62;&#x5185;
+select udf_sys_geo_in_rectangle(121.85979,32.011984, &quot;120.85979,30.011984&quot;, &quot;120.88450,31.21011&quot;);
+--output
+false
+</code></pre><script type="text/javascript">var className='atoc';</script>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../../_" class="navigation navigation-prev " aria-label="Previous page: 5 函数">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../5.2 自定义udf.html" class="navigation navigation-next " aria-label="Next page: 5.2 自定义UDF案例">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"5.1 \u001d\b公共函数案例","level":"1.5.1","depth":2,"next":{"title":"5.2 \u001d\b自定义UDF案例","level":"1.5.2","depth":2,"path":"5 公共函数/5.2 自定义udf.md","ref":"5 公共函数/5.2 自定义udf.md","articles":[]},"previous":{"title":"5 函数","level":"1.5","depth":1,"path":"_","ref":"_","articles":[{"title":"5.1 \u001d\b公共函数案例","level":"1.5.1","depth":2,"path":"5 公共函数/5.1 公共函数案例/function.md","ref":"5 公共函数/5.1 公共函数案例/function.md","articles":[]},{"title":"5.2 \u001d\b自定义UDF案例","level":"1.5.2","depth":2,"path":"5 公共函数/5.2 自定义udf.md","ref":"5 公共函数/5.2 自定义udf.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["-highlight","-sharing","prism","prism-themes","atoc","livereload"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"prism":{"css":["prismjs/themes/prism-solarizedlight.css"]},"atoc":{"addClass":true,"className":"atoc"},"prism-themes":{},"livereload":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"zh-hans","gitbook":"*"},"file":{"path":"5 公共函数/5.1 公共函数案例/function.md","mtime":"2019-07-18T09:28:56.668Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-24T02:56:16.570Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-atoc/atoc.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

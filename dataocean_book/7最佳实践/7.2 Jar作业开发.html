@@ -1,0 +1,942 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>7.2 Jar作业开发 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-prism/prism-solarizedlight.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-atoc/atoc.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="7.1 Python作业开发.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    1 产品简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../概念介绍.html">
+            
+                <a href="../概念介绍.html">
+            
+                    
+                    2 概念简介
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../3.用户指南.md">
+            
+                <span>
+            
+                    
+                    3 用户指南
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../3.用户指南/3.1.整体介绍.html">
+            
+                <a href="../3.用户指南/3.1.整体介绍.html">
+            
+                    
+                    3.1 整体介绍
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../_">
+            
+                <span>
+            
+                    
+                    3.2 数据开发
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.2.1" data-path="../3.用户指南/3.2数据开发/3.2.1.作业开发.html">
+            
+                <a href="../3.用户指南/3.2数据开发/3.2.1.作业开发.html">
+            
+                    
+                    3.2.1 作业开发
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.2" data-path="../3.用户指南/3.2数据开发/3.2.2.资源管理.html">
+            
+                <a href="../3.用户指南/3.2数据开发/3.2.2.资源管理.html">
+            
+                    
+                    3.2.2 资源管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.3" data-path="../3.用户指南/3.2数据开发/3.2.3.函数管理.html">
+            
+                <a href="../3.用户指南/3.2数据开发/3.2.3.函数管理.html">
+            
+                    
+                    3.2.3 函数管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.4" data-path="../3.用户指南/3.2数据开发/3.2.4.表查询.html">
+            
+                <a href="../3.用户指南/3.2数据开发/3.2.4.表查询.html">
+            
+                    
+                    3.2.4 表查询
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2.5" data-path="../3.用户指南/3.2数据开发/3.2.5.回收站.html">
+            
+                <a href="../3.用户指南/3.2数据开发/3.2.5.回收站.html">
+            
+                    
+                    3.2.5 回收站
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../_">
+            
+                <span>
+            
+                    
+                    3.3 数据管理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.3.1" data-path="../3.用户指南/3.3 数据管理/3.3.1 数据管理概览.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.1 数据管理概览.html">
+            
+                    
+                    3.3.1 数据管理概览
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.2" data-path="../3.用户指南/3.3 数据管理/3.3.2 数据查找.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.2 数据查找.html">
+            
+                    
+                    3.3.2 数据查找
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.3" data-path="../3.用户指南/3.3 数据管理/3.3.3 我的表管理.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.3 我的表管理.html">
+            
+                    
+                    3.3.3 我的表管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.4" data-path="../3.用户指南/3.3 数据管理/3.3.4 数据质量.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.4 数据质量.html">
+            
+                    
+                    3.3.4 数据质量
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.5" data-path="../3.用户指南/3.3 数据管理/3.3.5 数据导出.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.5 数据导出.html">
+            
+                    
+                    3.3.5 数据导出
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.6" data-path="../3.用户指南/3.3 数据管理/3.3.6 数据源管理.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.6 数据源管理.html">
+            
+                    
+                    3.3.6 数据源管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.7" data-path="../3.用户指南/3.3 数据管理/3.3.7 数据权限申请.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.7 数据权限申请.html">
+            
+                    
+                    3.3.7 数据权限申请
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3.8" data-path="../3.用户指南/3.3 数据管理/3.3.8 数据权限审核.html">
+            
+                <a href="../3.用户指南/3.3 数据管理/3.3.8 数据权限审核.html">
+            
+                    
+                    3.3.8 数据权限审核
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../_">
+            
+                <span>
+            
+                    
+                    3.4 运维中心
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.4.1" data-path="../3.用户指南/3.4运维中心/3.4.1运维中心概览.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.1运维中心概览.html">
+            
+                    
+                    3.4.1 运维中心概览
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.2" data-path="../3.用户指南/3.4运维中心/3.4.2作业运维.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.2作业运维.html">
+            
+                    
+                    3.4.2 作业运维
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.3" data-path="../3.用户指南/3.4运维中心/3.4.3作业管理.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.3作业管理.html">
+            
+                    
+                    3.4.3 作业管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.4" data-path="../3.用户指南/3.4运维中心/3.4.4作业监控.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.4作业监控.html">
+            
+                    
+                    3.4.4 作业监控
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.5" data-path="../3.用户指南/3.4运维中心/3.4.5流作业管理.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.5流作业管理.html">
+            
+                    
+                    3.4.5 流作业管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.6" data-path="../3.用户指南/3.4运维中心/3.4.6流作业监控.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.6流作业监控.html">
+            
+                    
+                    3.4.6 流作业监控
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.7" data-path="../3.用户指南/3.4运维中心/3.4.7服务监控.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.7服务监控.html">
+            
+                    
+                    3.4.7 服务监控
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4.8" data-path="../3.用户指南/3.4运维中心/3.4.8集群管理.html">
+            
+                <a href="../3.用户指南/3.4运维中心/3.4.8集群管理.html">
+            
+                    
+                    3.4.8 集群管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../_">
+            
+                <span>
+            
+                    
+                    3.5 系统管理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.5.1" data-path="../3.用户指南/3.5 系统管理/3.5.1 项目管理.html">
+            
+                <a href="../3.用户指南/3.5 系统管理/3.5.1 项目管理.html">
+            
+                    
+                    3.5.1 项目管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.2" data-path="../3.用户指南/3.5 系统管理/3.5.2 租户管理.html">
+            
+                <a href="../3.用户指南/3.5 系统管理/3.5.2 租户管理.html">
+            
+                    
+                    3.5.2 租户管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.3" data-path="../3.用户指南/3.5 系统管理/3.5.3 资源池管理.html">
+            
+                <a href="../3.用户指南/3.5 系统管理/3.5.3 资源池管理.html">
+            
+                    
+                    3.5.3 资源池管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5.4" data-path="../3.用户指南/3.5 系统管理/3.5.4 全局配置.html">
+            
+                <a href="../3.用户指南/3.5 系统管理/3.5.4 全局配置.html">
+            
+                    
+                    3.5.4 全局配置
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6" data-path="../3.用户指南/3.6 权限管理/3.6 权限管理.html">
+            
+                <a href="../3.用户指南/3.6 权限管理/3.6 权限管理.html">
+            
+                    
+                    3.6 权限管理
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.6.1" data-path="../3.用户指南/3.6 权限管理/3.6.1 角色.html">
+            
+                <a href="../3.用户指南/3.6 权限管理/3.6.1 角色.html">
+            
+                    
+                    3.6.1 角色
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.2" data-path="../3.用户指南/3.6 权限管理/3.6.2 用户管理.html">
+            
+                <a href="../3.用户指南/3.6 权限管理/3.6.2 用户管理.html">
+            
+                    
+                    3.6.2 用户管理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.6.3" data-path="../3.用户指南/3.6 权限管理/3.6.3 个人信息.html">
+            
+                <a href="../3.用户指南/3.6 权限管理/3.6.3 个人信息.html">
+            
+                    
+                    3.6.3 个人信息
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../4 SQL语法/sql.html">
+            
+                <a href="../4 SQL语法/sql.html">
+            
+                    
+                    4 SQL 语法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../_">
+            
+                <span>
+            
+                    
+                    5 函数
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../5 公共函数/5.1 公共函数案例/function.html">
+            
+                <a href="../5 公共函数/5.1 公共函数案例/function.html">
+            
+                    
+                    5.1 公共函数案例
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../5 公共函数/5.2 自定义udf.html">
+            
+                <a href="../5 公共函数/5.2 自定义udf.html">
+            
+                    
+                    5.2 自定义UDF案例
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../_">
+            
+                <span>
+            
+                    
+                    6 实时计算
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../6 实时计算/6.1 SparkStream作业.html">
+            
+                <a href="../6 实时计算/6.1 SparkStream作业.html">
+            
+                    
+                    6.1 SparkStream作业
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../6 实时计算/6.2 Flink Sql.html">
+            
+                <a href="../6 实时计算/6.2 Flink Sql.html">
+            
+                    
+                    6.2 Flink SQL
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../_">
+            
+                <span>
+            
+                    
+                    7 最佳实践
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="7.1 Python作业开发.html">
+            
+                <a href="7.1 Python作业开发.html">
+            
+                    
+                    7.1 Python作业案例
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.7.2" data-path="7.2 Jar作业开发.html">
+            
+                <a href="7.2 Jar作业开发.html">
+            
+                    
+                    7.2 Jar作业开发
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >7.2 Jar作业开发</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h3 id="jar-&#x4F5C;&#x4E1A;&#x5F00;&#x53D1;">Jar &#x4F5C;&#x4E1A;&#x5F00;&#x53D1;</h3>
+<h4 id="1-maven-&#x6DFB;&#x52A0;pom&#x4F9D;&#x8D56;&#xFF1A;">1 Maven &#x6DFB;&#x52A0;pom&#x4F9D;&#x8D56;&#xFF1A;</h4>
+<pre class="language-"><code>      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">&gt;</span></span>
+         <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">&gt;</span></span>cn.tongdun.spark<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">&gt;</span></span>
+         <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">&gt;</span></span>jobapi<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">&gt;</span></span>
+         <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">&gt;</span></span>1.0.6-SNAPSHOT<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">&gt;</span></span>
+         <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>scope</span><span class="token punctuation">&gt;</span></span>provided<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>scope</span><span class="token punctuation">&gt;</span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">&gt;</span></span>
+</code></pre><h4 id="2-&#x5B9E;&#x73B0;&#x63A5;&#x53E3;-cntongdunsparkjobapisparkjob&#xFF1A;">2 &#x5B9E;&#x73B0;&#x63A5;&#x53E3; cn.tongdun.spark.jobapi.SparkJob&#xFF1A;</h4>
+<pre class="language-"><code>class ScalaJobDemo extends SparkJob {
+
+    /**
+    * &#x8BE5;&#x65B9;&#x6CD5;&#x4E3A;&#x4F5C;&#x4E1A;&#x7684;&#x6267;&#x884C;&#x4E3B;&#x5165;&#x53E3;
+    */
+    override def runJob(sparkSession: SparkSession, logger: SparkJobLogger, args: Array[String]): Unit = {
+        logger.info(&quot;execute SparkJobDemo&quot;)
+        val schemaString = &quot;Id Name Age&quot;
+        val fields = schemaString.split(&quot; &quot;).map(fieldName =&gt; StructField(fieldName, StringType, true))
+        val schema = StructType(fields)
+
+        logger.info(&quot;add hdfs://tdhdfs/user/tao.fu/testdata&quot;)
+        val row = sparkSession.sparkContext.textFile(&quot;hdfs://tdhdfs/user/tao.fu/testdata&quot;)
+        val rowRdd = row.map(_.split(&quot;,&quot;)).map(attr =&gt; Row(attr(0).trim, attr(1).trim, attr(2).trim))
+
+        logger.info(&quot;create table tdl_spark_people&quot;)
+        val peopleDf = sparkSession.createDataFrame(rowRdd, schema).createOrReplaceTempView(&quot;tdl_spark_people&quot;)
+
+        logger.info(&quot;execute select * from tdl_spark_people&quot;)
+        logger.info(&quot;Result: &quot;+sparkSession.sql(&quot;select * from tdl_spark_people&quot;).collectAsList())
+
+    }
+}
+</code></pre><h3 id="3-&#x7EE7;&#x627F;-cntongdunsparkjobapi">3 &#x7EE7;&#x627F; cn.tongdun.spark.jobapi.</h3>
+<p>AbstractSparkJob &#x5B9E;&#x73B0; SparkJob&#x63A5;&#x53E3;&#xFF0C;&#x63D0;&#x4F9B;&#x6570;&#x636E;&#x7BA1;&#x9053;&#x529F;&#x80FD;&#xFF0C;
+&#x6570;&#x636E;&#x7BA1;&#x9053;: &#x4E0A;&#x6E38;&#x4F5C;&#x4E1A;&#x5B9E;&#x4F8B;&#x53EF;&#x4EE5;&#x4F20;&#x9012;&#x6570;&#x636E;&#x7ED9;&#x4E0B;&#x6E38;&#x4F5C;&#x4E1A;&#x5B9E;&#x4F8B;&#xFF0C;&#x4EC5;&#x652F;&#x6301;&#x5B57;&#x7B26;&#x4E32;&#x6570;&#x636E;&#xFF0C;&#x7BA1;&#x9053;&#x5927;&#x5C0F;&#x9650;&#x5236;512k&#x3002;</p>
+<p>AbstractSparkJob &#x64CD;&#x4F5C;&#x7BA1;&#x9053;&#x63D0;&#x4F9B;&#x5982;&#x4E0B;&#x4E24;&#x4E2A;&#x65B9;&#x6CD5;&#xFF1A;
+setPipelineData &#x7ED9;&#x7BA1;&#x9053;&#x8BBE;&#x7F6E;&#x6570;&#x636E;, &#x63D0;&#x4F9B;&#x7ED9;&#x4E0B;&#x6E38;&#x4F5C;&#x4E1A;&#x5B9E;&#x4F8B;&#x4F7F;&#x7528;
+getPipelineData &#x4ECE;&#x7BA1;&#x9053;&#x83B7;&#x53D6;&#x4E0A;&#x6E38;&#x4F5C;&#x4E1A;&#x5B9E;&#x4F8B;&#x4F20;&#x8F93;&#x7684;&#x6570;&#x636E;</p>
+<h3 id="4--&#x90E8;&#x7F72;&#x5E94;&#x7528;">4  &#x90E8;&#x7F72;&#x5E94;&#x7528;</h3>
+<p>&#x5C06;&#x81EA;&#x5B9A;&#x4E49;&#x5B9E;&#x73B0;&#x7684;&#x7C7B;&#x6253;&#x6210;jar&#x5305;&#xFF0C;&#x4E0A;&#x4F20;&#x81F3;dataocean&#x5E73;&#x53F0;&#xFF0C;&#x65B0;&#x5EFA;job&#x4F5C;&#x4E1A;&#x7C7B;&#x578B;&#x4E3A;Spark jar&#xFF0C;&#x8F93;&#x5165;&#x4EE5;&#x4E0B;&#x6307;&#x4EE4;</p>
+<pre class="language-"><code>  [set key=value;]
+  jar&#x5305;&#x540D; &#x5165;&#x53E3;&#x7C7B;&#x540D; &#x81EA;&#x5B9A;&#x4E49;&#x53C2;&#x6570; [--jars jar1,jar2]
+  &#x53EF;&#x4EE5;&#x8F93;&#x5165;&#x591A;&#x884C;&#x547D;&#x4EE4;&#xFF0C;&#x5404;&#x884C;&#x4E4B;&#x95F4;&#x5206;&#x53F7;&#x5206;&#x5272;
+   &#x4F8B;&#x5982;&#xFF1A;jobdemo-0.1.0.jar cn.tongdun.spark.demo.SparkJobDemo param1 param2;
+       jobdemo-0.1.0.jar cn.tongdun.spark.demo.SparkJobDemo param3 param4
+</code></pre><p>  &#x4EFB;&#x52A1;&#x7684;&#x63D0;&#x4EA4;&#x652F;&#x6301;&#x6DFB;&#x52A0;&#x76F8;&#x5173;&#x4F9D;&#x8D56;&#xFF0C;&#x5F53;&#x76EE;&#x6807;jar&#x5305;&#x9700;&#x8981;&#x4F9D;&#x8D56;&#x76F8;&#x5173;&#x5305;&#x65F6;&#xFF0C;&#x53EF;&#x4EE5;&#x4E8B;&#x5148;&#x5C06;&#x4F9D;&#x8D56;&#x5305;&#x4E0A;&#x4F20;&#x81F3;&#x5E73;&#x53F0;&#xFF0C;&#x5728;--jars&#x4E2D;&#x6307;&#x5B9A;&#x4F9D;&#x8D56;&#x5305;&#x540D;&#x79F0;&#xFF0C;&#x4EE5;&#x9017;&#x53F7;&#x5206;&#x5272;
+  &#x4F8B;&#x5982;:</p>
+<pre class="language-"><code>     set spark.sql.shuffle.partitions = 5;
+     jobserverdemo-1.0-SNAPSHOT.jar cn.tongdun.spark.SparkJobDemo --jars flume-ng-sdk-1.8.0.jar(&#x5EFA;&#x8BAE;&#x662F;&#x7EDD;&#x5BF9;&#x8DEF;&#x5F84;)
+     flume-ng-sdk-1.8.0.jar&#x9700;&#x9996;&#x5148;&#x4E0A;&#x4F20;&#x81F3;dataocean&#x5E73;&#x53F0;
+</code></pre><p>  &#x7528;&#x6237;&#x53EF;&#x4EE5;&#x81EA;&#x5B9A;&#x4E49;spark&#x7684;&#x6267;&#x884C;&#x53C2;&#x6570;&#xFF0C;&#x5728;&#x547D;&#x4EE4;&#x884C;&#x4E4B;&#x524D;&#x52A0;&#x4E0A; set key=value;
+  &#x4F8B;&#x5982; set spark.sql.shuffle.partitions = 5;(&#x53EF;&#x4EE5;&#x8BBE;&#x7F6E;&#x591A;&#x4E2A;&#x53C2;&#x6570;&#xFF0C;&#x4EE5;&#x5206;&#x53F7;&#x95F4;&#x9694;)
+  unset &#x547D;&#x4EE4;&#x53EF;&#x4EE5;&#x91CD;&#x7F6E;&#x8BBE;&#x5B9A;&#x7684;&#x53C2;&#x6570; &#x4F8B;&#x5982; unset spark.sql.shuffle.partitions (&#x6B64;&#x65F6;spark.sql.shuffle.partitions&#x5C06;&#x88AB;&#x8BBE;&#x5B9A;&#x4E3A;&#x7CFB;&#x7EDF;&#x9ED8;&#x8BA4;&#x503C;)</p>
+<h4 id="5-&#x6CE8;&#x610F;&#x4E8B;&#x9879;">5 &#x6CE8;&#x610F;&#x4E8B;&#x9879;</h4>
+<ul>
+<li>&#x5728;runJob&#x65B9;&#x6CD5;&#x4E2D;&#x4E0D;&#x8981;&#x6355;&#x83B7;&#x5F02;&#x5E38;&#xFF0C;&#x76F4;&#x63A5;&#x5C06;&#x5F02;&#x5E38;&#x629B;&#x51FA;&#xFF0C;&#x53E6;&#x5916;&#x4E0D;&#x8981;&#x8C03;&#x7528;System.exit()&#x7B49;&#x65B9;&#x6CD5;</li>
+<li>&#x67E5;&#x770B;&#x65E5;&#x5FD7;&#x91C7;&#x7528;SparkJobLogger&#x81EA;&#x5E26;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x5305;&#x62EC;info&#x3001;warn&#x3001;error 3&#x79CD;&#x7EA7;&#x522B;</li>
+<li>&#x521B;&#x5EFA;&#x4E34;&#x65F6;&#x8868;&#x63A8;&#x8350;&#x4F7F;&#x7528;createOrReplaceTempView  &#x8868;&#x540D;&#x9700;&#x5305;&#x542B;&#x81F3;&#x5C11;3&#x4E2A;&#x5B57;&#x6BB5;&#xFF0C;&#x4EE5;_&#x4F5C;&#x5206;&#x5272;&#xFF0C;&#x5E76;&#x4E14;&#x4EE5;tdl&#x5F00;&#x5934;&#xFF0C;&#x4F8B;&#x5982;tdl_tmp_activity</li>
+</ul>
+<script type="text/javascript">var className='atoc';</script>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="7.1 Python作业开发.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: 7.1 Python作业案例">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"7.2 Jar作业开发","level":"1.7.2","depth":2,"previous":{"title":"7.1 Python作业案例","level":"1.7.1","depth":2,"path":"7最佳实践/7.1 Python作业开发.md","ref":"7最佳实践/7.1 Python作业开发.md","articles":[]},"dir":"ltr"},"config":{"plugins":["-highlight","-sharing","prism","prism-themes","atoc","livereload"],"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"prism":{"css":["prismjs/themes/prism-solarizedlight.css"]},"atoc":{"addClass":true,"className":"atoc"},"prism-themes":{},"livereload":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"language":"zh-hans","gitbook":"*"},"file":{"path":"7最佳实践/7.2 Jar作业开发.md","mtime":"2019-07-23T12:23:01.509Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-07-24T02:56:16.570Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-atoc/atoc.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
