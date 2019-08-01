@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>KDC服务安装及配置 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li><li><a href="/books/"> 电子书 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>KDC服务安装及配置</h1>
+  <time datetime=2019-08-01T10:48:39&#43;0800 class="post-date">Thu, Aug 1, 2019</time>
+  
+
+<h1 id="1-kerberos介绍">1 Kerberos介绍</h1>
+
+<p>Kerberos这一名词来源于希腊神话“三个头的狗——地狱之门守护者”。</p>
+
+<p>系统设计上采用客户端/服务器结构与<strong>DES加密技术</strong>，并且能够进行相互认证，即客户端和服务器端均可对对方进行身份认证。可以用于防止窃听、防止replay攻击、保护数据完整性等场合，是一种应用对称密钥体制进行密钥管理的系统。</p>
+
+<p>支持SSO(Single Sign On)，用户只需输入一次身份验证信息就可以凭借此验证获得的票据(ticket-granting ticket)访问多个服务。</p>
+
+<p>由于在每个Client和Service之间建立了共享密钥，使得该协议具有相当的安全性。</p>
+
+<h1 id="2-认证原理解析">2 认证原理解析</h1>
+
+<h2 id="2-1-准备阶段">2.1 准备阶段</h2>
+
+<p>先看下图：</p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/31/4bab7437acfb584cbf4aa507d5cd5d.jpg" alt="" />
+这里出现的角色有三个分别是：</p>
+
+<ul>
+<li>KDC （Key Distribution Center）</li>
+<li>Client</li>
+<li>Service</li>
+</ul>
+
+<p>其中KDC有两个服务：</p>
+
+<ul>
+<li>AS (Authentication Server)： 认证服务，用于签发“Ticket-Granting Tickets” (TGT)</li>
+<li>TGS(Ticket Granting Server)： 许可证服务，用于签发service tickets(各种服务的tickets)</li>
+</ul>
+
+<p>密钥两个：</p>
+
+<ul>
+<li>KDC与Client之间的共享密钥（密钥A,其实就是用户密码）</li>
+<li>KDC与Service之间的共享密钥(密钥B)</li>
+</ul>
+
+<h2 id="2-2-认证过程">2.2 认证过程</h2>
+
+<p>第一步：
+用户发送自己的用户信息给KDC，KDC访问AS服务，获得TGT，并用密钥A加密TGT以及一个Session Key给用户。用户得到加密数据后，使用密钥A解密得到TGT和Session Key（这里简称为SK）。</p>
+
+<p>其中，TGT用于第二步请求各种服务的tickets;SK主要用于Service对Client的身份鉴别，在步骤二中会体现。</p>
+
+<p>第二步：
+如图：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/f5/2eb6b48fbae53e34b0441e7c87a226.jpg" alt="" /></p>
+
+<ol>
+<li>Client将之前获得TGT和要请求的服务信息(服务名等)发送给KDC，认证用户合法后，KDC中的TGS将SK(第一步中产生)和用户名，用户地址（IP），服务名，有效期, 时间戳一起包装成一个Ticket，并用密钥B加密，发送给Client；</li>
+<li>此时Client没有密钥B所以他无法查看Ticket中的内容，于是Client将Ticket直接转发给Service。</li>
+<li>同时Client将自己的用户名，用户地址（IP）打包成Authenticator，用之前获得的SK加密也发送给Service。</li>
+<li>Service 收到Ticket后利用它与KDC之间的密钥B将Ticket中的信息解密出来，从而获得SK和用户名，用户地址（IP），服务名，有效期。然后再用SK将Authenticator解密从而获得用户名，用户地址（IP）将其与之前Ticket中解密出来的用户名，用户地址（IP）做比较，从而验证Client的身份。</li>
+<li>如果Service有返回结果，将其返回给Client。</li>
+</ol>
+
+<h1 id="2-kdc安装">2 KDC安装</h1>
+
+<p>本文档中将KDC服务安装在Cloudera Manager Server所在服务器上（KDC服务可根据自己需要安装在其他服务器）</p>
+
+<p>测试环境测试时，kdc安装在dp199机器上，cdh在dp197上。</p>
+
+<h2 id="2-1-在cloudera-manager服务器上安装kdc服务-可以在别的机器上装kdc">2.1 在Cloudera Manager服务器上安装KDC服务（可以在别的机器上装kdc）</h2>
+
+<h3 id="2-1-1-直接安装">2.1.1 直接安装</h3>
+
+<pre><code>[root@ip-172-31-6-148~]# yum -y --installroot=/usr/local install krb5-server krb5-libs krb5-auth-dialog krb5-workstation 
+</code></pre>
+
+<h3 id="2-1-2-源码安装">2.1.2 源码安装</h3>
+
+<p>目前依赖的包都在10.57.30.218下。</p>
+
+<pre><code>cd /root/kdc/src
+wget http://10.57.30.218:1080/downloads/gcc/gcc-c++.tar.gz
+wget http://10.57.30.218:1080/downloads/krb5/byacc.tar.gz 
+wget http://10.57.30.218:1080/downloads/krb5/krb5-1.17.tar.gz
+
+cd gcc
+tar zxvf gcc-c++.tar.gz
+cd gcc-c++
+yum -y install *
+
+tar zxf perl-5.30.0.tar.gz
+cd perl-5.30.0
+./Configure
+#一路回车
+make &amp;&amp; make install
+
+cd byacc-20190617
+./configure --prefix=/usr/local/byacc
+make &amp;&amp; make install
+
+cd krb5-1.17/src 
+./configure --prefix=/usr/local/krb5
+make &amp;&amp; make install
+</code></pre>
+
+<h2 id="2-2-环境变量添加">2.2 环境变量添加</h2>
+
+<pre><code>ln -s /usr/local/byacc/bin/yacc /usr/local/bin/yacc
+
+cat &gt;&gt; /etc/profile &lt;&lt; EOF
+KDC_HOME=/usr/local/krb5
+PATH=\$PATH:\$KDC_HOME/bin:\$KDC_HOME/sbin
+EOF
+source /etc/profile
+</code></pre>
+
+<h1 id="3-kdc配置">3 KDC配置</h1>
+
+<h2 id="3-1-etc-krb5-conf配置">3.1 /etc/krb5.conf配置</h2>
+
+<pre><code>cat &gt; /etc/krb5.conf &lt;&lt; EOF
+# Configuration snippets may be placed in this directory as well
+includedir /etc/krb5.conf.d/
+
+[logging]
+ default = FILE:/var/log/krb5libs.log
+ kdc = FILE:/var/log/krb5kdc.log
+ admin_server = FILE:/var/log/kadmind.log
+
+[libdefaults]
+ default_realm = TONGDUN.COM
+ dns_lookup_realm = false
+ dns_lookup_kdc = false
+ ticket_lifetime = 24h
+ renew_lifetime = 7d
+ forwardable = true
+# pkinit_anchors = /etc/pki/tls/certs/ca-bundle.crt
+# default_realm = EXAMPLE.COM
+# default_ccache_name = KEYRING:persistent:%{uid}
+
+[realms]
+ TONGDUN.COM = {
+  kdc = k8s-01
+  admin_server = k8s-01
+ }
+
+[domain_realm]
+ .k8s-01 = TONGDUN.COM
+ k8s-01= TONGDUN.COM
+EOF
+</code></pre>
+
+<p>k8s-01为主机别名，根据情况修改
+ TONGDUN.COM为域名，统一
+ default_ccache_name一定要屏蔽掉，否则会报错。</p>
+
+<h2 id="3-2-修改-usr-local-krb5-var-krb5kdc-kadm5-acl配置">3.2 修改/usr/local/krb5/var/krb5kdc/kadm5.acl配置</h2>
+
+<pre><code>cat &gt; /usr/local/krb5/var/krb5kdc/kadm5.acl &lt;&lt;EOF
+*/admin@TONGDUN.COM    *
+EOF
+</code></pre>
+
+<p>其中TONGDUN.COM为之前配置的域名</p>
+
+<h2 id="3-3-usr-local-krb5-var-krb5kdc-kdc-conf配置">3.3 /usr/local/krb5/var/krb5kdc/kdc.conf配置</h2>
+
+<pre><code>cat &gt; /usr/local/krb5/var/krb5kdc/kdc.conf &lt;&lt;EOF
+[kdcdefaults]
+ kdc_ports = 88
+ kdc_tcp_ports = 88
+
+[realms]
+ TONGDUN.COM= {
+  #master_key_type = aes256-cts
+
+  master_key_type = aes256-cts
+
+  max_life = 1d 0h 0m 0s
+  max_renewable_life= 900d 0h 0m 0s
+  acl_file = /usr/local/krb5/var/krb5kdc/kadm5.acl
+  dict_file = /usr/share/dict/words
+  admin_keytab = /usr/local/krb5/var/krb5kdc/kadm5.keytab
+  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+ }
+EOF
+</code></pre>
+
+<h2 id="3-4-krb5kdc启动">3.4 krb5kdc启动</h2>
+
+<pre><code>[root@k8s-01 krb5kdc]# krb5kdc
+</code></pre>
+
+<h2 id="3-5-kadmind启动">3.5 kadmind启动</h2>
+
+<pre><code>[root@k8s-01 krb5kdc]# kadmind
+</code></pre>
+
+<h1 id="4-创建kerberos数据库">4 创建Kerberos数据库</h1>
+
+<pre><code>kdb5_util create –r TONGDUN.COM -s
+</code></pre>
+
+<p>此处需要输入Kerberos数据库的密码，测试中密码输入为admin</p>
+
+<h1 id="5-创建kerberos的管理账号">5 创建Kerberos的管理账号</h1>
+
+<pre><code>[root@k8s-01 src]# kadmin.local
+Authenticating as principal root/admin@TONGDUN.COM with password.
+kadmin.local:  addprinc admin/admin@TONGDUN.COM
+WARNING: no policy specified for admin/admin@TONGDUN.COM; defaulting to no policy
+Enter password for principal &quot;admin/admin@TONGDUN.COM&quot;:
+Re-enter password for principal &quot;admin/admin@TONGDUN.COM&quot;:
+Principal &quot;admin/admin@TONGDUN.COM&quot; created.
+kadmin.local:  exit
+[root@k8s-01 src]#
+</code></pre>
+
+<p>此处admin/admin@TONGDUN.COM为管理员账号，需要输入密码，测试中使用admin作为密码。</p>
+
+<h1 id="6-测试kerberos的管理员账号">6 测试Kerberos的管理员账号</h1>
+
+<pre><code>[root@k8s-01 krb5kdc]# kinit admin/admin@TONGDUN.COM
+Password for admin/admin@TONGDUN.COM:
+[root@k8s-01 krb5kdc]# klist
+Ticket cache: FILE:/tmp/krb5cc_0
+Default principal: admin/admin@TONGDUN.COM
+
+Valid starting       Expires              Service principal
+2019-07-25T14:34:33  2019-07-26T14:34:33  krbtgt/TONGDUN.COM@TONGDUN.COM
+	renew until 2019-07-25T14:34:33
+</code></pre>
+
+<h1 id="7-kdc日志查看">7 kdc日志查看</h1>
+
+<p>kdc的日志有如下两个：</p>
+
+<p>/var/log/kadmind.log</p>
+
+<p>/var/log/krb5kdc.log</p>
+
+<h1 id="8-创建princ和keytab文件">8 创建princ和keytab文件</h1>
+
+<p>创建自己输入密码的princ：</p>
+
+<p>addprinc  admin/test@CY.TONGDUN.COM</p>
+
+<p>创建随机密码的princ：</p>
+
+<p>addprinc -randkey   admin/test@CY.TONGDUN.COM</p>
+
+<p>创建keytab（指定加密算法为aes256）：</p>
+
+<p>ktadd   -e aes256-cts:normal -k admintest1.keytab admin/test@CY.TONGDUN.COM</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

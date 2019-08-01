@@ -6,10 +6,47 @@
     <description>Recent content on ZHY ZONE</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 28 Jul 2019 12:04:05 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 01 Aug 2019 10:48:57 +0800</lastBuildDate>
     
 	<atom:link href="https://pj1987111.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>kdc配置HA</title>
+      <link>https://pj1987111.github.io/posts/kerberos/2.kdc_ha/</link>
+      <pubDate>Thu, 01 Aug 2019 10:48:57 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/kerberos/2.kdc_ha/</guid>
+      <description>1 机器 Kdc主节点：k8s-01
+kdc从节点：k8s-02
+2 主节点修改 2.1 主节点修改配置 /etc/krb5.conf
+[realms] TONGDUN.COM = { kdc = k8s-01 kdc = k8s-02 …（如果有多从kdc，一行一个） admin_server = k8s-01 }  2.2 添加principal kadmin.local
+addprinc -randkey host/k8s-01 addprinc -randkey host/k8s-02  //将主、从节点的princ整合到krb5.keytab中
+ktadd -k /etc/krb5.keytab host/k8s-01 ktadd -k /etc/krb5.keytab host/k8s-02  3 从节点搭建 从节点安装参考《KDC服务安装及配置》
+3.1 将master上配置同步到从节点 将master几个配置拷贝到从服务器：文件: krb5.conf、kdc.conf、kadmin5.acl、master key stash file
+ scp /etc/krb5.conf root@k8s-02:/etc scp /etc/krb5.keytab root@k8s-02:/etc scp /usr/local/krb5/var/krb5kdc/kdc.conf root@k8s-02:/usr/local/krb5/var/krb5kdc/ scp /usr/local/krb5/var/krb5kdc/kadm5.acl root@k8s-02:/usr/local/krb5/var/krb5kdc/ scp /usr/local/krb5/var/krb5kdc/.</description>
+    </item>
+    
+    <item>
+      <title>KDC服务安装及配置</title>
+      <link>https://pj1987111.github.io/posts/kerberos/1.kdc_install/</link>
+      <pubDate>Thu, 01 Aug 2019 10:48:39 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/kerberos/1.kdc_install/</guid>
+      <description>1 Kerberos介绍 Kerberos这一名词来源于希腊神话“三个头的狗——地狱之门守护者”。
+系统设计上采用客户端/服务器结构与DES加密技术，并且能够进行相互认证，即客户端和服务器端均可对对方进行身份认证。可以用于防止窃听、防止replay攻击、保护数据完整性等场合，是一种应用对称密钥体制进行密钥管理的系统。
+支持SSO(Single Sign On)，用户只需输入一次身份验证信息就可以凭借此验证获得的票据(ticket-granting ticket)访问多个服务。
+由于在每个Client和Service之间建立了共享密钥，使得该协议具有相当的安全性。
+2 认证原理解析 2.1 准备阶段 先看下图：
+这里出现的角色有三个分别是：
+ KDC （Key Distribution Center） Client Service  其中KDC有两个服务：
+ AS (Authentication Server)： 认证服务，用于签发“Ticket-Granting Tickets” (TGT) TGS(Ticket Granting Server)： 许可证服务，用于签发service tickets(各种服务的tickets)  密钥两个：
+ KDC与Client之间的共享密钥（密钥A,其实就是用户密码） KDC与Service之间的共享密钥(密钥B)  2.2 认证过程 第一步： 用户发送自己的用户信息给KDC，KDC访问AS服务，获得TGT，并用密钥A加密TGT以及一个Session Key给用户。用户得到加密数据后，使用密钥A解密得到TGT和Session Key（这里简称为SK）。
+其中，TGT用于第二步请求各种服务的tickets;SK主要用于Service对Client的身份鉴别，在步骤二中会体现。
+第二步： 如图：  Client将之前获得TGT和要请求的服务信息(服务名等)发送给KDC，认证用户合法后，KDC中的TGS将SK(第一步中产生)和用户名，用户地址（IP），服务名，有效期, 时间戳一起包装成一个Ticket，并用密钥B加密，发送给Client； 此时Client没有密钥B所以他无法查看Ticket中的内容，于是Client将Ticket直接转发给Service。 同时Client将自己的用户名，用户地址（IP）打包成Authenticator，用之前获得的SK加密也发送给Service。 Service 收到Ticket后利用它与KDC之间的密钥B将Ticket中的信息解密出来，从而获得SK和用户名，用户地址（IP），服务名，有效期。然后再用SK将Authenticator解密从而获得用户名，用户地址（IP）将其与之前Ticket中解密出来的用户名，用户地址（IP）做比较，从而验证Client的身份。 如果Service有返回结果，将其返回给Client。  2 KDC安装 本文档中将KDC服务安装在Cloudera Manager Server所在服务器上（KDC服务可根据自己需要安装在其他服务器）
+测试环境测试时，kdc安装在dp199机器上，cdh在dp197上。
+2.1 在Cloudera Manager服务器上安装KDC服务（可以在别的机器上装kdc） 2.</description>
+    </item>
     
     <item>
       <title>Nginx&#43;Ingress-controller解决服务暴露和负载均衡</title>
@@ -106,15 +143,6 @@ HAProxy提供高可用性、负载均衡以及基于TCP和HTTP应用的代理，
 Keepalived监控A、B上的HAproxy，利用Keepalived的VIP漂移技术，若A、B上的HAprox都工作正常，则VIP与优先级别高的服务器（主服务器）绑定，当主服务器当掉时，则与从服务器绑定，而VIP则是暴露给外部访问的ip；HAproxy利用Keepalived生产的VIP对应用所在的nginx进行高可用保障。
 部署图如下图所示。 2 HAProxy安装 2.1 编译安装 tar zxvf haproxy-1.7.8.tar.gz cd haproxy-1.7.8 make TARGET=linux2628 PREFIX=/usr/local/haproxy make install PREFIX=/usr/local/haproxy  2.2 配置 2.2.1 编写配置文件 默认安装目录下没有配置文件，只有”doc”，“sbin”，“share”三个目录，可手工创建目录及配置文件； 配置文件中使用的应用程序ip是10.57.26.5，实际使用时需要修改。
 mkdir -p /usr/local/haproxy/etc cat&amp;gt;&amp;gt;/usr/local/haproxy/etc/haproxy.cfg&amp;lt;&amp;lt;EOF #全局配置, 用于设定义全局参数, 属于进程级的配置, 通常与操作系统配置有关. global #定义全局日志, 配置在本地, 通过local0 输出, 默认是info级别，可配置两条 log 127.0.0.1 local0 warning #定义日志级别【error warning info debug】 #log 127.0.0.1 local1 info #运行路径 chroot /usr/local/haproxy #PID 文件存放路径 pidfile /var/run/haproxy.pid #设置每haproxy进程的最大并发连接数, 其等同于命令行选项“-n”; “ulimit -n”自动计算的结果参照此参数设定.</description>
-    </item>
-    
-    <item>
-      <title>KDC服务安装及配置</title>
-      <link>https://pj1987111.github.io/posts/hadoop/kdc%E6%9C%8D%E5%8A%A1%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/</link>
-      <pubDate>Fri, 05 Jul 2019 22:11:36 +0800</pubDate>
-      
-      <guid>https://pj1987111.github.io/posts/hadoop/kdc%E6%9C%8D%E5%8A%A1%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE/</guid>
-      <description>1 源码安装 1.1 依赖下载与安装 cd /root/kdc/src wget http://10.57.30.218:1080/downloads/gcc/gcc-c++.tar.gz wget http://10.57.30.218:1080/downloads/krb5/byacc.tar.gz wget http://10.57.30.218:1080/downloads/krb5/krb5-1.17.tar.gz cd gcc tar zxvf gcc-c++.tar.gz cd gcc-c++ yum install * cd byacc-20190617 ./configure --prefix=/usr/local/byacc make make install cd krb5-1.17/src ./configure --prefix=/usr/local/krb5 make make install  1.2 环境变量添加 ln -s /usr/local/byacc/bin/yacc /usr/local/bin/yacc cat &amp;gt;&amp;gt; /etc/profile &amp;lt;&amp;lt; EOF KDC_HOME=/usr/local/krb5 PATH=\$PATH:\$KDC_HOME/bin:\$KDC_HOME/sbin EOF source /etc/profile  2 配置 2.1 /etc/krb5.conf配置 cat &amp;gt; /etc/krb5.conf &amp;lt;&amp;lt; EOF # Configuration snippets may be placed in this directory as well includedir /etc/krb5.</description>
     </item>
     
     <item>

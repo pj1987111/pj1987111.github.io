@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>kdc配置HA &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li><li><a href="/books/"> 电子书 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>kdc配置HA</h1>
+  <time datetime=2019-08-01T10:48:57&#43;0800 class="post-date">Thu, Aug 1, 2019</time>
+  
+
+<h1 id="1-机器">1 机器</h1>
+
+<p>Kdc主节点：k8s-01</p>
+
+<p>kdc从节点：k8s-02</p>
+
+<h1 id="2-主节点修改">2 主节点修改</h1>
+
+<h1 id="2-1-主节点修改配置">2.1 主节点修改配置</h1>
+
+<p>/etc/krb5.conf</p>
+
+<pre><code>[realms]
+
+ TONGDUN.COM = {
+
+  kdc = k8s-01
+
+  kdc = k8s-02
+
+  …（如果有多从kdc，一行一个）
+
+  admin_server = k8s-01
+
+ }
+</code></pre>
+
+<h1 id="2-2-添加principal">2.2 添加principal</h1>
+
+<p>kadmin.local</p>
+
+<pre><code>addprinc -randkey host/k8s-01
+addprinc -randkey host/k8s-02
+</code></pre>
+
+<p>//将主、从节点的princ整合到krb5.keytab中</p>
+
+<pre><code>ktadd -k /etc/krb5.keytab host/k8s-01
+ktadd -k /etc/krb5.keytab host/k8s-02
+</code></pre>
+
+<h1 id="3-从节点搭建">3 从节点搭建</h1>
+
+<p>从节点安装参考《KDC服务安装及配置》</p>
+
+<h2 id="3-1-将master上配置同步到从节点">3.1 将master上配置同步到从节点</h2>
+
+<p>将master几个配置拷贝到从服务器：文件: krb5.conf、kdc.conf、kadmin5.acl、master key stash file</p>
+
+<pre><code> scp /etc/krb5.conf root@k8s-02:/etc
+ scp /etc/krb5.keytab root@k8s-02:/etc
+ scp /usr/local/krb5/var/krb5kdc/kdc.conf root@k8s-02:/usr/local/krb5/var/krb5kdc/
+ scp /usr/local/krb5/var/krb5kdc/kadm5.acl  root@k8s-02:/usr/local/krb5/var/krb5kdc/
+ scp /usr/local/krb5/var/krb5kdc/.k5.TONGDUN.COM  root@k8s-02:/usr/local/krb5/var/krb5kdc/
+</code></pre>
+
+<h2 id="3-2-创建kerberos数据库-密码要和主节点保持一致-否则会报错">3.2 创建Kerberos数据库（密码要和主节点保持一致，否则会报错）</h2>
+
+<p>kdb5_util</p>
+
+<pre><code> create -r your_realm -s，注意，在Loading random data这里的时候可能会要比较久的时间
+
+[root@ip-172-31-6-148 ~]# kdb5_util create –r TONGDUN.COM -s
+Loading random data
+</code></pre>
+
+<h1 id="4-从节点启动kpropd进程">4 从节点启动kpropd进程</h1>
+
+<p><code>kpropd  -S</code></p>
+
+<h1 id="5-在slave上添加-usr-local-krb5-var-krb5kdc-kpropd-acl">5 在slave上添加/usr/local/krb5/var/krb5kdc/kpropd.acl</h1>
+
+<pre><code>cat &gt; /usr/local/krb5/var/krb5kdc/kpropd.acl &lt;&lt; EOF
+host/k8s-01@TONGDUN.COM
+host/k8s-02@TONGDUN.COM
+EOF
+</code></pre>
+
+<h1 id="6-同步数据至slave-db-主节点上执行">6 同步数据至slave db (主节点上执行)</h1>
+
+<p>主节点dump库信息：</p>
+
+<pre><code>kdb5_util dump /var/kerberos/krb5kdc/slave_data
+</code></pre>
+
+<p>将库信息拷贝至从节点：</p>
+
+<pre><code>scp /usr/local/krb5/var/krb5kdc/slave_data /usr/local/krb5/var/krb5kdc/slave_data.dump_ok k8s-02:/usr/local/krb5/var/krb5kdc/
+</code></pre>
+
+<p>让从主机加载主库信息（从库会被整库覆盖）</p>
+
+<pre><code>kprop -f /usr/local/krb5/var/krb5kdc/slave_data k8s-02
+</code></pre>
+
+<p>成功：提示：Database propagation to k8s-02: SUCCEEDED</p>
+
+<p>注意：hostname一定要单一。从日志中能看出来。</p>
+
+<h1 id="7-启动从节点kdc">7 启动从节点kdc</h1>
+
+<p><code>krb5kdc</code></p>
+
+<h1 id="8-多从节点数据同步样例">8 多从节点数据同步样例</h1>
+
+<p>如果多个从节点，定期自动进行主、从库同步，脚本示例
+如有两个从kdc：dp200和dp201，在主kdc节点上定期执行如下脚本：</p>
+
+<pre><code>#!/bin/sh
+kdclist = &quot;dp200 dp201&quot;
+kdb5_util dump /usr/local/krb5/var/krb5kdc/slave_data
+for kdc in $kdclist
+   do
+     scp slave_data slave_data.dump_ok $kdc:/usr/local/krb5/var/krb5kdc/
+     scp /etc/krb5.keytab $kdc:/etc/
+     kprop -f /usr/local/krb5/var/krb5kdc/slave_data $kdc
+   done
+</code></pre>
+
+<h1 id="9-客户端搭建">9 客户端搭建</h1>
+
+<p>将/etc/krb5.conf拷贝至所有客户端主机的/etc下。</p>
+
+<h1 id="10-测试">10 测试</h1>
+
+<p>关闭主kdc服务，在客户端机器执行已有账号的kinit登录，可以正常登录。即说明ha生效了。</p>
+
+<p>另外，kdc的ha是根据krb5.conf中配置kdc的顺序决定的，客户端按配置顺序挨个发请求，第一个kdc能访问则不会向后面的kdc服务发请求（即：master不是绑定死的）</p>
+
+<p>如果第一个kdc请求不通，则再依次向后面kdc发请求。 如果第一个kdc再起起来，则下次请求还是会访问第一个kdc（可以从kdc日志中看出来）</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>
