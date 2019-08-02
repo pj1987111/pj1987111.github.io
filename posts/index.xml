@@ -12,17 +12,6 @@
     
     
     <item>
-      <title>Redis 哨兵模式快速安装以及测试</title>
-      <link>https://pj1987111.github.io/posts/linux/redis/</link>
-      <pubDate>Fri, 02 Aug 2019 11:59:41 +0800</pubDate>
-      
-      <guid>https://pj1987111.github.io/posts/linux/redis/</guid>
-      <description>1 机器 master: k8s-01 slave1: k8s-02 slave2: k8s-03
-2 安装(所有节点执行) 以下以脚本方式安装 install_redis.sh
-REDIS_PATH=/root REDIS_TAG=redis-5.0.5.tar.gz REDIS_TAGNAME=redis-5.0.5 REDIS_INSTALL_PATH=/root/redis_sentinel function install_redis () { ################################################################################################# cd $REDIS_PATH echo &amp;quot; $REDIS_TAG&amp;quot; if [ ! -f &amp;quot;$REDIS_TAG&amp;quot; ]; then echo download wget http://download.redis.io/releases/$REDIS_TAG fi mkdir -p $REDIS_INSTALL_PATH echo &amp;quot;=====end mkdir -p $REDIS_INSTALL_PATH======&amp;quot; tar -zxf $REDIS_PATH/$REDIS_TAG -C $REDIS_INSTALL_PATH echo &amp;quot;=====end tar -zxf $REDIS_PATH/$REDIS_TAG -C $REDIS_INSTALL_PAT =====&amp;quot; cd $REDIS_INSTALL_PATH/$REDIS_TAGNAME make PREFIX=/usr/local/redis install echo &amp;quot;=====end make PREFIX=/usr/local/redis install=====&amp;quot; mkdir -p /usr/local/redis/{etc,var} ################################################################################################# } install_redis  在master节点上安装后，将脚本(或者加上安装包)复制到slave节点上，并在slave节点上执行脚本</description>
-    </item>
-    
-    <item>
       <title>Redis哨兵模式快速安装以及测试</title>
       <link>https://pj1987111.github.io/posts/database/redis_install/</link>
       <pubDate>Fri, 02 Aug 2019 11:59:41 +0800</pubDate>
