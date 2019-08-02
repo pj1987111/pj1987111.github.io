@@ -4,19 +4,35 @@
   
   <url>
     <loc>https://pj1987111.github.io/posts/</loc>
-    <lastmod>2019-08-01T10:48:57+08:00</lastmod>
+    <lastmod>2019-08-02T11:59:41+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
+    <loc>https://pj1987111.github.io/posts/linux/redis/</loc>
+    <lastmod>2019-08-02T11:59:41+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pj1987111.github.io/posts/database/redis_install/</loc>
+    <lastmod>2019-08-02T11:59:41+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://pj1987111.github.io/tags/</loc>
-    <lastmod>2019-08-01T10:48:57+08:00</lastmod>
+    <lastmod>2019-08-02T11:59:41+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://pj1987111.github.io/</loc>
-    <lastmod>2019-08-01T10:48:57+08:00</lastmod>
+    <lastmod>2019-08-02T11:59:41+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pj1987111.github.io/tags/databse/</loc>
+    <lastmod>2019-08-02T11:59:41+08:00</lastmod>
     <priority>0</priority>
   </url>
   

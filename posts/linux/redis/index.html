@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Redis 哨兵模式快速安装以及测试 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li><li><a href="/books/"> 电子书 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Redis 哨兵模式快速安装以及测试</h1>
+  <time datetime=2019-08-02T11:59:41&#43;0800 class="post-date">Fri, Aug 2, 2019</time>
+  
+
+<h1 id="1-机器">1 机器</h1>
+
+<p>master: k8s-01
+slave1: k8s-02
+slave2: k8s-03</p>
+
+<h1 id="2-安装-所有节点执行">2 安装(所有节点执行)</h1>
+
+<p>以下以脚本方式安装
+install_redis.sh</p>
+
+<pre><code>REDIS_PATH=/root
+REDIS_TAG=redis-5.0.5.tar.gz
+REDIS_TAGNAME=redis-5.0.5
+REDIS_INSTALL_PATH=/root/redis_sentinel
+
+function install_redis () {
+#################################################################################################
+        cd $REDIS_PATH
+        echo &quot; $REDIS_TAG&quot;
+        if [ ! -f &quot;$REDIS_TAG&quot; ]; then
+           echo download
+           wget http://download.redis.io/releases/$REDIS_TAG
+        fi
+        mkdir -p $REDIS_INSTALL_PATH
+        echo &quot;=====end mkdir -p $REDIS_INSTALL_PATH======&quot;
+        tar -zxf $REDIS_PATH/$REDIS_TAG -C $REDIS_INSTALL_PATH
+        echo &quot;=====end tar -zxf $REDIS_PATH/$REDIS_TAG -C $REDIS_INSTALL_PAT =====&quot;
+        cd $REDIS_INSTALL_PATH/$REDIS_TAGNAME
+        make PREFIX=/usr/local/redis install
+        echo &quot;=====end make PREFIX=/usr/local/redis install=====&quot;
+        mkdir -p /usr/local/redis/{etc,var}
+ #################################################################################################
+}
+
+install_redis
+</code></pre>
+
+<p>在master节点上安装后，将脚本(或者加上安装包)复制到slave节点上，并在slave节点上执行脚本</p>
+
+<h1 id="3-redis启停脚本-所有节点执行">3 redis启停脚本(所有节点执行)</h1>
+
+<pre><code>cat &gt; /etc/init.d/redis-server &lt;&lt; EOF
+#!/bin/bash
+#
+# redis - this script starts and stops the redis-server daemon
+#
+# chkconfig:   - 85 15
+# description:  Redis is a persistent key-value database
+# processname: redis-server
+# config:      /usr/local/redis/etc/redis.conf
+# config:      /etc/sysconfig/redis
+# pidfile:     /usr/local/redis/var/redis-server.pid
+  
+# Source function library.
+. /etc/rc.d/init.d/functions
+  
+# Source networking configuration.
+. /etc/sysconfig/network
+  
+# Check that networking is up.
+[ &quot;\$NETWORKING&quot; = &quot;no&quot; ] &amp;&amp; exit 0
+  
+redis=&quot;/usr/local/redis/bin/redis-server&quot;
+prog=\$(basename \$redis)
+  
+REDIS_CONF_FILE=&quot;/usr/local/redis/etc/redis.conf&quot;
+  
+[ -f /etc/sysconfig/redis ] &amp;&amp; . /etc/sysconfig/redis
+  
+lockfile=/var/lock/subsys/redis-server
+  
+start() {
+    [ -x \$redis ] || exit 5
+    [ -f \$REDIS_CONF_FILE ] || exit 6
+    echo -n \$&quot;Starting \$prog: &quot;
+    daemon \$redis \$REDIS_CONF_FILE
+    retval=\$?
+    echo
+    [ \$retval -eq 0 ] &amp;&amp; touch \$lockfile
+    return \$retval
+}
+  
+stop() {
+    echo -n \$&quot;Stopping \$prog: &quot;
+    killproc \$prog
+    retval=\$?
+    echo
+    [ \$retval -eq 0 ] &amp;&amp; rm -f \$lockfile
+    return \$retval
+}
+  
+restart() {
+    stop
+    start
+}
+  
+reload() {
+    echo -n \$&quot;Reloading \$prog: &quot;
+    killproc \$redis -HUP
+    RETVAL=\$?
+    echo
+}
+  
+force_reload() {
+    restart
+}
+  
+rh_status() {
+    status \$prog
+}
+  
+rh_status_q() {
+    rh_status &gt;/dev/null 2&gt;&amp;1
+}
+  
+case &quot;\$1&quot; in
+    start)
+        rh_status_q &amp;&amp; exit 0
+        \$1
+        ;;
+    stop)
+        rh_status_q || exit 0
+        \$1
+        ;;
+    restart)
+        \$1
+        ;;
+    reload)
+        rh_status_q || exit 7
+        \$1
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    status)
+        rh_status
+        ;;
+    condrestart|try-restart)
+        rh_status_q || exit 0
+            ;;
+    *)
+        echo \$&quot;Usage: \$0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}&quot;
+        exit 2
+esac
+EOF
+
+chmod 755 /etc/init.d/redis-server
+</code></pre>
+
+<h1 id="4-redis-sentinel启停脚本-所有节点执行">4 redis-sentinel启停脚本(所有节点执行)</h1>
+
+<pre><code>cat &gt; /etc/init.d/redis-sentinel &lt;&lt; EOF
+#!/bin/bash
+#
+# redis-sentinel - this script starts and stops the redis-server sentinel daemon
+#
+# chkconfig:   - 85 15
+# description:  Redis sentinel
+# processname: redis-server
+# config:      /usr/local/redis/etc/sentinel.conf
+# config:      /etc/sysconfig/redis
+# pidfile:     /usr/local/redis/var/redis-sentinel.pid
+  
+# Source function library.
+. /etc/rc.d/init.d/functions
+  
+# Source networking configuration.
+. /etc/sysconfig/network
+  
+# Check that networking is up.
+[ &quot;\$NETWORKING&quot; = &quot;no&quot; ] &amp;&amp; exit 0
+  
+redis=&quot;/usr/local/redis/bin/redis-sentinel&quot;
+prog=\$(basename \$redis)
+  
+REDIS_CONF_FILE=&quot;/usr/local/redis/etc/sentinel.conf&quot;
+  
+[ -f /etc/sysconfig/redis ] &amp;&amp; . /etc/sysconfig/redis
+  
+lockfile=/var/lock/subsys/redis-sentinel
+  
+start() {
+    [ -x \$redis ] || exit 5
+    [ -f \$REDIS_CONF_FILE ] || exit 6
+    echo -n \$&quot;Starting \$prog: &quot;
+    daemon \$redis \$REDIS_CONF_FILE --sentinel
+    retval=\$?
+    echo
+    [ \$retval -eq 0 ] &amp;&amp; touch \$lockfile
+    return \$retval
+}
+  
+stop() {
+    echo -n \$&quot;Stopping \$prog: &quot;
+    killproc \$prog
+    retval=\$?
+    echo
+    [ \$retval -eq 0 ] &amp;&amp; rm -f \$lockfile
+    return \$retval
+}
+  
+restart() {
+    stop
+    start
+}
+  
+reload() {
+    echo -n \$&quot;Reloading \$prog: &quot;
+    killproc \$redis -HUP
+    RETVAL=\$?
+    echo
+}
+  
+force_reload() {
+    restart
+}
+  
+rh_status() {
+    status \$prog
+}
+  
+rh_status_q() {
+    rh_status &gt;/dev/null 2&gt;&amp;1
+}
+  
+case &quot;\$1&quot; in
+    start)
+        rh_status_q &amp;&amp; exit 0
+        \$1
+        ;;
+    stop)
+        rh_status_q || exit 0
+        \$1
+        ;;
+    restart)
+        \$1
+        ;;
+    reload)
+        rh_status_q || exit 7
+        \$1
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    status)
+        rh_status
+        ;;
+    condrestart|try-restart)
+        rh_status_q || exit 0
+            ;;
+    *)
+        echo \$&quot;Usage: \$0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}&quot;
+        exit 2
+esac
+EOF
+
+chmod 755 /etc/init.d/redis-sentinel
+</code></pre>
+
+<h1 id="5-主节点redis-conf配置">5 主节点redis.conf配置</h1>
+
+<pre><code>cat &gt; /usr/local/redis/etc/redis.conf &lt;&lt;EOF
+bind 0.0.0.0
+daemonize yes
+pidfile &quot;/usr/local/redis/var/redis-server.pid&quot;
+port 6379
+tcp-backlog 128
+timeout 0
+tcp-keepalive 0
+loglevel notice
+logfile &quot;/usr/local/redis/var/redis-server.log&quot;
+databases 16
+save 900 1  
+save 300 10
+save 60 10000
+stop-writes-on-bgsave-error yes
+rdbcompression yes
+rdbchecksum yes
+dbfilename dump.rdb
+dir &quot;/usr/local/redis/data/redis&quot;
+masterauth &quot;abc123&quot;                
+requirepass &quot;abc123&quot;                     
+slave-serve-stale-data yes
+slave-read-only yes
+repl-diskless-sync no
+repl-diskless-sync-delay 5
+repl-disable-tcp-nodelay no
+slave-priority 100
+appendonly yes                                
+appendfilename &quot;appendonly.aof&quot;
+appendfsync everysec                         
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+aof-load-truncated yes
+lua-time-limit 5000
+slowlog-log-slower-than 10000
+slowlog-max-len 128
+latency-monitor-threshold 0
+notify-keyspace-events &quot;&quot;
+hash-max-ziplist-entries 512
+hash-max-ziplist-value 64
+list-max-ziplist-entries 512
+list-max-ziplist-value 64
+set-max-intset-entries 512
+zset-max-ziplist-entries 128
+zset-max-ziplist-value 64
+hll-sparse-max-bytes 3000
+activerehashing yes
+client-output-buffer-limit normal 0 0 0
+client-output-buffer-limit slave 256mb 64mb 60
+client-output-buffer-limit pubsub 32mb 8mb 60
+hz 10
+aof-rewrite-incremental-fsync yes
+EOF
+</code></pre>
+
+<p>配置讲解：
+masterauth 表示master设置密码保护，即slave连接master时的密码
+requirepass 表示设置Redis连接密码，如果配置了连接密码，客户端在连接Redis时需要通过AUTH <password>命令提供密码，默认关闭
+appendonly yes 表示打开aof持久化
+appendfsync everysec 表示每秒一次aof写</p>
+
+<h1 id="6-从节点redis-conf配置">6 从节点redis.conf配置</h1>
+
+<pre><code>cat &gt; /usr/local/redis/etc/redis.conf &lt;&lt;EOF
+bind 0.0.0.0
+daemonize yes
+pidfile &quot;/usr/local/redis/var/redis-server.pid&quot;
+port 6379
+tcp-backlog 128
+timeout 0
+tcp-keepalive 0
+loglevel notice
+logfile &quot;/usr/local/redis/var/redis-server.log&quot;
+databases 16
+save 900 1  
+save 300 10
+save 60 10000
+stop-writes-on-bgsave-error yes
+rdbcompression yes
+rdbchecksum yes
+dbfilename dump.rdb
+dir &quot;/usr/local/redis/data/redis&quot;
+masterauth &quot;abc123&quot;               
+requirepass &quot;abc123&quot;      
+slaveof k8s-01 6379                        
+slave-serve-stale-data yes
+slave-read-only yes                          
+repl-diskless-sync no
+repl-diskless-sync-delay 5
+repl-disable-tcp-nodelay no
+slave-priority 100
+appendonly yes                           
+appendfilename &quot;appendonly.aof&quot;
+appendfsync everysec                        
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+aof-load-truncated yes
+lua-time-limit 5000
+slowlog-log-slower-than 10000
+slowlog-max-len 128
+latency-monitor-threshold 0
+notify-keyspace-events &quot;&quot;
+hash-max-ziplist-entries 512
+hash-max-ziplist-value 64
+list-max-ziplist-entries 512
+list-max-ziplist-value 64
+set-max-intset-entries 512
+zset-max-ziplist-entries 128
+zset-max-ziplist-value 64
+hll-sparse-max-bytes 3000
+activerehashing yes
+client-output-buffer-limit normal 0 0 0
+client-output-buffer-limit slave 256mb 64mb 60
+client-output-buffer-limit pubsub 32mb 8mb 60
+hz 10
+aof-rewrite-incremental-fsync yes
+EOF
+</code></pre>
+
+<p>配置讲解
+slaveof 相对主redis配置，多添加了此行<br />
+slave-read-only yes 从节点只读，不能写入</p>
+
+<h1 id="7-sentinel-conf配置-所有节点执行">7 sentinel.conf配置(所有节点执行)</h1>
+
+<pre><code>cat &gt; /usr/local/redis/etc/sentinel.conf&lt;&lt;EOF
+port 26379
+pidfile &quot;/usr/local/redis/var/redis-sentinel.pid&quot;
+dir &quot;/usr/local/redis/data/sentinel&quot;
+daemonize yes
+protected-mode no
+logfile &quot;/usr/local/redis/var/redis-sentinel.log&quot;
+sentinel monitor redisMaster k8s-01 6379 2 
+sentinel down-after-milliseconds redisMaster 10000 
+sentinel parallel-syncs redisMaster 1
+sentinel failover-timeout redisMaster 60000 
+EOF
+</code></pre>
+
+<h1 id="8-启动redis和sentinel-所有节点执行">8 启动redis和sentinel（所有节点执行）</h1>
+
+<p>环境变量设置</p>
+
+<pre><code>cat &gt;&gt; /etc/profile &lt;&lt; EOF
+export PATH=$PATH:/usr/local/redis/bin
+EOF
+
+source /etc/profile
+</code></pre>
+
+<p>启动redis和sentinel</p>
+
+<pre><code>/etc/init.d/redis-server start
+/etc/init.d/redis-sentinel start
+</code></pre>
+
+<p>验证
+<code>ps -ef | grep redis</code></p>
+
+<h1 id="9-查看redis和sentinel信息">9 查看redis和sentinel信息</h1>
+
+<h2 id="9-1-查看三个节点的redis的主从关系">9.1 查看三个节点的redis的主从关系</h2>
+
+<pre><code>redis-cli -h k8s-01 -p 6379 -a abc123 INFO |grep role
+
+redis-cli -h k8s-02 -p 6379 -a abc123 INFO |grep role
+
+redis-cli -h k8s-03 -p 6379 -a abc123 INFO |grep role
+</code></pre>
+
+<p>若k8s-01返回master，另外的返回slave即验证正确</p>
+
+<h2 id="9-2-查看master节点信息">9.2 查看Master节点信息</h2>
+
+<pre><code>redis-cli -h k8s-01 -p 6379 -a abc123 INFO Replication
+</code></pre>
+
+<p># Replication
+role:master
+connected_slaves:2
+slave0:ip=10.57.26.8,port=6379,state=online,offset=1862,lag=0
+slave1:ip=10.57.26.7,port=6379,state=online,offset=1862,lag=0
+master_replid:24655c8434861639e588d91fdfe7044f89328471
+master_replid2:0000000000000000000000000000000000000000
+master_repl_offset:1862
+second_repl_offset:-1
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:1
+repl_backlog_histlen:1862</p>
+
+<p>从上面信息看出，此时k8s-01的角色为master，有两个slave（7和8）被连接成功.</p>
+
+<p>此时打开master和slave的sentinel.conf，在末尾可看到如下自动写入的内容：</p>
+
+<pre><code>cat /usr/local/redis/etc/sentinel.conf
+</code></pre>
+
+<p># Generated by CONFIG REWRITE
+sentinel failover-timeout redisMaster 60000
+sentinel config-epoch redisMaster 0
+sentinel leader-epoch redisMaster 0
+sentinel current-epoch 0</p>
+
+<pre><code>redis-cli -h k8s-01 -p 26379 -a abc123 INFO Sentinel
+</code></pre>
+
+<p># Sentinel
+sentinel_masters:1
+sentinel_tilt:0
+sentinel_running_scripts:0
+sentinel_scripts_queue_length:0
+sentinel_simulate_failure_flags:0
+master0:name=redisMaster,status=sdown,address=10.57.26.15:6379,slaves=0,sentinels=1</p>
+
+<h1 id="10-写入测试">10 写入测试</h1>
+
+<p>在master(k8s-01)上执行写入和读取操作，均正常。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/41/443216fba2886cde9e04a0ceed78df.jpg" alt="" /></p>
+
+<p>在slave(k8s-02)上执行读取操作，正常，执行写入操作，报错readonly，满足预计要求。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/1d/c6e63326392516d43badbfd7c83d08.jpg" alt="" /></p>
+
+<p>由上面测试信息可知，master节点可以写入，可以读取；而slave节点默认只能读取，不能写入！这就实现了主从复制，读写分离了！</p>
+
+<h1 id="11-故障模拟">11 故障模拟</h1>
+
+<ol>
+<li>关掉任意一个slave节点（比如关闭掉slave01节点），所有节点的sentinel都可以检测到，出现如下示例信息：
+在k8s-02上，执行shutdown命令关闭redis，可见redis进程已消失。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/cc/d6572204db9969fb46f49eae64c46c.jpg" alt="" /></li>
+</ol>
+
+<p>执行redis-cli  -h k8s-01 -p 6379 -a abc123 info replication，如下图所示可看出k8s-02被sentinel检测到已处于关闭状态，此时再来查看剩余节点的主从信息，它们的角色不会发生变化，只是master上的connected_slaves变为了1。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/0c/9c29460d43b82dabea076c7b260e59.jpg" alt="" /></p>
+
+<p>查看sentinel日志（任意节点上查看），发现203节点已经进入&rdquo;+sdown&rdquo;状态
+tail -f /usr/local/redis/var/redis-sentinel.log
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/1a/39c5ebeba17a10cabf4ea9490ee30d.jpg" alt="" /></p>
+
+<p>然后重启上面被关闭的slave节点（k8s-02），所有节点的sentinel都可以检测到，可看出又被sentinel检测到已处于可用状态，此时再来查看节点的主从信息，
+它们的角色仍然不会发生变化，master上的connected_slaves又变为了2
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/d7/8ebd3a47e11cdd3e73559aaae7b6fa.jpg" alt="" /></p>
+
+<ol>
+<li>关掉master节点（即k8s-01），待所有节点的sentinel都检测到后（稍等一会，2-3秒钟时间），再来查看两个Slave节点的主从信息，发现其中一个节点的角色通过选举后会成为
+master节点了</li>
+</ol>
+
+<p><strong>这个测试有问题</strong></p>
+
+<h1 id="12-客户端连接redis-sentinel">12 客户端连接redis sentinel</h1>
+
+<p>java</p>
+
+<p>pom文件</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;redis-test&lt;/groupId&gt;
+    &lt;artifactId&gt;zhy&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;redis.clients&lt;/groupId&gt;
+            &lt;artifactId&gt;jedis&lt;/artifactId&gt;
+            &lt;version&gt;2.9.3&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/project&gt;
+</code></pre>
+
+<p>测试文件</p>
+
+<pre><code>package zhy.redis;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisSentinelPool;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class RedisTest {
+    public static void main(String[] args) {
+
+        Set&lt;String&gt; sentinels = new HashSet&lt;&gt;();
+        String hostAndPort1 = &quot;k8s-01:26379&quot;;
+        sentinels.add(hostAndPort1);
+
+        String clusterName = &quot;redisMaster&quot;;
+        String password = &quot;abc123&quot;;
+
+        JedisSentinelPool redisSentinelJedisPool = new JedisSentinelPool(clusterName, sentinels, password);
+
+        Jedis jedis = null;
+        try {
+            jedis = redisSentinelJedisPool.getResource();
+            jedis.set(&quot;key&quot;, &quot;value&quot;);
+            System.out.println(jedis.get(&quot;key&quot;));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            redisSentinelJedisPool.returnBrokenResource(jedis);
+        }
+
+        redisSentinelJedisPool.close();
+    }
+}
+</code></pre>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

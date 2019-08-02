@@ -6,10 +6,19 @@
     <description>Recent content in Tags on ZHY ZONE</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 01 Aug 2019 10:48:57 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 02 Aug 2019 11:59:41 +0800</lastBuildDate>
     
 	<atom:link href="https://pj1987111.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>databse</title>
+      <link>https://pj1987111.github.io/tags/databse/</link>
+      <pubDate>Fri, 02 Aug 2019 11:59:41 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/tags/databse/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>kerberos</title>
