@@ -159,10 +159,10 @@ mkdir -p /usr/local/haproxy/etc cat&amp;gt;&amp;gt;/usr/local/haproxy/etc/haprox
     
     <item>
       <title>sed命令</title>
-      <link>https://pj1987111.github.io/posts/tools/sed/</link>
+      <link>https://pj1987111.github.io/posts/linux/sed/</link>
       <pubDate>Tue, 02 Jul 2019 19:26:07 +0800</pubDate>
       
-      <guid>https://pj1987111.github.io/posts/tools/sed/</guid>
+      <guid>https://pj1987111.github.io/posts/linux/sed/</guid>
       <description>1 sed字符串替换  sed替换的基本语法为:
 sed &#39;s/原字符串/替换字符串/&#39;  单引号里面,s表示替换,三根斜线中间是替换的样式,特殊字符需要使用反斜线”\”进行转义。
  单引号” ‘ ’”是没有办法用反斜线”\”转义的,这时候只要把命令中的单引号改为双引号就行了,格式如下：
