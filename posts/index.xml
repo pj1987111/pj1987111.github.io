@@ -187,33 +187,25 @@ mkdir -p /etc/kubeedge/ca mkdir -p /etc/kubeedge/certs scp -r root@node01:/etc/k
     </item>
     
     <item>
-      <title>k8s高可用架构</title>
-      <link>https://pj1987111.github.io/posts/k8s/k8s%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84/</link>
-      <pubDate>Mon, 24 Jun 2019 14:05:02 +0800</pubDate>
-      
-      <guid>https://pj1987111.github.io/posts/k8s/k8s%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84/</guid>
-      <description>1 与keepalive+VIP对比 网上大量的人使用KeepAlive+VIP的形式完成高可用，这个方式有两个不好的地方：
-其一，受限于使用者的网络，无法适用于SDN网络，比如Aliyun的VPC。
-其二，虽然是高可用的，但是流量还是单点的，所有node的的网络I/O都会高度集中于一台机器上（VIP)，一旦集群节点增多，pod增多，单机的网络I/O迟早是网络隐患。
-2 两种模式 2.1 堆叠式etcd拓扑 堆叠式拓扑的意思是存储元数据的etcd与控制屏幕节点安装在同一台服务器上，共同被kubeadm所管理。
-每个控制平面节点都运行一组kube-apiserver,kube-scheduler和kube-controller-manager，其中kube-apiserver通过负载均衡暴露给所有worker节点。
-每个控制平面节点都创建一个本地etcd，这个本地etcd只与该控制平面节点的kube-apiserver通讯，kube-scheduler和kube-controller-manager也是节点独立的。
-介绍一下这种方案的优缺点： 优点：这种控制平面和etcd部署在同一个节点的模式比控制平面和etcd分离部署安装容易并且易于管理副本。 缺点：这种模式存在错误耦合的缺点，当一个节点宕机，etcd和控制平面实例都丢失，只能添加更多的控制平面节点来缓和这个问题。
-在高可用集群下需要运行至少3个堆叠控制平面节点。
-这是kubeadm高可用的默认实现方案，运行kubeadm init和kubeadm join &amp;ndash;control-plane后本地etcd将被自动创建。 2.2 分离式etcd拓扑 分离式拓扑的意思是存储元数据的etcd与控制屏幕节点安装在不同服务器上。
-类似于堆叠式架构，每个控制平面节点都运行一组kube-apiserver,kube-scheduler和kube-controller-manager，其中kube-apiserver通过负载均衡暴露给所有worker节点。不同的地方在于，etcd在不同的host上运行，每个etcd都会和每个控制平面上的kube-apiserver交互。
-这种拓扑结构将etcd与控制平面进行了分离。这种方式与堆叠式架构相比可以在etcd的节点丢失以及控制平面的节点丢失上有更高的容错性。
-然而，这种拓扑结构在机器数量上对比堆叠式架构需要两倍的数量。需要至少3个etcd节点以及3个控制平面节点。 3 安装与部署 在接下来的介绍文章中会对这两种模式的安装部署方式做详细介绍，请看</description>
-    </item>
-    
-    <item>
       <title>kubeadm安装高可用k8s集群</title>
       <link>https://pj1987111.github.io/posts/k8s/kubeadm%E5%AE%89%E8%A3%85%E9%AB%98%E5%8F%AF%E7%94%A8k8s%E9%9B%86%E7%BE%A4/</link>
       <pubDate>Mon, 24 Jun 2019 14:05:00 +0800</pubDate>
       
       <guid>https://pj1987111.github.io/posts/k8s/kubeadm%E5%AE%89%E8%A3%85%E9%AB%98%E5%8F%AF%E7%94%A8k8s%E9%9B%86%E7%BE%A4/</guid>
-      <description>1 前置安装 1.1 环境相关 安装docker和kubeadm，在每一台机器上都需要安装。
-1:ssh可信 2:hosts cat&amp;gt;&amp;gt;/etc/hosts&amp;lt;&amp;lt;EOF 10.57.26.15 k8s-01 10.57.26.7 k8s-02 10.57.26.8 k8s-03 10.57.26.26 k8s-04 10.57.26.11 k8s-05 10.57.26.17 k8s-06 10.57.26.33 k8s-07 EOF host名需要和 hostname /etc/hostname 一致 3:安全相关 setenforce 0 sed -i &#39;s/SELINUX=enforcing/SELINUX=disabled/&#39; /etc/selinux/config systemctl disable firewalld.service systemctl stop firewalld.service systemctl disable iptables.service systemctl stop iptables.service 4:源和代理 echo proxy=http://10.57.22.8:3128/ &amp;gt;&amp;gt; /etc/yum.conf cat&amp;gt;/etc/yum.repos.d/docker-ce.repo&amp;lt;&amp;lt;EOF [docker-ce-stable] name=Docker CE Stable - $basearch baseurl=https://mirrors.aliyun.com/docker-ce/linux/centos/7/$basearch/stable enabled=1 gpgcheck=1 gpgkey=https://mirrors.aliyun.com/docker-ce/linux/centos/gpg EOF cat&amp;gt;/etc/yum.repos.d/kubernetes.repo&amp;lt;&amp;lt;EOF [kubernetes] name=Kubernetes baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64 enabled=1 gpgcheck=0 repo_gpgcheck=0 gpgkey=https://mirrors.</description>
+      <description>0 k8s高可用架构 在介绍部署方式前，先介绍一下k8s的高可用架构。
+0.1 与keepalive+VIP对比 网上大量的人使用KeepAlive+VIP的形式完成高可用，这个方式有两个不好的地方：
+其一，受限于使用者的网络，无法适用于SDN网络，比如Aliyun的VPC。
+其二，虽然是高可用的，但是流量还是单点的，所有node的的网络I/O都会高度集中于一台机器上（VIP)，一旦集群节点增多，pod增多，单机的网络I/O迟早是网络隐患。
+0.2 两种模式 0.2.1 堆叠式etcd拓扑 堆叠式拓扑的意思是存储元数据的etcd与控制屏幕节点安装在同一台服务器上，共同被kubeadm所管理。
+每个控制平面节点都运行一组kube-apiserver,kube-scheduler和kube-controller-manager，其中kube-apiserver通过负载均衡暴露给所有worker节点。
+每个控制平面节点都创建一个本地etcd，这个本地etcd只与该控制平面节点的kube-apiserver通讯，kube-scheduler和kube-controller-manager也是节点独立的。
+介绍一下这种方案的优缺点： 优点：这种控制平面和etcd部署在同一个节点的模式比控制平面和etcd分离部署安装容易并且易于管理副本。 缺点：这种模式存在错误耦合的缺点，当一个节点宕机，etcd和控制平面实例都丢失，只能添加更多的控制平面节点来缓和这个问题。
+在高可用集群下需要运行至少3个堆叠控制平面节点。
+这是kubeadm高可用的默认实现方案，运行kubeadm init和kubeadm join &amp;ndash;control-plane后本地etcd将被自动创建。 0.2.2 分离式etcd拓扑 分离式拓扑的意思是存储元数据的etcd与控制屏幕节点安装在不同服务器上。
+类似于堆叠式架构，每个控制平面节点都运行一组kube-apiserver,kube-scheduler和kube-controller-manager，其中kube-apiserver通过负载均衡暴露给所有worker节点。不同的地方在于，etcd在不同的host上运行，每个etcd都会和每个控制平面上的kube-apiserver交互。
+这种拓扑结构将etcd与控制平面进行了分离。这种方式与堆叠式架构相比可以在etcd的节点丢失以及控制平面的节点丢失上有更高的容错性。
+然而，这种拓扑结构在机器数量上对比堆叠式架构需要两倍的数量。需要至少3个etcd节点以及3个控制平面节点。 1 前置安装 1.1 环境相关 安装docker和kubeadm，在每一台机器上都需要安装。
+1:ssh可信 2:hosts cat&amp;gt;&amp;gt;/etc/hosts&amp;lt;&amp;lt;EOF 10.57.26.15 k8s-01 10.57.26.7 k8s-02 10.57.26.8 k8s-03 10.57.26.26 k8s-04 10.57.26.11 k8s-05 10.57.26.17 k8s-06 10.57.26.33 k8s-07 EOF host名需要和 hostname /etc/hostname 一致 3:安全相关 setenforce 0 sed -i &#39;s/SELINUX=enforcing/SELINUX=disabled/&#39; /etc/selinux/config systemctl disable firewalld.service systemctl stop firewalld.service systemctl disable iptables.</description>
     </item>
     
     <item>
