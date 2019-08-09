@@ -12,7 +12,7 @@
     
     
     <item>
-      <title>设置证书和RBAC来达到namespace隔离</title>
+      <title>设置RBAC规则来实现多用户权限隔离访问</title>
       <link>https://pj1987111.github.io/posts/k8s/rbac_geli/</link>
       <pubDate>Fri, 09 Aug 2019 11:18:23 +0800</pubDate>
       

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>设置证书和RBAC来达到namespace隔离 &middot; ZHY ZONE</title>
+  <title>设置RBAC规则来实现多用户权限隔离访问 &middot; ZHY ZONE</title>
 
   
   <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
@@ -49,7 +49,7 @@
 
     <main class="content container">
     <div class="post">
-  <h1>设置证书和RBAC来达到namespace隔离</h1>
+  <h1>设置RBAC规则来实现多用户权限隔离访问</h1>
   <time datetime=2019-08-09T11:18:23&#43;0800 class="post-date">Fri, Aug 9, 2019</time>
   
 
@@ -235,7 +235,7 @@ cfssl print-defaults csr &gt; ca-csr.json
 
 <p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/a7/f5e27f10d1efe4e631aa57e8e3a2ab.jpg" alt="" /></p>
 
-<h3 id="3-1-6-设置用户默认上下文-默认使用的namespace">3.1.6 设置用户默认上下文(默认使用的namespace)：</h3>
+<h3 id="3-1-6-设置上下文参数">3.1.6 设置上下文参数：</h3>
 
 <pre><code>kubectl config set-context kubernetes \
 --cluster=kubernetes \
