@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>设置证书和RBAC来达到namespace隔离 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li><li><a href="/books/"> 电子书 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>设置证书和RBAC来达到namespace隔离</h1>
+  <time datetime=2019-08-09T11:18:23&#43;0800 class="post-date">Fri, Aug 9, 2019</time>
+  
+
+<h1 id="1-aaa和bbb产品线容器的环境准备">1 AAA和BBB产品线容器的环境准备</h1>
+
+<h2 id="1-1-两个产品线的权限隔离说明">1.1 两个产品线的权限隔离说明</h2>
+
+<p>假如我们公司有productline-aaa和productline-bbb两个产品线，每个产品线都有各自相应的负责人。要求每个产品线的负责人只能管理自己产品线的容器，实现效果如下：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/ec/6ef918daa23c224eef58b0fb892a33.jpg" alt="" /></p>
+
+<p>为了方便演示，我这里建productline-aaa和productline-bbb两个不同的命名空间，并分别在每个命名空间中创建几个容器和service。</p>
+
+<h2 id="1-2-创建两个产品线的容器环境">1.2 创建两个产品线的容器环境</h2>
+
+<p>创建productline-aaa命名空间，并在productline-aaa命名空间中创建2个productline-aaa-testweb容器和productline-aaa-testweb服务，productline-aaa同理。</p>
+
+<p>编写yaml代码
+aaa产线</p>
+
+<pre><code>apiVersion: v1
+kind: Namespace
+metadata:
+  name: productline-aaa
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: productline-aaa-testweb
+  namespace: productline-aaa
+  labels:
+    name: productline-aaa-testweb
+spec:
+  replicas: 2
+  selector:
+    name: productline-aaa-testweb
+  template:
+    metadata:
+      labels:
+        name: productline-aaa-testweb
+    spec:
+      containers:
+      - name: productline-aaa-testweb
+        image: 10.57.26.15:4000/guestbook-php-frontend
+        env:
+        - name: GET_HOSTS_FROM
+          value: env
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productline-aaa-testweb
+  namespace: productline-aaa
+  labels:
+    name: productline-aaa-testweb
+spec:
+  ports:
+  - port: 80
+  selector:
+    name: productline-aaa-testweb
+</code></pre>
+
+<p>bbb产线</p>
+
+<pre><code>apiVersion: v1
+kind: Namespace
+metadata:
+  name: productline-bbb
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: productline-bbb-testweb
+  namespace: productline-bbb
+  labels:
+    name: productline-bbb-testweb
+spec:
+  replicas: 2
+  selector:
+    name: productline-bbb-testweb
+  template:
+    metadata:
+      labels:
+        name: productline-bbb-testweb
+    spec:
+      containers:
+      - name: productline-bbb-testweb
+        image: 10.57.26.15:4000/guestbook-php-frontend
+        env:
+        - name: GET_HOSTS_FROM
+          value: env
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productline-bbb-testweb
+  namespace: productline-bbb
+  labels:
+    name: productline-bbb-testweb
+spec:
+  ports:
+  - port: 80
+  selector:
+    name: productline-bbb-testweb
+</code></pre>
+
+<p>使用kubectl apply -f productline-aaa-testweb.yaml 和 kubectl apply -f productline-bbb-testweb.yaml 创建ns,rc和service
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/ce/651ef7f2599d6ccd8cbc17bad85fd7.jpg" alt="" /></p>
+
+<p>使用<code>kubectl get ns</code>查看刚创建的ns
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/65/5595b1eb7d82941183f6c07f89d268.jpg" alt="" /></p>
+
+<p>输入<code>kubectl get pod,svc -n productline-aaa &amp;&amp; kubectl get pod,svc -n productline-bbb</code>查看两个ns(部门)对应的pods和service，如下图所示:<br/>
+tips:在测试的时候副本数不能大于node数，若大于多出来的pod将创建失败，通过更改yaml配置文件的副本数，然后再执行<code>kubectl apply -f &lt;yaml&gt;</code>即可更新状态，<code>kubectl edit rc productline-aaa-testweb -nproductline-aaa</code> 类似这样修改rc也可以达到一样的效果。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/13/82aabca4123a52ee666da7046a7c3b.jpg" alt="" /></p>
+
+<h1 id="2-准备环境">2 准备环境</h1>
+
+<h2 id="2-1-下载cfssl工具">2.1 下载cfssl工具</h2>
+
+<pre><code>wget https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+chmod +x cfssl_linux-amd64
+mv cfssl_linux-amd64 /usr/local/bin/cfssl
+ 
+wget https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+chmod +x cfssljson_linux-amd64
+mv cfssljson_linux-amd64 /usr/local/bin/cfssljson
+ 
+wget https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64
+chmod +x cfssl-certinfo_linux-amd64
+mv cfssl-certinfo_linux-amd64 /usr/local/bin/cfssl-certinfo
+</code></pre>
+
+<h2 id="2-2-生成默认的配置文件和证书签名请求文件">2.2 生成默认的配置文件和证书签名请求文件</h2>
+
+<p>生成配置文件后可以基于这些配置文件进行修改</p>
+
+<pre><code>cfssl print-defaults config &gt; ca-config.json
+cfssl print-defaults csr &gt; ca-csr.json
+</code></pre>
+
+<h1 id="3-创建devuser用户访问productline-aaa产品线">3 创建devuser用户访问productline-aaa产品线</h1>
+
+<h2 id="3-1-创建用于kubectl使用的devuser">3.1 创建用于kubectl使用的devuser</h2>
+
+<h3 id="3-1-1-cfssl下载">3.1.1 cfssl下载</h3>
+
+<h3 id="3-1-2-生成证书">3.1.2 生成证书</h3>
+
+<pre><code>cfssl gencert --ca /etc/kubernetes/pki/ca.crt --ca-key /etc/kubernetes/pki/ca.key --config k8s-gencert.json --profile kubernetes devuser-csr.json | cfssljson -bare devuser
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/38/ba63d7d867f2a888728fc27d0767ef.jpg" alt="" /></p>
+
+<p>就会生成下面的文件：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/35/01dc4f8f0a459d2557a3f6100ac6cb.jpg" alt="" /></p>
+
+<h3 id="3-1-3-校验证书">3.1.3 校验证书</h3>
+
+<pre><code>cfssl-certinfo -cert devuser.pem
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/bf/bc52a650d619f1700a650854ee28f0.jpg" alt="" /></p>
+
+<h3 id="3-1-4-生成config文件">3.1.4 生成config文件</h3>
+
+<p>在部署k8s平台的时候已经生成了kubeconfig，我们可以直接利用这个文件，省的自己再去配置集群参数</p>
+
+<pre><code>cp /etc/kubernetes/admin.conf devuser.kubeconfig
+</code></pre>
+
+<h3 id="3-1-5-设置客户端认证参数">3.1.5 设置客户端认证参数</h3>
+
+<pre><code>kubectl config set-credentials devuser \
+--client-certificate=devuser.pem \
+--client-key=devuser-key.pem \
+--embed-certs=true \
+--kubeconfig=devuser.kubeconfig
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/a7/f5e27f10d1efe4e631aa57e8e3a2ab.jpg" alt="" /></p>
+
+<h3 id="3-1-6-设置上下文参数">3.1.6 设置上下文参数：</h3>
+
+<pre><code>kubectl config set-context kubernetes \
+--cluster=kubernetes \
+--user=devuser \
+--namespace=productline-aaa \
+--kubeconfig=devuser.kubeconfig
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/92/af4aa376484b697d7d7d09a27cb404.jpg" alt="" /></p>
+
+<h3 id="3-1-7-设置默认上下文">3.1.7 设置默认上下文：</h3>
+
+<pre><code>kubectl config use-context kubernetes --kubeconfig=devuser.kubeconfig
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/fa/d1d5bfeb627e403510b523769c0a8b.jpg" alt="" /></p>
+
+<p>以上执行一个步骤就可以看一下 devuser.kubeconfig的变化。里面最主要的三个东西</p>
+
+<p>cluster: 集群信息，包含集群地址与公钥
+user: 用户信息，客户端证书与私钥，真正的信息是从证书里读取出来的，人能看到的只是给人看的。
+context: 维护一个三元组，namespace cluster 与 user</p>
+
+<h2 id="3-2-创建aaa产品线管理员角色">3.2 创建AAA产品线管理员角色</h2>
+
+<p>创建一个叫pod-reader的角色
+输入以下yaml，并保存为productline-aaa-pod-reader.yaml</p>
+
+<pre><code>kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: productline-aaa
+  name: aaa-pod-admin
+rules:
+- apiGroups: [&quot;*&quot;]
+  resources: [&quot;*&quot;]
+  verbs: [&quot;*&quot;]
+</code></pre>
+
+<p>输入<code>kubectl apply -f productline-aaa-pod-reader.yaml</code>创建role。</p>
+
+<p>通过输入<code>kubectl get role --all-namespaces</code>查看创建的role
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/92/a11d965bd550fd1c4d8602db793c37.jpg" alt="" /></p>
+
+<h2 id="3-3-将devuser绑定到aaa产品线管理员角色">3.3、将devuser绑定到AAA产品线管理员角色</h2>
+
+<p>创建一个角色绑定，把pod-reader角色绑定到 devuser上</p>
+
+<p>输入以下yaml，并保存为productline-aaa-devuser-role-bind.yaml</p>
+
+<pre><code>kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: admin-aaa
+  namespace: productline-aaa
+subjects:
+- kind: User
+  name: devuser
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: aaa-pod-admin
+  apiGroup: rbac.authorization.k8s.io
+</code></pre>
+
+<p>输入<code>kubectl apply -f productline-aaa-devuser-role-bind.yaml</code>创建role-binding。</p>
+
+<p>通过输入<code>kubectl get role --all-namespaces</code>查看创建的rolebinding
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/21/0ed365653548aa1668d7515d38add5.jpg" alt="" /></p>
+
+<h2 id="3-4-测试devuser-kubeconfig的访问效果">3.4、测试devuser.kubeconfig的访问效果</h2>
+
+<p>使用新的config文件替换原有的config来访问试试：</p>
+
+<p>先将原有的kubeconfig备份一下。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/70/d90d42bec40d049fd94275c8975889.jpg" alt="" /></p>
+
+<p>我们用<code>kubectl get pod</code>查看到的只是productline-aaa产品线下的所有容器：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/1a/5fac7c6b62ada081f8f85b75270622.jpg" alt="" /></p>
+
+<p>来登录productline-aaa产品线下的其中一个容器试试：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/25/e6d098731bffcfe0205e62ceeed04d.jpg" alt="" /></p>
+
+<p>使用<code>kubectl get pod -n default</code>等各种命令试图进入其他命名空间，显然失效。因为devuser没有别的namespace的权限了。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/8b/d31c941a9ae4d437e130aaf69b62fc.jpg" alt="" /></p>
+
+<h1 id="4-创建opsuser用户访问productline-bbb产品线">4 创建opsuser用户访问productline-bbb产品线</h1>
+
+<h2 id="4-1-创建用于kubectl使用的opsuser">4.1 创建用于kubectl使用的opsuser</h2>
+
+<p>流程和第二步一致，提供一个脚本简化执行</p>
+
+<p>证书和上下文相关</p>
+
+<pre><code># 生成证书请求文件
+cat &gt; opsuser-csr.json &lt;&lt; EOF
+{
+    &quot;CN&quot;: &quot;opsuser&quot;,
+    &quot;hosts&quot;: [],
+    &quot;key&quot;: {
+        &quot;algo&quot;: &quot;ecdsa&quot;,
+        &quot;size&quot;: 256
+    },
+    &quot;names&quot;: [
+        {
+            &quot;C&quot;: &quot;CN&quot;,
+            &quot;L&quot;: &quot;Hangzhou&quot;,
+            &quot;ST&quot;: &quot;Hangzhou&quot;,
+            &quot;O&quot;: &quot;k8s&quot;,
+            &quot;OU&quot;: &quot;System&quot;
+        }
+    ]
+}
+EOF
+
+# 生成证书
+cfssl gencert --ca /etc/kubernetes/pki/ca.crt --ca-key /etc/kubernetes/pki/ca.key --config k8s-gencert.json --profile kubernetes opsuser-csr.json | cfssljson -bare opsuser
+
+# 生成config文件
+cp /etc/kubernetes/admin.conf opsuser.kubeconfig
+
+# 客户端认证参数
+kubectl config set-credentials opsuser \
+--client-certificate=opsuser.pem \
+--client-key=opsuser-key.pem \
+--embed-certs=true \
+--kubeconfig=opsuser.kubeconfig
+
+# 上下文参数
+kubectl config set-context kubernetes \
+--cluster=kubernetes \
+--user=opsuser \
+--namespace=productline-bbb \
+--kubeconfig=opsuser.kubeconfig
+
+# 设置默认上下文
+kubectl config use-context kubernetes --kubeconfig=opsuser.kubeconfig
+</code></pre>
+
+<h2 id="4-2-创建bbb产品线管理员角色">4.2 创建BBB产品线管理员角色</h2>
+
+<pre><code>cat &gt; productline-bbb-pod-reader.yaml&lt;&lt;EOF
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: productline-bbb
+  name: bbb-pod-admin
+rules:
+- apiGroups: [&quot;*&quot;]
+  resources: [&quot;*&quot;]
+  verbs: [&quot;*&quot;]
+EOF
+
+kubectl create -f productline-bbb-pod-reader.yaml
+
+cat&gt;productline-bbb-devuser-role-bind.yaml&lt;&lt;EOF
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: admin-bbb
+  namespace: productline-bbb
+subjects:
+- kind: User
+  name: opsuser
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: bbb-pod-admin
+  apiGroup: rbac.authorization.k8s.io
+EOF
+
+kubectl create -f productline-bbb-devuser-role-bind.yaml
+</code></pre>
+
+<h2 id="4-3-测试opsuser-kubeconfig的访问效果">4.3 测试opsuser.kubeconfig的访问效果</h2>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/4a/94d1290b2be8ed13a315bfff70a73d.jpg" alt="" /></p>
+
+<h1 id="5-配置跳板机实现多用户隔离远程访问">5 配置跳板机实现多用户隔离远程访问</h1>
+
+<p>对于跳板机的要求其实很简单，只要一个普通的Linux服务器就行了。</p>
+
+<h2 id="5-1-给跳板机安装kubectl工具">5.1 给跳板机安装kubectl工具</h2>
+
+<p>翻墙下载相关软件包</p>
+
+<pre><code>wget https://dl.k8s.io/v1.8.5/kubernetes-node-linux-amd64.tar.gz
+</code></pre>
+
+<p>解压后将kubectl复制到/usr/bin目录并附权</p>
+
+<pre><code>cp kubernetes/node/bin/kubectl /usr/bin/
+chmod 755 /usr/bin/kubectl
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/66/aeced18f634709547cf2f2577bb9df.jpg" alt="" /></p>
+
+<h2 id="5-2-给跳板机创建devuser和opsuser">5.2 给跳板机创建devuser和opsuser</h2>
+
+<p>给跳板机分别创建devuser和opsuser，分别给productline-aaa和productline-bbb两个产品线的负责人。</p>
+
+<pre><code>useradd devuser
+useradd opsuser
+ls /home
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/bd/ff4d524f888e0e56820e1d5e8f0240.jpg" alt="" /></p>
+
+<p>切换到devuser和opsuser下面，分别创建“.kube”目录，并验证</p>
+
+<pre><code>mkdir -p /home/devuser/.kube
+mkdir -p /home/opsuser/.kube
+ls -a /home/devuser/
+ls -a /home/opsuser/
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/f1/f17d2774729e01a7a6866450a32a1a.jpg" alt="" /></p>
+
+<h2 id="5-3-分发config到跳板机">5.3 分发config到跳板机</h2>
+
+<p>把我们在第三章和第四章生成好的devuser.kubeconfig和opsuser.kubeconfig文件分别对应分发到跳板机的/home/devuser/.kube目录和/home/opsuser/.kube目录</p>
+
+<pre><code>scp devuser.kubeconfig opsuser.kubeconfig admin@10.57.30.217:/tmp
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/61/b1be61ea66f7222a6c9b311f30abdf.jpg" alt="" /></p>
+
+<p>然后在跳板机上分别拷贝</p>
+
+<pre><code>mv /tmp/devuser.kubeconfig /home/devuser/.kube/config
+mv /tmp/opsuser.kubeconfig /home/opsuser/.kube/config
+</code></pre>
+
+<p>并把config的own赋给相对应的用户</p>
+
+<pre><code>chown -R devuser:devuser /home/devuser/.kube/config
+chown -R opsuser:opsuser /home/opsuser/.kube/config
+ls -l /home/devuser/.kube/config
+ls -l /home/opsuser/.kube/config
+</code></pre>
+
+<h2 id="5-4-使用不同用户登录访问各自产品线的容器">5.4 使用不同用户登录访问各自产品线的容器</h2>
+
+<p>测试两个不同用户访问的pod
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/4f/a98af11678ae353f0a62bfd8b4407c.jpg" alt="" /></p>
+
+<p>测试两个不同用户跨namespace访问
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/1b/56beb83ee8e4c02caa3532597c42df.jpg" alt="" /></p>
+
+<p>测试两个不同用户进入pod</p>
+
+<p>可以看到如下图所示，不能进入其他namespace的pod。
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/83/1662bcffe4d407796d3de7a3ad2f80.jpg" alt="" /></p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/e3/28634dce4dbc0c2460412b8c61fc18.jpg" alt="" /></p>
+
+<p>最后达到了如下图所示的效果
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/8b/57e9d8956305eae602f151a7e82b1b.jpg" alt="" /></p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

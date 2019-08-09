@@ -4,25 +4,47 @@
   
   <url>
     <loc>https://pj1987111.github.io/posts/</loc>
-    <lastmod>2019-08-02T11:59:41+08:00</lastmod>
+    <lastmod>2019-08-09T11:18:23+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://pj1987111.github.io/posts/database/redis_install/</loc>
-    <lastmod>2019-08-02T11:59:41+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://pj1987111.github.io/tags/</loc>
-    <lastmod>2019-08-02T11:59:41+08:00</lastmod>
+    <lastmod>2019-08-09T11:18:23+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://pj1987111.github.io/</loc>
-    <lastmod>2019-08-02T11:59:41+08:00</lastmod>
+    <lastmod>2019-08-09T11:18:23+08:00</lastmod>
     <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pj1987111.github.io/tags/k8s/</loc>
+    <lastmod>2019-08-09T11:18:23+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pj1987111.github.io/posts/k8s/rbac_geli/</loc>
+    <lastmod>2019-08-09T11:18:23+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pj1987111.github.io/tags/hadoop/</loc>
+    <lastmod>2019-08-06T19:46:19+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://pj1987111.github.io/posts/hadoop/%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6%E5%91%BD%E4%BB%A4/</loc>
+    <lastmod>2019-08-06T19:46:19+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pj1987111.github.io/posts/database/redis_install/</loc>
+    <lastmod>2019-08-02T11:59:41+08:00</lastmod>
   </url>
   
   <url>
@@ -50,12 +72,6 @@
   <url>
     <loc>https://pj1987111.github.io/posts/k8s/nginx&#43;ingress-controller%E8%A7%A3%E5%86%B3l7%E5%A4%96%E7%BD%91web%E6%9C%8D%E5%8A%A1%E6%9A%B4%E9%9C%B2%E5%92%8C%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</loc>
     <lastmod>2019-07-28T12:04:05+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pj1987111.github.io/tags/k8s/</loc>
-    <lastmod>2019-07-28T12:04:05+08:00</lastmod>
-    <priority>0</priority>
   </url>
   
   <url>

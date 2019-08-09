@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>k8s小技巧 &middot; ZHY ZONE</title>
+  <title>docker和k8s小技巧 &middot; ZHY ZONE</title>
 
   
   <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
@@ -49,7 +49,7 @@
 
     <main class="content container">
     <div class="post">
-  <h1>k8s小技巧</h1>
+  <h1>docker和k8s小技巧</h1>
   <time datetime=2019-07-26T10:44:05&#43;0800 class="post-date">Fri, Jul 26, 2019</time>
   
 
@@ -67,6 +67,28 @@
 <p>输入kubectl config set-context $(kubectl config current-context) &ndash;namespace=default 命令将namespace的jhub改成default即可。
 $(kubectl config current-context)的输出是kubernetes-admin@kubernetes。修改后输出结果如下图所示。
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/ce/55e6be6da1546dcce5cd9d7086e74e.jpg" alt="" /></p>
+
+<h1 id="2-一些有用的docker镜像">2 一些有用的docker镜像</h1>
+
+<h2 id="2-1-aerospike">2.1 aerospike</h2>
+
+<p>aerospike管理器 <br/></p>
+
+<pre><code>docker run -ti --name aerospike-asadm --rm aerospike/aerospike-tools asadm --host 10.57.30.214 --no-config-file
+</code></pre>
+
+<p>aerospike工具，查看sql用 <br/></p>
+
+<pre><code>docker run -ti --name aerospike-aql --rm aerospike/aerospike-tools aql -h 10.57.30.214 --no-config-file
+</code></pre>
+
+<h2 id="2-2-mssql-linux版本">2.2 mssql linux版本</h2>
+
+<p>注：密码必须有大小写数字超过10位，不然镜像会自动退出。<br/>
+例子中将镜像中1433端口映射到宿主机的1401端口，并将镜像中的/var/opt/mssql路径映射到宿主机/var/mssql路径下，设置&ndash;name sql1防止镜像重建</p>
+
+<pre><code>docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=YourStrong!Passw0rd' -p 1401:1433 -v /var/mssql:/var/opt/mssql --name sql1 -d microsoft/mssql-server-linux:2017-latest
+</code></pre>
 
 </div>
 

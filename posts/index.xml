@@ -6,10 +6,42 @@
     <description>Recent content in Posts on ZHY ZONE</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 02 Aug 2019 11:59:41 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 09 Aug 2019 11:18:23 +0800</lastBuildDate>
     
 	<atom:link href="https://pj1987111.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>设置证书和RBAC来达到namespace隔离</title>
+      <link>https://pj1987111.github.io/posts/k8s/rbac_geli/</link>
+      <pubDate>Fri, 09 Aug 2019 11:18:23 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/k8s/rbac_geli/</guid>
+      <description>1 AAA和BBB产品线容器的环境准备 1.1 两个产品线的权限隔离说明 假如我们公司有productline-aaa和productline-bbb两个产品线，每个产品线都有各自相应的负责人。要求每个产品线的负责人只能管理自己产品线的容器，实现效果如下： 为了方便演示，我这里建productline-aaa和productline-bbb两个不同的命名空间，并分别在每个命名空间中创建几个容器和service。
+1.2 创建两个产品线的容器环境 创建productline-aaa命名空间，并在productline-aaa命名空间中创建2个productline-aaa-testweb容器和productline-aaa-testweb服务，productline-aaa同理。
+编写yaml代码 aaa产线
+apiVersion: v1 kind: Namespace metadata: name: productline-aaa --- apiVersion: v1 kind: ReplicationController metadata: name: productline-aaa-testweb namespace: productline-aaa labels: name: productline-aaa-testweb spec: replicas: 2 selector: name: productline-aaa-testweb template: metadata: labels: name: productline-aaa-testweb spec: containers: - name: productline-aaa-testweb image: 10.57.26.15:4000/guestbook-php-frontend env: - name: GET_HOSTS_FROM value: env ports: - containerPort: 80 --- apiVersion: v1 kind: Service metadata: name: productline-aaa-testweb namespace: productline-aaa labels: name: productline-aaa-testweb spec: ports: - port: 80 selector: name: productline-aaa-testweb  bbb产线</description>
+    </item>
+    
+    <item>
+      <title>常用组件命令</title>
+      <link>https://pj1987111.github.io/posts/hadoop/%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6%E5%91%BD%E4%BB%A4/</link>
+      <pubDate>Tue, 06 Aug 2019 19:46:19 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/hadoop/%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6%E5%91%BD%E4%BB%A4/</guid>
+      <description>1 hive 2 hbase 3 hdfs 以hdfs://tdhdfs/user/hive/warehouse/testflink.db/kafka_to_hive5为例子
+注意，若客户端要访问该地址的话，需要把tdhdfs添加进/etc/hosts中，tdhdfs是namenode地址，若配置ha的话写任意一个即可。
+4 zookeeper 5 kafka 1 producer
+netstat -pant | grep 9092可以查看，一般是zk的地址
+bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test  2 consumer
+有时候第一个命令没有，用第二个
+bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning  或者
+bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning  5.3 kafka-topics.sh 注:&amp;ndash;zookeeper后参数从config/server.properties文件中zookeeper.connect参数获取
+1 展示topic 展示topic名
+bin/kafka-topics.sh --zookeeper localhost:2181 --list  2 描述topic 可以看到topic的分片数、leader、副本等信息
+bin/kafka-topics.sh --zookeeper localhost:2181 --describe  3 创建topic
+bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic oob_syslog --partitions 1 --replication-factor 1  6 yarn 1 查看所有任务</description>
+    </item>
     
     <item>
       <title>Redis哨兵模式快速安装以及测试</title>
@@ -76,13 +108,16 @@ apiVersion: extensions/v1beta1 kind: Deployment metadata: name: default-http-bac
     </item>
     
     <item>
-      <title>k8s小技巧</title>
+      <title>docker和k8s小技巧</title>
       <link>https://pj1987111.github.io/posts/k8s/k8s%E5%B0%8F%E6%8A%80%E5%B7%A7/</link>
       <pubDate>Fri, 26 Jul 2019 10:44:05 +0800</pubDate>
       
       <guid>https://pj1987111.github.io/posts/k8s/k8s%E5%B0%8F%E6%8A%80%E5%B7%A7/</guid>
       <description> 1 设置默认ns 1.1 问题描述： 之前装过jhub，后来删除，jhub创建时候会修改namespace从default到jhub。后来导致所有缺省namespace的应用都装在jhub上，手动删除jhub的ns后新pod创建不上，报错找不到jhub。
-1.2 解决方式： 输入kubectl config view命令查看与context相关的配置，如下图所示，可见name是kubernetes-admin@kubernetes的namespace是jhub。 输入kubectl config set-context $(kubectl config current-context) &amp;ndash;namespace=default 命令将namespace的jhub改成default即可。 $(kubectl config current-context)的输出是kubernetes-admin@kubernetes。修改后输出结果如下图所示。 </description>
+1.2 解决方式： 输入kubectl config view命令查看与context相关的配置，如下图所示，可见name是kubernetes-admin@kubernetes的namespace是jhub。 输入kubectl config set-context $(kubectl config current-context) &amp;ndash;namespace=default 命令将namespace的jhub改成default即可。 $(kubectl config current-context)的输出是kubernetes-admin@kubernetes。修改后输出结果如下图所示。 2 一些有用的docker镜像 2.1 aerospike aerospike管理器 
+docker run -ti --name aerospike-asadm --rm aerospike/aerospike-tools asadm --host 10.57.30.214 --no-config-file  aerospike工具，查看sql用 
+docker run -ti --name aerospike-aql --rm aerospike/aerospike-tools aql -h 10.57.30.214 --no-config-file  2.2 mssql linux版本 注：密码必须有大小写数字超过10位，不然镜像会自动退出。 例子中将镜像中1433端口映射到宿主机的1401端口，并将镜像中的/var/opt/mssql路径映射到宿主机/var/mssql路径下，设置&amp;ndash;name sql1防止镜像重建
+docker run -e &#39;ACCEPT_EULA=Y&#39; -e &#39;MSSQL_SA_PASSWORD=YourStrong!Passw0rd&#39; -p 1401:1433 -v /var/mssql:/var/opt/mssql --name sql1 -d microsoft/mssql-server-linux:2017-latest  </description>
     </item>
     
     <item>
