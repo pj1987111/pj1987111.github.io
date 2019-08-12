@@ -6,10 +6,19 @@
     <description>Recent content in Tags on ZHY ZONE</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Aug 2019 11:18:23 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 10 Aug 2019 11:17:24 +0800</lastBuildDate>
     
 	<atom:link href="https://pj1987111.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>linux</title>
+      <link>https://pj1987111.github.io/tags/linux/</link>
+      <pubDate>Sat, 10 Aug 2019 11:17:24 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/tags/linux/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>k8s</title>
@@ -44,15 +53,6 @@
       <pubDate>Thu, 01 Aug 2019 10:48:57 +0800</pubDate>
       
       <guid>https://pj1987111.github.io/tags/kerberos/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>linux</title>
-      <link>https://pj1987111.github.io/tags/linux/</link>
-      <pubDate>Mon, 15 Jul 2019 16:12:05 +0800</pubDate>
-      
-      <guid>https://pj1987111.github.io/tags/linux/</guid>
       <description></description>
     </item>
     

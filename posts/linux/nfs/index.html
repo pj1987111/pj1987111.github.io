@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>NFS服务的搭建 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li><li><a href="/books/"> 电子书 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>NFS服务的搭建</h1>
+  <time datetime=2019-08-10T11:17:24&#43;0800 class="post-date">Sat, Aug 10, 2019</time>
+  
+
+<h1 id="1-安装nfs和rpcbind">1 安装nfs和rpcbind</h1>
+
+<pre><code>yum -y install nfs-utils rpcbind
+</code></pre>
+
+<h1 id="2-配置nfs存储路径">2 配置NFS存储路径</h1>
+
+<p>nfs 的配置文件 /etc/expots</p>
+
+<p>默认为空</p>
+
+<pre><code>mkdir -p /opt/nfsdata/
+
+cat &gt;/etc/exports &lt;&lt;EOF
+/opt/nfsdata/ *(rw,no_root_squash,no_all_squash,sync,anonuid=501,anongid=501)
+EOF
+</code></pre>
+
+<p>注1:设置的路径必须手动建好，不然会报错无目录
+注2：配置文件说明：</p>
+
+<p>/opt/nfsdata 为共享目录</p>
+
+<ul>
+<li>可以为一个网段，一个IP，也可以是域名，域名支持通配符，*表示所有网段</li>
+</ul>
+
+<p>rw：read-write，可读写；</p>
+
+<p>ro：read-only，只读；</p>
+
+<p>sync：文件同时写入硬盘和内存；</p>
+
+<p>async：文件暂存于内存，而不是直接写入内存；</p>
+
+<p>no_root_squash：NFS客户端连接服务端时如果使用的是root的话，那么对服务端分享的目录来说，也拥有root权限。显然开启这项是不安全的。</p>
+
+<p>root_squash：NFS客户端连接服务端时如果使用的是root的话，那么对服务端分享的目录来说，拥有匿名用户权限，通常他将使用nobody或nfsnobody身份；</p>
+
+<p>all_squash：不论NFS客户端连接服务端时使用什么用户，对服务端分享的目录来说都是拥有匿名用户权限；</p>
+
+<p>anonuid：匿名用户的UID值，可以在此处自行设定。</p>
+
+<p>anongid：匿名用户的GID值。</p>
+
+<p>如果更新配置文件/etc/expots需要重启nfs.service
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/49/3d9a786d5061016d0c5f7de680d5b5.jpg" alt="" /></p>
+
+<h1 id="3-启动nfs服务">3 启动NFS服务</h1>
+
+<p>把运行rpcbind.service和nfs.service服务</p>
+
+<pre><code>systemctl restart rpcbind.service
+systemctl restart nfs.service
+</code></pre>
+
+<p>启动起来之后，你会看见他们分别监听了如下端口：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/aa/419eedf1fb4e25c59d4e1a5ccbffa5.jpg" alt="" /></p>
+
+<p>执行命令<code>systemctl enable rpcbind.service nfs.service</code>将上述两个服务设置为开机自启动。</p>
+
+<h1 id="4-客户端挂载nfs">4 客户端挂载NFS</h1>
+
+<p>客户端上查看可挂载的目录：</p>
+
+<pre><code>showmount -e &lt;nfs server地址&gt;
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/de/8728b32cb40927b3564db1c7f3d5c4.jpg" alt="" /></p>
+
+<p>客户端挂载</p>
+
+<pre><code>mkdir -p /mnt/nfsdata
+
+mount -t nfs 10.57.26.8:/opt/nfsdata /mnt/nfsdata
+</code></pre>
+
+<p>挂载完成输入<code>df -h</code>即可看到挂载的目录
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/09/bc92960bd4219e4056f232d3b367a8.jpg" alt="" /></p>
+
+<h1 id="5-客户端取消挂载">5 客户端取消挂载</h1>
+
+<p>具体的路径名，可以通过命令<code>df -h</code>查看得到的名称用在umount下</p>
+
+<pre><code>umount 10.57.26.8:/opt/nfsdata
+</code></pre>
+
+<p>再次用<code>df</code>查看，就可以看到目录已经不存在了。</p>
+
+<h1 id="6-坑">6 坑</h1>
+
+<ol>
+<li>mount.nfs: access denied by server while mountin</li>
+</ol>
+
+<p>方法，先打开debug，-vvvv</p>
+
+<pre><code>mount -vvvv -t nfs 10.57.26.8:/opt/nfsdata /mnt/nfsdata
+</code></pre>
+
+<p>可以看到如下错误提示
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/18/199e923fd5c6791542532d49ad546c.jpg" alt="" /></p>
+
+<p>最后勘查发现，是nfsserver设置的路径必须手动建好，不然会报错无目录。</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

@@ -155,7 +155,8 @@ FROM k8s.gcr.io/kube-apiserver:v1.14.2 FROM k8s.gcr.io/kube-proxy:v1.14.2 FROM k
       <pubDate>Fri, 21 Jun 2019 23:21:05 +0800</pubDate>
       
       <guid>https://pj1987111.github.io/posts/k8s/harbor%E4%BB%93%E5%BA%93%E6%90%AD%E5%BB%BA%E6%89%8B%E5%86%8C/</guid>
-      <description>一 harbor介绍 二 环境准备 centos 7.6.1810 docker 18.09.4 docker-compose 1.21.2
+      <description>参考 http://wiki.tongdun.me/pages/viewpage.action?pageId=20153039
+一 harbor介绍 二 环境准备 centos 7.6.1810 docker 18.09.4 docker-compose 1.21.2
 2.1 安装docker 2.2 安装docker-compose 下载并解压后，将docker-compose赋权限并放置环境变量下。
 三 搭建harbor 3.1 下载离线包 wget https://storage.googleapis.com/harbor-releases/release-1.8.0/harbor-offline-installer-v1.8.0.tgz  下载并解压
 3.2 修改harbor配置(http) harbor ui端口默认是80端口，会和大多数应用冲突，所以需要更改，要改两个地方。第一个地方是docker-compose.yml文件，将ports 80:80改成 xxx:80即可，如下图所示： 第二个地方是harbor.yml文件，将http:port: 80更改成需要的，并将hostname改成ip或域名，这个hostname需要与pull和push的前缀一致。如图所示 3.3 生成相关配置并安装 运行 ./prepare以及./install.sh

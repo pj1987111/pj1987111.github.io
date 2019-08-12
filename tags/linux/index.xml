@@ -6,10 +6,36 @@
     <description>Recent content in linux on ZHY ZONE</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 15 Jul 2019 16:12:05 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 10 Aug 2019 11:17:24 +0800</lastBuildDate>
     
 	<atom:link href="https://pj1987111.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>NFS服务的搭建</title>
+      <link>https://pj1987111.github.io/posts/linux/nfs/</link>
+      <pubDate>Sat, 10 Aug 2019 11:17:24 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/linux/nfs/</guid>
+      <description>1 安装nfs和rpcbind yum -y install nfs-utils rpcbind  2 配置NFS存储路径 nfs 的配置文件 /etc/expots
+默认为空
+mkdir -p /opt/nfsdata/ cat &amp;gt;/etc/exports &amp;lt;&amp;lt;EOF /opt/nfsdata/ *(rw,no_root_squash,no_all_squash,sync,anonuid=501,anongid=501) EOF  注1:设置的路径必须手动建好，不然会报错无目录 注2：配置文件说明：
+/opt/nfsdata 为共享目录
+ 可以为一个网段，一个IP，也可以是域名，域名支持通配符，*表示所有网段  rw：read-write，可读写；
+ro：read-only，只读；
+sync：文件同时写入硬盘和内存；
+async：文件暂存于内存，而不是直接写入内存；
+no_root_squash：NFS客户端连接服务端时如果使用的是root的话，那么对服务端分享的目录来说，也拥有root权限。显然开启这项是不安全的。
+root_squash：NFS客户端连接服务端时如果使用的是root的话，那么对服务端分享的目录来说，拥有匿名用户权限，通常他将使用nobody或nfsnobody身份；
+all_squash：不论NFS客户端连接服务端时使用什么用户，对服务端分享的目录来说都是拥有匿名用户权限；
+anonuid：匿名用户的UID值，可以在此处自行设定。
+anongid：匿名用户的GID值。
+如果更新配置文件/etc/expots需要重启nfs.service 3 启动NFS服务 把运行rpcbind.service和nfs.service服务
+systemctl restart rpcbind.service systemctl restart nfs.service  启动起来之后，你会看见他们分别监听了如下端口： 执行命令systemctl enable rpcbind.service nfs.service将上述两个服务设置为开机自启动。
+4 客户端挂载NFS 客户端上查看可挂载的目录：
+showmount -e &amp;lt;nfs server地址&amp;gt;  客户端挂载
+mkdir -p /mnt/nfsdata mount -t nfs 10.</description>
+    </item>
     
     <item>
       <title>Linux Shell 脚本攻略笔记</title>
