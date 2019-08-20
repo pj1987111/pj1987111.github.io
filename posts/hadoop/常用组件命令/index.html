@@ -55,7 +55,20 @@
 
 <h1 id="1-hive">1 hive</h1>
 
+<p>其中10000端口是hiveserver2的端口，从cdh中可以查看，如下：
+<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/af/23a497a1c6182da90ae13a52d8de5d.jpg" alt="" /></p>
+
+<pre><code>beeline -u jdbc:hive2://cdh217:10000
+</code></pre>
+
+<p>或者进到master里面，输入hive进去，操作和beeline一样</p>
+
+<p>只能查text表，parquet表要到平台去查，因为要解压缩。</p>
+
 <h1 id="2-hbase">2 hbase</h1>
+
+<p>get &lsquo;test&rsquo;, &ldquo;\x00\x00\x02\x08&rdquo;
+get &lsquo;test&rsquo;, &ldquo;\x00\x00\x02\x08&rdquo;,&lsquo;cf1:dep_id&rsquo;</p>
 
 <h1 id="3-hdfs">3 hdfs</h1>
 
@@ -122,6 +135,9 @@
 <h1 id="6-redis">6 redis</h1>
 
 <h1 id="7-aerospike">7 aerospike</h1>
+
+<p>docker run -ti &ndash;name aerospike-asadm &ndash;rm aerospike/aerospike-tools asadm &ndash;host 10.57.30.214 &ndash;no-config-file
+docker run -ti &ndash;name aerospike-aql &ndash;rm aerospike/aerospike-tools aql -h 10.57.30.214 &ndash;no-config-file</p>
 
 </div>
 
