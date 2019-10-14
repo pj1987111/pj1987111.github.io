@@ -55,7 +55,8 @@
 
 <h1 id="1-hive">1 hive</h1>
 
-<p>其中10000端口是hiveserver2的端口，从cdh中可以查看，如下：
+<p>特点：不能更新，全量读
+其中10000端口是hiveserver2的端口，从cdh中可以查看，如下：
 <img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/af/23a497a1c6182da90ae13a52d8de5d.jpg" alt="" /></p>
 
 <pre><code>beeline -u jdbc:hive2://cdh217:10000
@@ -67,7 +68,8 @@
 
 <h1 id="2-hbase">2 hbase</h1>
 
-<p>get &lsquo;test&rsquo;, &ldquo;\x00\x00\x02\x08&rdquo;
+<p>特点：更新快，只能rowkey读速度快
+get &lsquo;test&rsquo;, &ldquo;\x00\x00\x02\x08&rdquo;
 get &lsquo;test&rsquo;, &ldquo;\x00\x00\x02\x08&rdquo;,&lsquo;cf1:dep_id&rsquo;</p>
 
 <h1 id="3-hdfs">3 hdfs</h1>
@@ -136,8 +138,24 @@ get &lsquo;test&rsquo;, &ldquo;\x00\x00\x02\x08&rdquo;,&lsquo;cf1:dep_id&rsquo;<
 
 <h1 id="7-aerospike">7 aerospike</h1>
 
-<p>docker run -ti &ndash;name aerospike-asadm &ndash;rm aerospike/aerospike-tools asadm &ndash;host 10.57.30.214 &ndash;no-config-file
-docker run -ti &ndash;name aerospike-aql &ndash;rm aerospike/aerospike-tools aql -h 10.57.30.214 &ndash;no-config-file</p>
+<p>环境：
+测试：10.58.11.39:3000
+大环境：10.57.30.214:3000,10.57.30.215:3000,10.57.30.216:3000</p>
+
+<pre><code>docker run -ti --name aerospike-asadm --rm aerospike/aerospike-tools asadm --host 10.57.30.214 --no-config-file
+docker run -ti --name aerospike-aql --rm aerospike/aerospike-tools aql -h 10.57.30.214 --no-config-file
+</code></pre>
+
+<p>基础概念：
+namespace-&gt;database
+set-&gt;table
+bin-&gt;column</p>
+
+<p>show相关：</p>
+
+<p>#8 pheniox
+[root@cdh217 ~]$
+/opt/modules/apache-phoenix-4.14.0-cdh5.14.2/bin/sqlline.py cdh217,cdh218,cdh219:2181</p>
 
 </div>
 
