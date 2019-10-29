@@ -136,8 +136,9 @@ Druid对于需要实时单一、海量数据流摄取产品非常适合。特别
 <li>BI 使用 presto 扫描查询的方式负载较高</li>
 </ol>
 
-<p>#3 架构
-<img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/b5/27afd7995be13fc8f31e268843f2e2.jpg" alt="" /></p>
+<h1 id="3-架构">3 架构</h1>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/b5/27afd7995be13fc8f31e268843f2e2.jpg" alt="" /></p>
 
 <h2 id="3-1-节点">3.1 节点</h2>
 
@@ -207,8 +208,9 @@ Druid对于需要实时单一、海量数据流摄取产品非常适合。特别
 
 <p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/af/81b64efd512c636b8f949eda02cce5.jpg" alt="" /></p>
 
-<p>#4  OLAP 选型对比
-<strong>Druid vs 数据检索引擎 (ES)</strong>
+<h1 id="4-olap-选型对比">4  OLAP 选型对比</h1>
+
+<p><strong>Druid vs 数据检索引擎 (ES)</strong>
 ES可以存储结构化和非结构化数据，同时具备明细查询和聚合查询能力，由于其自身是一个数据检索引擎，其索引类型并不是针对聚合分析设计的，所以聚合查询方面开销较大;其次，ES不但要保存所有的原始数据，还需要生成较多的索引，所以存储空间开销会更大，数据的写入效率方面会比 Druid 差一些。</p>
 
 <p>与ES相比，只能处理结构化数据，因为它必须预定义Schema；其次，Druid会对数据进行预聚合以减少存储空间，同时对数据写入和聚合进行优化。但是，由于进行了预聚合，所以Druid抛弃掉了原始数据，导致其缺少原始明细数据查询能力。如果业务方有需求，可以关闭预聚合，但会丧失Druid的优势。</p>
