@@ -12,6 +12,17 @@
     
     
     <item>
+      <title>Druid 介绍及相关框架对比</title>
+      <link>https://pj1987111.github.io/posts/database/druid-%E4%BB%8B%E7%BB%8D%E5%8F%8A%E7%9B%B8%E5%85%B3%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/</link>
+      <pubDate>Fri, 02 Aug 2019 11:59:41 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/database/druid-%E4%BB%8B%E7%BB%8D%E5%8F%8A%E7%9B%B8%E5%85%B3%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/</guid>
+      <description>1 简介 Druid 是 MetaMarket 公司研发，专为海量数据集上的做高性能 OLAP (OnLine Analysis Processing)而设计的数据存储和分析系统，目前Druid已经在Apache基金会下孵化。Druid的主要特性： * 交互式查询( Interactive Query ): Druid 的低延迟数据摄取架构允许事件在它们创建后毫秒内查询，因为 Druid 的查询延时通过只读取和扫描有必要的元素被优化。Druid 是列式存储，查询时读取必要的数据，查询的响应是亚秒级响应。 * 高可用性( High Available )：Druid 使用 HDFS/S3 作为 Deep Storage，Segment 会在2个 Historical 节点上进行加载；摄取数据时也可以多副本摄取，保证数据可用性和容错性。 * 可伸缩( Horizontal Scalable )：Druid 部署架构都可以水平扩展，增加大量服务器来加快数据摄取，以及保证亚秒级的查询服务 * 并行处理( Parallel Processing ): Druid 可以在整个集群中并行处理查询 * 丰富的查询能力( Rich Query )：Druid支持 Scan、 TopN、 GroupBy、 Approximate 等查询，同时提供了2种查询方式：API 和 SQL
+常见场景
+ 点击流分析 网络流量分析 服务期指标存储 应用性能指标 数字化营销分析（广告） BI / OLAP  主要特点</description>
+    </item>
+    
+    <item>
       <title>Druid集群模式安装以及测试</title>
       <link>https://pj1987111.github.io/posts/database/druid_install/</link>
       <pubDate>Fri, 02 Aug 2019 11:59:41 +0800</pubDate>
