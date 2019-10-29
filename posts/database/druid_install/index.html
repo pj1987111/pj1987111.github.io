@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="//gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.55.6" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Druid集群模式安装以及测试 &middot; ZHY ZONE</title>
+
+  
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/poole.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/syntax.css">
+  <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface|PT+Sans:400,400i,700">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  
+</head>
+
+  <body class=" ">
+  <aside class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://pj1987111.github.io/"><h1>ZHY ZONE</h1></a>
+      <p class="lead">
+       我的兴趣是机器学习，虚拟化和网络安全。 
+      </p>
+    </div>
+
+    <nav>
+      <ul class="sidebar-nav">
+        <li><a href="https://pj1987111.github.io/">Home</a> </li>
+        <li><a href="/posts/"> 首页 </a></li><li><a href="/tags/"> 分类 </a></li><li><a href="/books/"> 电子书 </a></li>
+      </ul>
+    </nav>
+
+    <p>Copyright (c) 2019, Zhou HongYi</p>
+  </div>
+</aside>
+
+    <main class="content container">
+    <div class="post">
+  <h1>Druid集群模式安装以及测试</h1>
+  <time datetime=2019-08-02T11:59:41&#43;0800 class="post-date">Fri, Aug 2, 2019</time>
+  
+
+<h1 id="0-基础方面">0 基础方面</h1>
+
+<p>基础方面可以参考文档：</p>
+
+<p><a href="https://druid.apache.org/docs/latest/design/architecture.html">druid设计和架构</a></p>
+
+<h1 id="1-机器">1 机器</h1>
+
+<pre><code class="language-$xslt">cdh218 coordinator router
+cdh217 middleManager historical
+cdh219 middleManager historical
+</code></pre>
+
+<h1 id="2-安装">2 安装</h1>
+
+<h2 id="2-1-下载安装版本">2.1 下载安装版本</h2>
+
+<pre><code class="language-$xslt">wget http://mirrors.tuna.tsinghua.edu.cn/apache/incubator/druid/0.16.0-incubating/apache-druid-0.16.0-incubating-bin.tar.gz
+</code></pre>
+
+<h2 id="2-2-修改配置">2.2 修改配置</h2>
+
+<pre><code class="language-$xslt">#假设安装在/opt/modules/apache-druid-0.16.0-incubating 目录下
+cd /opt/modules/apache-druid-0.16.0-incubating
+</code></pre>
+
+<h3 id="2-2-1-common配置">2.2.1 common配置</h3>
+
+<pre><code class="language-$xslt">
+cat &gt; conf/druid/cluster/_common/common.runtime.properties &lt;&lt; EOF
+druid.extensions.loadList=[&quot;druid-hdfs-storage&quot;, &quot;druid-kafka-indexing-service&quot;, &quot;druid-datasketches&quot;,&quot;mysql-metadata-storage&quot;]
+druid.startup.logging.logProperties=true
+druid.zk.service.host=cdh217:2181,cdh218:2181,cdh219:2181
+druid.zk.paths.base=/druid
+druid.metadata.storage.type=mysql
+druid.metadata.storage.connector.connectURI=jdbc:mysql://10.57.30.217:3306/druid
+druid.metadata.storage.connector.user=
+druid.metadata.storage.connector.password=
+druid.storage.type=hdfs
+druid.storage.storageDirectory=/druid/segments
+druid.indexer.logs.type=hdfs
+druid.indexer.logs.directory=/druid/indexing-logs
+druid.selectors.indexing.serviceName=druid/overlord
+druid.selectors.coordinator.serviceName=druid/coordinator
+druid.monitoring.monitors=[&quot;org.apache.druid.java.util.metrics.JvmMonitor&quot;]
+druid.emitter=noop
+druid.emitter.logging.logLevel=info
+druid.indexing.doubleStorage=double
+druid.server.hiddenProperties=[&quot;druid.s3.accessKey&quot;,&quot;druid.s3.secretKey&quot;,&quot;druid.metadata.storage.connector.password&quot;]
+druid.sql.enable=true
+druid.lookup.enableLookupSyncOnStartup=false
+EOF
+</code></pre>
+
+<h3 id="2-2-2-其他配置修改">2.2.2 其他配置修改</h3>
+
+<p>将core-site.xml,hdfs-site.xml,mapred-site.xml,yarn-site.xml四个配置文件放到conf/druid/cluster/_common/下
+然后把mysql-connector-java-5.1.47.jar 放到 lib下</p>
+
+<h2 id="2-3编写启停脚本">2.3编写启停脚本</h2>
+
+<p>###2.3.1 启动脚本</p>
+
+<pre><code class="language-$xslt">cat &gt; start-role.sh &lt;&lt; EOF
+#!/bin/bash
+usage=&quot;Usage: start-role.sh  (broker|coordinator|middleManager|router|historical) &quot;
+
+# if no args specified, show usage
+if [ $# -le 0 ]; then
+  echo $usage
+  exit 1
+fi
+server=$1
+path=conf/druid/cluster
+
+if [ $server = &quot;historical&quot; -o $server = &quot;middleManager&quot; ]; then
+    bizpath=$path/data/$server;
+elif [ $server = &quot;coordinator&quot; ]; then
+    bizpath=$path/master/coordinator-overlord;
+elif [ $server = &quot;broker&quot; -o $server = &quot;router&quot; ]; then
+    bizpath=$path/query/$server;
+fi
+echo $bizpath
+echo &quot;nohup java `cat $bizpath/jvm.config | xargs` -cp $path/_common:$bizpath:lib/* org.apache.druid.cli.Main server $server&gt; $server.log 2&gt;&amp;1 &amp;&quot;
+
+nohup java `cat $bizpath/jvm.config | xargs` -cp $path/_common:$bizpath:lib/* org.apache.druid.cli.Main server $server&gt; $server.log 2&gt;&amp;1 &amp;
+EOF
+</code></pre>
+
+<p>###2.3.2 停止脚本</p>
+
+<pre><code class="language-$xslt">cat &gt; stop-role.sh &lt;&lt; EOF
+#!/bin/bash
+usage=&quot;Usage: stop-role.sh  (broker|coordinator|middleManager|overlord|router|historical) &quot;
+
+# if no args specified, show usage
+if [ $# -le 0 ]; then
+  echo $usage
+  exit 1
+fi
+server=$1
+pgrep -f $server |xargs kill
+EOF
+</code></pre>
+
+<p>###2.3.3 赋权</p>
+
+<pre><code class="language-$xslt">chmod +x *.sh
+</code></pre>
+
+<p>##2.4 复制到其他节点</p>
+
+<pre><code class="language-$xslt">scp -r apache-druid-0.16.0-incubating ...
+</code></pre>
+
+<p>##2.5 每个节点组件启停脚本</p>
+
+<pre><code class="language-$xslt">cdh218:
+
+cat &gt; runcomponent.sh &lt;&lt; EOF
+nohup java -server -Xms15g -Xmx15g -XX:+ExitOnOutOfMemoryError -XX:+UseG1GC -Duser.timezone=UTC -Dfile.encoding=UTF-8 -Djava.io.tmpdir=var/tmp -Djava.util.logging.manager=org.apac./start-role.sh coordinator &amp;&amp; ./start-role.sh router &amp;&amp; ./start-role.sh broker
+EOF
+
+cat &gt; stopcomponent.sh &lt;&lt; EOF
+./stop-role.sh historical || ./stop-role.sh middleManager
+EOF
+
+cdh217:
+
+cat &gt; runcomponent.sh &lt;&lt; EOF
+./start-role.sh historical &amp;&amp; ./start-role.sh middleManager
+EOF
+
+cat &gt; stopcomponent.sh &lt;&lt; EOF
+./stop-role.sh coordinator || ./stop-role.sh router || ./stop-role.sh broker
+EOF
+
+cdh219:
+
+cat &gt; runcomponent.sh &lt;&lt; EOF
+./start-role.sh historical &amp;&amp; ./start-role.sh middleManager
+EOF
+
+cat &gt; stopcomponent.sh &lt;&lt; EOF
+./stop-role.sh historical || ./stop-role.sh middleManager
+EOF
+</code></pre>
+
+<p>然后每个节点执行./runcomponent.sh 即可</p>
+
+<p>##3 测试
+进入监控页面，地址为安装router组件的地方，端口可以从conf/druid/cluster/query/router/runtime.properties中druid.plaintextPort查询</p>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/c9/89536345511b91dd143bca078a6f3e.jpg" alt="" /></p>
+
+<ol>
+<li><a href="https://druid.apache.org/docs/latest/tutorials/tutorial-batch.html">本地文件导入测试</a></li>
+<li><a href="https://druid.apache.org/docs/latest/tutorials/tutorial-kafka.html">kafka导入测试</a></li>
+<li><a href="https://druid.apache.org/docs/latest/tutorials/tutorial-batch-hadoop.html">hadoop导入测试</a></li>
+<li><a href="https://druid.apache.org/docs/latest/tutorials/tutorial-query.html">其他</a></li>
+</ol>
+
+<h2 id="参考文档">参考文档</h2>
+
+<p><a href="https://druid.apache.org/docs/latest/design/index.html">官网文档</a>
+<a href="http://wiki.tongdun.me/pages/viewpage.action?pageId=30324625">druid-HA安装</a></p>
+
+<p>##4 坑
+1. 默认临时文件生成在var/tmp下，由-Djava.io.tmpdir=var/tmp参数决定。需要手动创建。
+2.</p>
+
+</div>
+
+
+    </main>
+
+    
+  </body>
+</html>

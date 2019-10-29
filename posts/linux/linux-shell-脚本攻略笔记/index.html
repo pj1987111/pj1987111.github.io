@@ -1208,13 +1208,15 @@ temp_file=&quot;/tmp/var.$$&quot;
 
 <pre><code>split -b 10k data.file file_prefix
 
-设置后缀格式
+设置后缀格式，可以用这个
 split -b 10k data.file -d -a 4 file_prefix
 </code></pre>
 
 <p>根据行数分割</p>
 
 <pre><code>spilt -l 10 data
+可以用这个
+split -l 10000  table_ods_orc_1e.csv  -d -a 3 split_file
 </code></pre>
 
 <p>其扩展是 csplit，可根据文件特性切分，关注</p>

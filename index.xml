@@ -6,10 +6,24 @@
     <description>Recent content on ZHY ZONE</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 10 Aug 2019 11:17:24 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 10 Oct 2019 16:15:38 +0800</lastBuildDate>
     
 	<atom:link href="https://pj1987111.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>docker命令</title>
+      <link>https://pj1987111.github.io/posts/k8s/docker-%E5%91%BD%E4%BB%A4/</link>
+      <pubDate>Thu, 10 Oct 2019 16:15:38 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/k8s/docker-%E5%91%BD%E4%BB%A4/</guid>
+      <description>docker中 启动所有的容器命令
+docker start $(docker ps -a | awk &#39;{ print $1}&#39; | tail -n +2)  docker中 关闭所有的容器命令
+docker stop $(docker ps -a | awk &#39;{ print $1}&#39; | tail -n +2)  docker中 删除所有的容器命令
+docker rm $(docker ps -a | awk &#39;{ print $1}&#39; | tail -n +2)  docker中 删除所有的镜像
+docker rmi $(docker images | awk &#39;{print $3}&#39; |tail -n +2)  复制文件到镜像中
+docker cp src $dockerid:dest  docker执行命令</description>
+    </item>
     
     <item>
       <title>NFS服务的搭建</title>
@@ -55,19 +69,30 @@ apiVersion: v1 kind: Namespace metadata: name: productline-aaa --- apiVersion: v
       <pubDate>Tue, 06 Aug 2019 19:46:19 +0800</pubDate>
       
       <guid>https://pj1987111.github.io/posts/hadoop/%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6%E5%91%BD%E4%BB%A4/</guid>
-      <description>1 hive 特点：不能更新，全量读 其中10000端口是hiveserver2的端口，从cdh中可以查看，如下： beeline -u jdbc:hive2://cdh217:10000  或者进到master里面，输入hive进去，操作和beeline一样
+      <description>[toc]
+1 hive 特点：不能更新，全量读 其中10000端口是hiveserver2的端口，从cdh中可以查看，如下： beeline -u jdbc:hive2://cdh217:10000  或者进到master里面，输入hive进去，操作和beeline一样
 只能查text表，parquet表要到平台去查，因为要解压缩。
-2 hbase 特点：更新快，只能rowkey读速度快 get &amp;lsquo;test&amp;rsquo;, &amp;ldquo;\x00\x00\x02\x08&amp;rdquo; get &amp;lsquo;test&amp;rsquo;, &amp;ldquo;\x00\x00\x02\x08&amp;rdquo;,&amp;lsquo;cf1:dep_id&amp;rsquo;
+数据迁移： 导出 可以选格式:
+INSERT OVERWRITE LOCAL DIRECTORY &amp;quot;/home/admin/data/data_20190601.txt&amp;quot; ROW FORMAT DELIMITED FIELDS TERMINATED BY &#39;,&#39; select * from bigdata.nh_poc_detail_dt where ds=&#39;20190601&#39;  动态分区导入：
+LOAD DATA LOCAL INPATH &#39;/home/admin/data/data_20190601.txt/&#39; OVERWRITE INTO TABLE highroad.nh_poc_detail_dt partition (ds=&#39;20190601&#39;);  2 hbase 特点：更新快，只能rowkey读速度快 get &amp;lsquo;test&amp;rsquo;, &amp;ldquo;\x00\x00\x02\x08&amp;rdquo; get &amp;lsquo;test&amp;rsquo;, &amp;ldquo;\x00\x00\x02\x08&amp;rdquo;,&amp;lsquo;cf1:dep_id&amp;rsquo;
 3 hdfs 以hdfs://tdhdfs/user/hive/warehouse/testflink.db/kafka_to_hive5为例子
 注意，若客户端要访问该地址的话，需要把tdhdfs添加进/etc/hosts中，tdhdfs是namenode地址，若配置ha的话写任意一个即可。
-4 zookeeper 5 kafka 1 producer
-netstat -pant | grep 9092可以查看，一般是zk的地址
-bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test  2 consumer
-有时候第一个命令没有，用第二个
-bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning  或者
-bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning  5.3 kafka-topics.sh 注:&amp;ndash;zookeeper后参数从config/server.properties文件中zookeeper.connect参数获取
-1 展示topic 展示topic名
-bin/kafka-topics.sh --zookeeper localhost:2181 --list  2 描述topic 可以看到topic的分片数、leader、副本等信息</description>
+paquet文件可以通过spark直接读取。里面包含元信息。
+hdfs追加数据
+hadoop dfs -appendToFile &amp;lt;本地文件&amp;gt; &amp;lt;hdfs上文件&amp;gt;  distcp
+4 zookeeper 5 kafka 安装</description>
+    </item>
+    
+    <item>
+      <title>Druid集群模式安装以及测试</title>
+      <link>https://pj1987111.github.io/posts/database/druid_install/</link>
+      <pubDate>Fri, 02 Aug 2019 11:59:41 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/database/druid_install/</guid>
+      <description>0 基础方面 基础方面可以参考文档：
+druid设计和架构
+1 机器 cdh218 coordinator router cdh217 middleManager historical cdh219 middleManager historical  2 安装 2.1 下载安装版本 wget http://mirrors.tuna.tsinghua.edu.cn/apache/incubator/druid/0.16.0-incubating/apache-druid-0.16.0-incubating-bin.tar.gz  2.2 修改配置 #假设安装在/opt/modules/apache-druid-0.16.0-incubating 目录下 cd /opt/modules/apache-druid-0.16.0-incubating  2.2.1 common配置 cat &amp;gt; conf/druid/cluster/_common/common.runtime.properties &amp;lt;&amp;lt; EOF druid.extensions.loadList=[&amp;quot;druid-hdfs-storage&amp;quot;, &amp;quot;druid-kafka-indexing-service&amp;quot;, &amp;quot;druid-datasketches&amp;quot;,&amp;quot;mysql-metadata-storage&amp;quot;] druid.startup.logging.logProperties=true druid.zk.service.host=cdh217:2181,cdh218:2181,cdh219:2181 druid.zk.paths.base=/druid druid.metadata.storage.type=mysql druid.metadata.storage.connector.connectURI=jdbc:mysql://10.57.30.217:3306/druid druid.metadata.storage.connector.user= druid.metadata.storage.connector.password= druid.storage.type=hdfs druid.storage.storageDirectory=/druid/segments druid.indexer.logs.type=hdfs druid.indexer.logs.directory=/druid/indexing-logs druid.selectors.indexing.serviceName=druid/overlord druid.selectors.coordinator.serviceName=druid/coordinator druid.monitoring.monitors=[&amp;quot;org.apache.druid.java.util.metrics.JvmMonitor&amp;quot;] druid.emitter=noop druid.emitter.logging.logLevel=info druid.indexing.doubleStorage=double druid.server.hiddenProperties=[&amp;quot;druid.s3.accessKey&amp;quot;,&amp;quot;druid.s3.secretKey&amp;quot;,&amp;quot;druid.metadata.storage.connector.password&amp;quot;] druid.sql.enable=true druid.lookup.enableLookupSyncOnStartup=false EOF  2.2.2 其他配置修改 将core-site.xml,hdfs-site.xml,mapred-site.xml,yarn-site.xml四个配置文件放到conf/druid/cluster/_common/下 然后把mysql-connector-java-5.1.47.jar 放到 lib下
+2.3编写启停脚本 ###2.</description>
     </item>
     
     <item>
@@ -346,6 +371,33 @@ FROM k8s.gcr.io/kube-apiserver:v1.14.2 FROM k8s.gcr.io/kube-proxy:v1.14.2 FROM k
 二、在K8S上构建Jenkins Server 2.1 创建PVC存储 首先需要对jenkins-server创建一个Kubernetes持久化存储卷。为了让Jenkins Server可以具有Fail Over的能力，建议将Jenkins的数据存储到远程存储或者分布式存储上。本文使用分布式存储ceph来模拟存储效果，分布式存储的部署请参考我的《rook+ceph部署分布式文件系统》，指定rook-ceph-block并分配200G空间。
 apiVersion: v1 kind: PersistentVolumeClaim metadata: name: cicdpvc namespace: cicd labels: app: cicd spec: storageClassName: rook-ceph-block accessModes: - ReadWriteOnce resources: requests: storage: 200Gi  2.2 创建jenkins-server 创建jenkins-server的yaml如下所示
 apiVersion: extensions/v1beta1 kind: Deployment metadata: name: jenkins2 namespace: cicd spec: template: metadata: labels: app: jenkins2 spec: terminationGracePeriodSeconds: 10 serviceAccountName: jenkins2 containers: - name: jenkins image: 10.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://pj1987111.github.io/posts/database/druid-%E4%BB%8B%E7%BB%8D%E5%8F%8A%E7%9B%B8%E5%85%B3%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/database/druid-%E4%BB%8B%E7%BB%8D%E5%8F%8A%E7%9B%B8%E5%85%B3%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/</guid>
+      <description>1 简介 Druid 是 MetaMarket 公司研发，专为海量数据集上的做高性能 OLAP (OnLine Analysis Processing)而设计的数据存储和分析系统，目前Druid已经在Apache基金会下孵化。Druid的主要特性： * 交互式查询( Interactive Query ): Druid 的低延迟数据摄取架构允许事件在它们创建后毫秒内查询，因为 Druid 的查询延时通过只读取和扫描有必要的元素被优化。Druid 是列式存储，查询时读取必要的数据，查询的响应是亚秒级响应。 * 高可用性( High Available )：Druid 使用 HDFS/S3 作为 Deep Storage，Segment 会在2个 Historical 节点上进行加载；摄取数据时也可以多副本摄取，保证数据可用性和容错性。 * 可伸缩( Horizontal Scalable )：Druid 部署架构都可以水平扩展，增加大量服务器来加快数据摄取，以及保证亚秒级的查询服务 * 并行处理( Parallel Processing ): Druid 可以在整个集群中并行处理查询 * 丰富的查询能力( Rich Query )：Druid支持 Scan、 TopN、 GroupBy、 Approximate 等查询，同时提供了2种查询方式：API 和 SQL
+常见场景
+ 点击流分析 网络流量分析 服务期指标存储 应用性能指标 数字化营销分析（广告） BI / OLAP  主要特点</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://pj1987111.github.io/posts/develop/%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2%E6%8F%92%E4%BB%B6%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/develop/%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2%E6%8F%92%E4%BB%B6%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/</guid>
+      <description>数据交换插件使用详解 [toc]
+1 配置 配置文件以json格式保存，json的内容主要包括三个部分，job、reader和writer。这三个部分的功能分别是任务的配置，数据交换源端配置以及数据交换目标端配置。
+1.1 job 模板
+&amp;quot;job&amp;quot;: { &amp;quot;id&amp;quot;: &amp;quot;hdfsWriterTest&amp;quot;, &amp;quot;name&amp;quot;: &amp;quot;测试2&amp;quot;, &amp;quot;parallelism&amp;quot;: 20, &amp;quot;rateLimit&amp;quot;: &amp;quot;2000M&amp;quot;, &amp;quot;sparkConf&amp;quot;: &amp;quot;set spark.executor.memory=48G;set spark.executor.instances=50;set spark.executor.cores=6;set spark.driver.memory=2g;set spark.yarn.queue=default;set spark.yarn.executor.memoryOverhead=1g;set spark.memory.storageFraction=0.1;set spark.memory.fraction=0.8;set spark.merge.table.enabled=true;&amp;quot;, &amp;quot;url&amp;quot;: &amp;quot;http://cdh1:8181/v1/jobInstance/add&amp;quot;, &amp;quot;appkey&amp;quot;: &amp;quot;张三的appkey&amp;quot;, &amp;quot;appsecret&amp;quot;: &amp;quot;张三的appsecret&amp;quot;, &amp;quot;owner&amp;quot;: &amp;quot;张三#san.zhang&amp;quot;, &amp;quot;projectCode&amp;quot;: &amp;quot;bigdata&amp;quot;, &amp;quot;jobType&amp;quot;: &amp;quot;exchange4&amp;quot;, &amp;quot;clusterCode&amp;quot;: &amp;quot;spark_qy&amp;quot;, &amp;quot;jobName&amp;quot;: &amp;quot;test_exchange_hdfs_to_hive&amp;quot; }  参数解释 1 id,name 这两个参数作为数据交换内部控制使用，随便填即可。
+2 parallelism 数据交换reader使用的spark分区数。
+3 rateLimit 限流兆数。超过传输流量将启用降级和熔断机制保障平台的稳定性。
+4 sparkConf spark任务的核心配置 可以参考Spark参数配置说明
+spark.executor.memory spark执行器的使用堆内内存的大小，该内存数量是spark.executor.cores中设置的内核数共用的内存数量 spark.executor.instances 该参数决定了yarn集群中，最多能够同时启动的executor的实例个数。 spark.executor.cores 该参数为设置每个executor能够使用的CPU core的数量。 spark.driver.memory 该参数设置的是driver分配的内存的大小 spark.</description>
     </item>
     
   </channel>

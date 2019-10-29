@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>databse &middot; ZHY ZONE</title>
+  <title>docker命令 &middot; ZHY ZONE</title>
 
   
   <link type="text/css" rel="stylesheet" href="https://pj1987111.github.io/css/print.css" media="print">
@@ -23,7 +23,6 @@
   <link rel="shortcut icon" href="/favicon.png">
 
   
-  <link href="https://pj1987111.github.io/tags/databse/index.xml" rel="alternate" type="application/rss+xml" title="ZHY ZONE" />
   
 </head>
 
@@ -49,13 +48,46 @@
 </aside>
 
     <main class="content container">
-    <ul class="posts">
-<li>
-    <span><a href="https://pj1987111.github.io/posts/database/druid_install/">Druid集群模式安装以及测试</a> <time class="pull-right post-list" datetime="2019-08-02T11:59:41&#43;0800">Fri, Aug 2, 2019</time></span>
-  </li><li>
-    <span><a href="https://pj1987111.github.io/posts/database/redis_install/">Redis哨兵模式快速安装以及测试</a> <time class="pull-right post-list" datetime="2019-08-02T11:59:41&#43;0800">Fri, Aug 2, 2019</time></span>
-  </li>
-</ul>
+    <div class="post">
+  <h1>docker命令</h1>
+  <time datetime=2019-10-10T16:15:38&#43;0800 class="post-date">Thu, Oct 10, 2019</time>
+  <ol>
+<li><p>docker中 启动所有的容器命令</p>
+
+<pre><code>docker start $(docker ps -a | awk '{ print $1}' | tail -n +2)
+</code></pre></li>
+
+<li><p>docker中   关闭所有的容器命令</p>
+
+<pre><code>docker stop $(docker ps -a | awk '{ print $1}' | tail -n +2)
+</code></pre></li>
+
+<li><p>docker中 删除所有的容器命令</p>
+
+<pre><code>docker rm $(docker ps -a | awk '{ print $1}' | tail -n +2)
+</code></pre></li>
+
+<li><p>docker中   删除所有的镜像</p>
+
+<pre><code>docker rmi $(docker images | awk '{print $3}' |tail -n +2)
+</code></pre></li>
+
+<li><p>复制文件到镜像中</p>
+
+<pre><code>docker cp src $dockerid:dest
+</code></pre></li>
+
+<li><p>docker执行命令</p>
+
+<pre><code>docker exec $dockerid mv /usr/share/openstack-dashboard/static/dashboard/css/6d0969e4da42.css /usr/share/openstack-dashboard/static/dashboard/css/6d0969e4da42.css_bak
+</code></pre></li>
+
+<li></li>
+</ol>
+
+</div>
+
+
     </main>
 
     

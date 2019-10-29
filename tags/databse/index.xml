@@ -12,6 +12,18 @@
     
     
     <item>
+      <title>Druid集群模式安装以及测试</title>
+      <link>https://pj1987111.github.io/posts/database/druid_install/</link>
+      <pubDate>Fri, 02 Aug 2019 11:59:41 +0800</pubDate>
+      
+      <guid>https://pj1987111.github.io/posts/database/druid_install/</guid>
+      <description>0 基础方面 基础方面可以参考文档：
+druid设计和架构
+1 机器 cdh218 coordinator router cdh217 middleManager historical cdh219 middleManager historical  2 安装 2.1 下载安装版本 wget http://mirrors.tuna.tsinghua.edu.cn/apache/incubator/druid/0.16.0-incubating/apache-druid-0.16.0-incubating-bin.tar.gz  2.2 修改配置 #假设安装在/opt/modules/apache-druid-0.16.0-incubating 目录下 cd /opt/modules/apache-druid-0.16.0-incubating  2.2.1 common配置 cat &amp;gt; conf/druid/cluster/_common/common.runtime.properties &amp;lt;&amp;lt; EOF druid.extensions.loadList=[&amp;quot;druid-hdfs-storage&amp;quot;, &amp;quot;druid-kafka-indexing-service&amp;quot;, &amp;quot;druid-datasketches&amp;quot;,&amp;quot;mysql-metadata-storage&amp;quot;] druid.startup.logging.logProperties=true druid.zk.service.host=cdh217:2181,cdh218:2181,cdh219:2181 druid.zk.paths.base=/druid druid.metadata.storage.type=mysql druid.metadata.storage.connector.connectURI=jdbc:mysql://10.57.30.217:3306/druid druid.metadata.storage.connector.user= druid.metadata.storage.connector.password= druid.storage.type=hdfs druid.storage.storageDirectory=/druid/segments druid.indexer.logs.type=hdfs druid.indexer.logs.directory=/druid/indexing-logs druid.selectors.indexing.serviceName=druid/overlord druid.selectors.coordinator.serviceName=druid/coordinator druid.monitoring.monitors=[&amp;quot;org.apache.druid.java.util.metrics.JvmMonitor&amp;quot;] druid.emitter=noop druid.emitter.logging.logLevel=info druid.indexing.doubleStorage=double druid.server.hiddenProperties=[&amp;quot;druid.s3.accessKey&amp;quot;,&amp;quot;druid.s3.secretKey&amp;quot;,&amp;quot;druid.metadata.storage.connector.password&amp;quot;] druid.sql.enable=true druid.lookup.enableLookupSyncOnStartup=false EOF  2.2.2 其他配置修改 将core-site.xml,hdfs-site.xml,mapred-site.xml,yarn-site.xml四个配置文件放到conf/druid/cluster/_common/下 然后把mysql-connector-java-5.1.47.jar 放到 lib下
+2.3编写启停脚本 ###2.</description>
+    </item>
+    
+    <item>
       <title>Redis哨兵模式快速安装以及测试</title>
       <link>https://pj1987111.github.io/posts/database/redis_install/</link>
       <pubDate>Fri, 02 Aug 2019 11:59:41 +0800</pubDate>

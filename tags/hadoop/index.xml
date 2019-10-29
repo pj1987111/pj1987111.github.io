@@ -17,19 +17,18 @@
       <pubDate>Tue, 06 Aug 2019 19:46:19 +0800</pubDate>
       
       <guid>https://pj1987111.github.io/posts/hadoop/%E5%B8%B8%E7%94%A8%E7%BB%84%E4%BB%B6%E5%91%BD%E4%BB%A4/</guid>
-      <description>1 hive 特点：不能更新，全量读 其中10000端口是hiveserver2的端口，从cdh中可以查看，如下： beeline -u jdbc:hive2://cdh217:10000  或者进到master里面，输入hive进去，操作和beeline一样
+      <description>[toc]
+1 hive 特点：不能更新，全量读 其中10000端口是hiveserver2的端口，从cdh中可以查看，如下： beeline -u jdbc:hive2://cdh217:10000  或者进到master里面，输入hive进去，操作和beeline一样
 只能查text表，parquet表要到平台去查，因为要解压缩。
-2 hbase 特点：更新快，只能rowkey读速度快 get &amp;lsquo;test&amp;rsquo;, &amp;ldquo;\x00\x00\x02\x08&amp;rdquo; get &amp;lsquo;test&amp;rsquo;, &amp;ldquo;\x00\x00\x02\x08&amp;rdquo;,&amp;lsquo;cf1:dep_id&amp;rsquo;
+数据迁移： 导出 可以选格式:
+INSERT OVERWRITE LOCAL DIRECTORY &amp;quot;/home/admin/data/data_20190601.txt&amp;quot; ROW FORMAT DELIMITED FIELDS TERMINATED BY &#39;,&#39; select * from bigdata.nh_poc_detail_dt where ds=&#39;20190601&#39;  动态分区导入：
+LOAD DATA LOCAL INPATH &#39;/home/admin/data/data_20190601.txt/&#39; OVERWRITE INTO TABLE highroad.nh_poc_detail_dt partition (ds=&#39;20190601&#39;);  2 hbase 特点：更新快，只能rowkey读速度快 get &amp;lsquo;test&amp;rsquo;, &amp;ldquo;\x00\x00\x02\x08&amp;rdquo; get &amp;lsquo;test&amp;rsquo;, &amp;ldquo;\x00\x00\x02\x08&amp;rdquo;,&amp;lsquo;cf1:dep_id&amp;rsquo;
 3 hdfs 以hdfs://tdhdfs/user/hive/warehouse/testflink.db/kafka_to_hive5为例子
 注意，若客户端要访问该地址的话，需要把tdhdfs添加进/etc/hosts中，tdhdfs是namenode地址，若配置ha的话写任意一个即可。
-4 zookeeper 5 kafka 1 producer
-netstat -pant | grep 9092可以查看，一般是zk的地址
-bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test  2 consumer
-有时候第一个命令没有，用第二个
-bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning  或者
-bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning  5.3 kafka-topics.sh 注:&amp;ndash;zookeeper后参数从config/server.properties文件中zookeeper.connect参数获取
-1 展示topic 展示topic名
-bin/kafka-topics.sh --zookeeper localhost:2181 --list  2 描述topic 可以看到topic的分片数、leader、副本等信息</description>
+paquet文件可以通过spark直接读取。里面包含元信息。
+hdfs追加数据
+hadoop dfs -appendToFile &amp;lt;本地文件&amp;gt; &amp;lt;hdfs上文件&amp;gt;  distcp
+4 zookeeper 5 kafka 安装</description>
     </item>
     
   </channel>

@@ -53,6 +53,8 @@
   <time datetime=2019-08-06T19:46:19&#43;0800 class="post-date">Tue, Aug 6, 2019</time>
   
 
+<p>[toc]</p>
+
 <h1 id="1-hive">1 hive</h1>
 
 <p>特点：不能更新，全量读
@@ -66,6 +68,17 @@
 
 <p>只能查text表，parquet表要到平台去查，因为要解压缩。</p>
 
+<p>数据迁移：
+导出 可以选格式:</p>
+
+<pre><code>INSERT OVERWRITE LOCAL DIRECTORY &quot;/home/admin/data/data_20190601.txt&quot; ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select * from bigdata.nh_poc_detail_dt where ds='20190601'
+</code></pre>
+
+<p>动态分区导入：</p>
+
+<pre><code>LOAD DATA LOCAL INPATH '/home/admin/data/data_20190601.txt/' OVERWRITE INTO TABLE highroad.nh_poc_detail_dt partition (ds='20190601');
+</code></pre>
+
 <h1 id="2-hbase">2 hbase</h1>
 
 <p>特点：更新快，只能rowkey读速度快
@@ -78,9 +91,22 @@ get &lsquo;test&rsquo;, &ldquo;\x00\x00\x02\x08&rdquo;,&lsquo;cf1:dep_id&rsquo;<
 
 <p>注意，若客户端要访问该地址的话，需要把tdhdfs添加进/etc/hosts中，tdhdfs是namenode地址，若配置ha的话写任意一个即可。</p>
 
+<p>paquet文件可以通过spark直接读取。里面包含元信息。</p>
+
+<p>hdfs追加数据</p>
+
+<pre><code>hadoop dfs -appendToFile &lt;本地文件&gt; &lt;hdfs上文件&gt;
+</code></pre>
+
+<p><img src="https://raw.githubusercontent.com/pj1987111/pj1987111.github.io/master/images/12/4284dedbc2c4b1ee9d6d5203fb072a.jpg" alt="" /></p>
+
+<p>distcp</p>
+
 <h1 id="4-zookeeper">4 zookeeper</h1>
 
 <h1 id="5-kafka">5 kafka</h1>
+
+<p>安装</p>
 
 <p>1 producer</p>
 
@@ -122,6 +148,19 @@ get &lsquo;test&rsquo;, &ldquo;\x00\x00\x02\x08&rdquo;,&lsquo;cf1:dep_id&rsquo;<
 <pre><code>bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic oob_syslog --partitions 1 --replication-factor 1
 </code></pre>
 
+<p>4 测试</p>
+
+<pre><code>./kafka-console-producer.sh --topic zhy_test --broker-list 10.57.239.111:9092
+
+#导入文件
+./kafka-console-producer.sh --topic zhy_test --broker-list 10.57.239.111:9092 &lt; file
+
+./kafka-console-consumer.sh --bootstrap-server 10.57.239.111:9092 --topic zhy_test --from-beginning
+
+./kafka-console-consumer.sh --zookeeper 10.57.239.111:2181 --topic zhy_test --from-beginning
+
+</code></pre>
+
 <h1 id="6-yarn">6 yarn</h1>
 
 <p>1 查看所有任务</p>
@@ -134,7 +173,26 @@ get &lsquo;test&rsquo;, &ldquo;\x00\x00\x02\x08&rdquo;,&lsquo;cf1:dep_id&rsquo;<
 <pre><code>yarn application -kill &lt;id&gt;
 </code></pre>
 
+<p>3 关闭交换分区</p>
+
+<pre><code>#查看内存剩余情况，若发现有Swap表示交换分区存在
+free -h
+#查看交换分区挂载盘
+swapon -s   
+Filename                                Type            Size    Used    Priority
+/dev/dm-1                               partition       33554428        0       -1
+#关闭挂载分区
+swapoff /dev/dm-1
+#继续查看
+swapon -s  
+#打开交换分区
+swapon /dev/dm-1(需要换成自己的挂载分区) 
+
+</code></pre>
+
 <h1 id="6-redis">6 redis</h1>
+
+<p><a href="https://pj1987111.github.io/posts/database/redis_install/">安装</a></p>
 
 <h1 id="7-aerospike">7 aerospike</h1>
 
@@ -156,6 +214,100 @@ bin-&gt;column</p>
 <p>#8 pheniox
 [root@cdh217 ~]$
 /opt/modules/apache-phoenix-4.14.0-cdh5.14.2/bin/sqlline.py cdh217,cdh218,cdh219:2181</p>
+
+<p>#9 presto
+内存消耗型，小任务速度很快</p>
+
+<p>公司测试环境</p>
+
+<pre><code>master:cdh218
+slave:cdh217,cdh219
+</code></pre>
+
+<p>路径</p>
+
+<pre><code>/opt/modules/presto-server-0.218/bin
+</code></pre>
+
+<p>配置文件
+1:config.properties
+给个例子就能知道</p>
+
+<pre><code>master:
+coordinator=true
+node-scheduler.include-coordinator=true
+http-server.http.port=8002
+query.max-memory=5GB
+query.max-memory-per-node=2GB
+query.max-total-memory-per-node=5GB
+exchange.min-error-duration=10.00m
+exchange.client-threads=64
+discovery-server.enabled=true
+discovery.uri=http://cdh218:8002
+
+slave:
+coordinator=false
+http-server.http.port=8002
+query.max-memory=10GB
+query.max-memory-per-node=2GB
+exchange.min-error-duration=10.00m
+exchange.client-threads=64
+discovery.uri=http://cdh218:8002
+</code></pre>
+
+<p>2:node.properties</p>
+
+<pre><code>node.environment 表示集群名称，一个集群中的presto此参数必须一致
+node.id 表示node的id名，每个集群中的presto需要设置不一样防止错乱
+</code></pre>
+
+<p>3:catalog/hive.properties</p>
+
+<pre><code>connector.name=hive-hadoop2
+hive.metastore.uri=thrift://cdh218:9083
+hive.config.resources=/etc/hadoop/conf/core-site.xml,/etc/hadoop/conf/hdfs-site.xml,/etc/hadoop/conf/mapred-site.xml,/etc/hadoop/conf/yarn-site.xml
+hive.allow-drop-table=true
+hive.allow-rename-table=true
+</code></pre>
+
+<p>4:mysql</p>
+
+<pre><code>connector.name=mysql
+connection-url=jdbc:mysql://cdh217:3306
+connection-user=root
+connection-password=123456
+</code></pre>
+
+<p>命令</p>
+
+<pre><code>presto:ahnx&gt; help
+
+Supported commands:
+QUIT
+EXPLAIN [ ( option [, ...] ) ] &lt;query&gt;
+    options: FORMAT { TEXT | GRAPHVIZ }
+             TYPE { LOGICAL | DISTRIBUTED }
+DESCRIBE &lt;table&gt;
+SHOW COLUMNS FROM &lt;table&gt;
+SHOW FUNCTIONS
+SHOW CATALOGS [LIKE &lt;pattern&gt;]
+SHOW SCHEMAS [FROM &lt;catalog&gt;] [LIKE &lt;pattern&gt;]
+SHOW TABLES [FROM &lt;schema&gt;] [LIKE &lt;pattern&gt;]
+USE [&lt;catalog&gt;.]&lt;schema&gt;
+</code></pre>
+
+<p>#10 druid</p>
+
+<pre><code>cdh218 coordinator router
+cdh217 middleManager historical
+cdh219 middleManager historical
+</code></pre>
+
+<p><a href="http://druid.apache.org/docs/latest/design/#when-should-i-use-druid">使用场景</a></p>
+
+<h1 id="11-clickhouse">11 clickhouse</h1>
+
+<p><a href="http://wiki.tongdun.me/display/tech/ClickHouse">介绍</a></p>
 
 </div>
 
