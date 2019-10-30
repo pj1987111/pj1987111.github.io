@@ -228,7 +228,8 @@ $ kubectl proxy Starting to serve on 127.</description>
       <pubDate>Mon, 15 Jul 2019 16:12:05 +0800</pubDate>
       
       <guid>https://pj1987111.github.io/posts/linux/linux-shell-%E8%84%9A%E6%9C%AC%E6%94%BB%E7%95%A5%E7%AC%94%E8%AE%B0/</guid>
-      <description>Linux Shell 脚本攻略笔记[速查] Linux Shell 脚本攻略的笔记，markdown 编写，可以速查(ctrl+f)
+      <description>Linux Shell 脚本攻略笔记[速查] [toc]
+Linux Shell 脚本攻略的笔记，markdown 编写，可以速查(ctrl+f)
 资源[](#资源) sed 简明教程
 awk 简明教程
 shell script[](#shell-script) #!/bin/bash # do something  run shell script[](#run-shell-script) sh script.sh or chmod a+x script.sh ./script.sh # 会读取首行的解释器, 执行  cmd
