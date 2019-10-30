@@ -3427,7 +3427,7 @@ java tecmint
 
 <p>特别有用的特殊文件，位桶，传送到此文件的数据都会被系统丢弃。</p>
 
-<h3 id="语言及乱码-语言及乱码">语言及乱码[](#语言及乱码)</h3>
+<h3 id="语言及乱码-语言及乱码">语言及乱码[](# 语言及乱码)</h3>
 
 <p>查看变量值</p>
 
@@ -3439,10 +3439,37 @@ echo $LC_ALL 覆盖所有LC_XXX变量，总控开关
 
 <p>避免乱码：从编辑器到语言，再到系统，统一编码为 UTF-8</p>
 
-<h3 id="shell-的版本-shell的版本">shell 的版本[](#shell的版本)</h3>
+<h3 id="shell-的版本-shell的版本">shell 的版本[](# shell的版本)</h3>
 
 <pre><code>bash --version
 </code></pre>
+
+<h3 id="查看进程所属目录-查看进程所属目录">查看进程所属目录[](# 查看进程所属目录)</h3>
+
+<ol>
+<li><p>查看nginx的PID，以常用的80端口为例：</p>
+
+<pre><code>[root@xiaoyuer scripts]# netstat -lntup|grep 80
+tcp        0      0 0.0.0.0:80                  0.0.0.0:*                   LISTEN      13309/nginx
+ 
+#可以知道nginx进程是13309
+</code></pre></li>
+
+<li><p>通过相应的进程ID(比如：13309）查询当前运行的nginx路径：</p>
+
+<pre><code>[root@xiaoyuer scripts]# ll /proc/13309/exe
+lrwxrwxrwx 1 root root 0 Jan  4 17:02 /proc/13309/exe -&gt; /data/nginx/sbin/nginx
+</code></pre></li>
+
+<li><p>获取到nginx的执行路径后，使用-t参数即可获取该进程对应的配置文件路径，如：</p>
+
+<pre><code>/usr/local/nginx/sbin/nginx -t
+nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok
+nginx: configuration file /usr/local/nginx/conf/nginx.conf test is successful
+</code></pre>
+
+<p>其实所有的启动命令都是类似　</p></li>
+</ol>
 
 </div>
 
